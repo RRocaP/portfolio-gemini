@@ -286,7 +286,7 @@ const ca: Translation = {
     description:
       "Combatent la resistència antimicrobiana i avançant la teràpia gènica mitjançant disseny computacional i validació experimental.",
   },
-  nav: { works: "Treballs", about: "La Historia", contact: "Contacte" },
+  nav: { works: "Treballs", about: "La Història", contact: "Contacte" },
   hero: {
     title: "Bioenginyeria\namb IA.",
     subtitle:

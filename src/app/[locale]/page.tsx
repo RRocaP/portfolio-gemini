@@ -133,7 +133,7 @@ function ImmersiveBackground({
 
       <button
         onClick={toggleMute}
-        className="fixed bottom-8 left-8 z-50 p-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-full backdrop-blur-md transition-all duration-300 text-white/50 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+        className="fixed bottom-4 left-4 sm:bottom-8 sm:left-8 z-50 min-w-[44px] min-h-[44px] p-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-full backdrop-blur-md transition-all duration-300 text-white/50 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
         aria-label={isMuted ? t.audio.unmute : t.audio.mute}
       >
         {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
@@ -147,19 +147,21 @@ function ImmersiveBackground({
 // ---------------------------------------------------------------------------
 function LanguageSwitcher({ locale }: { locale: Locale }) {
   return (
-    <div className="flex gap-1">
-      {locales.map((l) => (
-        <Link
-          key={l}
-          href={`/${l}`}
-          className={`px-2 py-1 text-xs font-mono uppercase rounded transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white ${
-            l === locale
-              ? "bg-white/15 text-white"
-              : "text-slate-400 hover:text-white hover:bg-white/5"
-          }`}
-        >
-          {l}
-        </Link>
+    <div className="flex items-center gap-2">
+      {locales.map((l, i) => (
+        <React.Fragment key={l}>
+          {i > 0 && <span className="text-slate-600 text-xs select-none">|</span>}
+          <Link
+            href={`/${l}`}
+            className={`px-2 py-1 text-xs font-mono uppercase rounded transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white ${
+              l === locale
+                ? "bg-white/15 text-white"
+                : "text-slate-400 hover:text-white hover:bg-white/5"
+            }`}
+          >
+            {l}
+          </Link>
+        </React.Fragment>
       ))}
     </div>
   );
@@ -196,7 +198,6 @@ export default function PortfolioPage() {
   const navItems = [
     { label: t.nav.works, href: "#works" },
     { label: t.nav.about, href: "#about" },
-    { label: t.nav.writing, href: "#writing" },
     { label: t.nav.contact, href: "#contact" },
   ];
 
@@ -206,7 +207,7 @@ export default function PortfolioPage() {
 
       <div className="min-h-screen text-[#e9ecf1] selection:bg-[#47618c]/40 selection:text-[#e9ecf1] overflow-x-hidden font-sans relative z-10 bg-transparent">
         {/* ── Navigation ── */}
-        <header className="fixed top-0 left-0 right-0 z-50 flex justify-between items-center p-6 md:p-10 mix-blend-difference">
+        <header className="fixed top-0 left-0 right-0 z-50 flex justify-between items-center p-4 sm:p-6 md:p-10 mix-blend-difference">
           <Link
             href={`/${locale}`}
             className="text-xl font-bold tracking-tighter text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
@@ -227,7 +228,7 @@ export default function PortfolioPage() {
                 key={item.href}
                 href={item.href}
 
-                className="text-sm font-medium tracking-wide text-slate-300 hover:text-white transition-colors uppercase focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                className="text-sm font-medium tracking-wide text-slate-300 hover:text-white transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 + i * 0.1 }}
@@ -240,7 +241,7 @@ export default function PortfolioPage() {
 
           {/* Mobile hamburger */}
           <button
-            className="md:hidden p-2 text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+            className="md:hidden min-w-[44px] min-h-[44px] p-2 text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label={
               mobileMenuOpen ? t.mobileMenu.close : t.mobileMenu.open
@@ -263,7 +264,7 @@ export default function PortfolioPage() {
                 key={item.href}
                 href={item.href}
                 onClick={() => setMobileMenuOpen(false)}
-                className="text-2xl font-medium text-white uppercase tracking-wide focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                className="text-2xl font-medium text-white tracking-wide focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
               >
                 {item.label}
               </a>
@@ -301,10 +302,10 @@ export default function PortfolioPage() {
                   {t.hero.subtitle}
                 </motion.p>
 
-                <motion.div variants={fadeUp} className="flex flex-wrap gap-4">
+                <motion.div variants={fadeUp} className="flex flex-col min-[480px]:flex-row flex-wrap gap-4 w-full min-[480px]:w-auto">
                   <a
                     href="#works"
-                    className="px-8 py-4 bg-white text-black font-semibold rounded-full hover:bg-slate-200 transition-colors inline-flex items-center gap-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                    className="px-8 py-4 bg-white text-black font-semibold rounded-full hover:bg-slate-200 transition-colors inline-flex items-center justify-center gap-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                   >
                     {t.hero.ctaPrimary}
                     <svg
@@ -323,7 +324,7 @@ export default function PortfolioPage() {
                   </a>
                   <a
                     href="#about"
-                    className="px-8 py-4 border border-white/20 text-white font-semibold rounded-full hover:bg-white/5 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                    className="px-6 py-3 border border-white/20 text-white font-semibold rounded-full hover:bg-white/5 transition-colors text-center focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                   >
                     {t.hero.ctaSecondary}
                   </a>
@@ -331,15 +332,6 @@ export default function PortfolioPage() {
               </motion.div>
             </div>
 
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 1.5, duration: 1 }}
-              className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-slate-500 text-sm"
-            >
-              <span>{t.hero.scroll}</span>
-              <div className="w-[1px] h-12 bg-gradient-to-b from-slate-500 to-transparent" />
-            </motion.div>
           </section>
 
           {/* ── Works ── */}
@@ -380,7 +372,7 @@ export default function PortfolioPage() {
                     {work.title}
                   </h3>
 
-                  <p className="text-sm text-slate-400 font-light mb-8 flex-grow">
+                  <p className="text-sm text-slate-400 font-light mb-8 flex-grow line-clamp-2 group-hover:line-clamp-none transition-all duration-300">
                     {work.blurb}
                   </p>
 
@@ -388,7 +380,7 @@ export default function PortfolioPage() {
                     {work.tags.map((tag) => (
                       <span
                         key={tag}
-                        className="text-[10px] uppercase tracking-wider px-2 py-1 bg-black/40 text-slate-300 rounded-sm"
+                        className="text-[10px] tracking-wider px-2 py-1 bg-black/40 text-slate-300 rounded-sm"
                       >
                         {tag}
                       </span>

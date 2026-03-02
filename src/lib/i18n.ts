@@ -22,13 +22,12 @@ export interface TimelineItem {
 
 export interface Translation {
   meta: { title: string; description: string };
-  nav: { works: string; about: string; writing: string; contact: string };
+  nav: { works: string; about: string; contact: string };
   hero: {
     title: string;
     subtitle: string;
     ctaPrimary: string;
     ctaSecondary: string;
-    scroll: string;
   };
   sections: { works: string; about: string };
   works: WorkItem[];
@@ -55,14 +54,13 @@ const en: Translation = {
     description:
       "Combating antimicrobial resistance and advancing gene therapy through computational design and experimental validation.",
   },
-  nav: { works: "Works", about: "About", writing: "Writing", contact: "Contact" },
+  nav: { works: "Works", about: "The Story", contact: "Contact" },
   hero: {
-    title: "Engineering proteins\nand viral vectors.",
+    title: "Bioengineering\nwith AI.",
     subtitle:
       "Combating antimicrobial resistance and advancing gene therapy through computational design and experimental validation.",
     ctaPrimary: "View Publications",
     ctaSecondary: "The Story",
-    scroll: "Scroll",
   },
   sections: { works: "01. Selected Works", about: "02. The Story" },
   works: [
@@ -153,7 +151,7 @@ const en: Translation = {
     ],
   },
   contact: {
-    heading: "Exploring spaces no bench can cover.",
+    heading: "Let's connect.",
     subtitle:
       "Bridging computation and biology. 20+ publications, 300+ citations, and 2 patents in antimicrobial drug discovery and protein engineering.",
     emailLabel: "ramon.rocap@gmail.com",
@@ -172,14 +170,13 @@ const es: Translation = {
     description:
       "Combatiendo la resistencia antimicrobiana y avanzando la terapia génica mediante diseño computacional y validación experimental.",
   },
-  nav: { works: "Trabajos", about: "Sobre mí", writing: "Escritos", contact: "Contacto" },
+  nav: { works: "Trabajos", about: "La Historia", contact: "Contacto" },
   hero: {
-    title: "Diseñando proteínas\ny vectores virales.",
+    title: "Bioingeniería\ncon IA.",
     subtitle:
       "Combatiendo la resistencia antimicrobiana y avanzando la terapia génica mediante diseño computacional y validación experimental.",
     ctaPrimary: "Ver publicaciones",
     ctaSecondary: "La historia",
-    scroll: "Desplazar",
   },
   sections: { works: "01. Trabajos seleccionados", about: "02. La historia" },
   works: [
@@ -270,7 +267,7 @@ const es: Translation = {
     ],
   },
   contact: {
-    heading: "Explorando espacios que ningún laboratorio puede cubrir.",
+    heading: "Conectemos.",
     subtitle:
       "Uniendo computación y biología. 20+ publicaciones, 300+ citas y 2 patentes en descubrimiento de fármacos antimicrobianos e ingeniería de proteínas.",
     emailLabel: "ramon.rocap@gmail.com",
@@ -289,14 +286,13 @@ const ca: Translation = {
     description:
       "Combatent la resistència antimicrobiana i avançant la teràpia gènica mitjançant disseny computacional i validació experimental.",
   },
-  nav: { works: "Treballs", about: "Sobre mi", writing: "Escrits", contact: "Contacte" },
+  nav: { works: "Treballs", about: "La Historia", contact: "Contacte" },
   hero: {
-    title: "Dissenyant proteïnes\ni vectors virals.",
+    title: "Bioenginyeria\namb IA.",
     subtitle:
       "Combatent la resistència antimicrobiana i avançant la teràpia gènica mitjançant disseny computacional i validació experimental.",
     ctaPrimary: "Veure publicacions",
     ctaSecondary: "La història",
-    scroll: "Desplaçar",
   },
   sections: { works: "01. Treballs seleccionats", about: "02. La història" },
   works: [
@@ -387,7 +383,7 @@ const ca: Translation = {
     ],
   },
   contact: {
-    heading: "Explorant espais que cap laboratori pot cobrir.",
+    heading: "Connectem.",
     subtitle:
       "Unint computació i biologia. 20+ publicacions, 300+ citacions i 2 patents en descobriment de fàrmacs antimicrobians i enginyeria de proteïnes.",
     emailLabel: "ramon.rocap@gmail.com",

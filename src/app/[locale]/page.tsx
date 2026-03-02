@@ -278,7 +278,7 @@ export default function PortfolioPage() {
               <motion.a
                 key={item.href}
                 href={item.href}
-                onMouseEnter={playMenuHover}
+                
                 className="text-sm font-medium tracking-wide text-slate-300 hover:text-white transition-colors uppercase focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}

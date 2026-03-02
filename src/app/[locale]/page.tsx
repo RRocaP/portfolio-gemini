@@ -158,7 +158,7 @@ export default function PortfolioPage() {
   const t = translations[locale];
 
   const shouldReduceMotion = useReducedMotion();
-  const [isMuted, setIsMuted] = useState(false);
+  const [isMuted, setIsMuted] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Tone.js synths

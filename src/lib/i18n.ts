@@ -368,8 +368,9 @@ const ca: Translation = {
   about: {
     heading: "Trobant el senyal terapèutic en un mar de soroll biològic.",
     bio: [
-      "Soc enginyer de proteïnes de formació i científic computacional per necessitat. Em vaig formar en Biotecnologia a Barcelona, vaig cursar un màster en Enginyeria Biomèdica a la UC Irvine i, durant el doctorat a la UAB, vaig dedicar quatre anys a dissenyar proteïnes antimicrobianes abastant tot el procés, des del disseny fins a la producció i l'assaig funcional. Fruit d'aquesta etapa van sorgir dues patents i quatre articles com a primer autor.",
-      "Actualment, al CMRI de Sydney, he desenvolupat una plataforma que analitza milions de seqüències per descobrir nous pèptids antimicrobians. Faig servir models de llenguatge de proteïnes per fer prediccions que després traslladem a models preclínics. A més, treballo en l'enginyeria de càpsides d'AAV per a teràpia gènica, amb treballs publicats a revistes com Nature Communications i Molecular Therapy.",
+      "Sóc enginyer de proteïnes de formació i científic computacional per necessitat. Em vaig formar en Biotecnologia a Barcelona, vaig fer un màster en Enginyeria Biomèdica a la UC Irvine, i durant el doctorat a la UAB vaig dedicar quatre anys a dissenyar proteïnes antimicrobianes — des del disseny fins a la producció i l'assaig funcional. D'allà en surten dues patents i quatre articles com a primer autor.",
+      "A Sydney, al CMRI, munto una plataforma que mina milions de seqüències per trobar pèptids antimicrobians nous. Faig servir models de llenguatge de proteïnes per predir i acabar-ho traduint en models preclínics.",
+      "També faig enginyeria de càpsides d'AAV per a teràpia gènica — Nature Communications, Molecular Therapy.",
       "El codi no mata bacteris. Però em diu on apuntar.",
     ],
     competenciesTitle: "Competències principals",

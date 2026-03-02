@@ -134,7 +134,7 @@ const en: Translation = {
     },
   ],
   about: {
-    heading: "Exploring spaces no bench can cover.",
+    heading: "Finding the therapeutic signal in a sea of biological noise.",
     bio: [
       "I am a protein engineer by training and a computational scientist out of necessity. I studied Biotechnology in Barcelona, completed a Master's in Biomedical Engineering at UC Irvine, and during my PhD at the UAB, I spent four years designing antimicrobial proteins covering the entire process, from design to production and functional assays. This period yielded two patents and four first-author papers.",
       "Currently, at the CMRI in Sydney, I have developed a platform that analyzes millions of sequences to discover new antimicrobial peptides. I use protein language models to make predictions that we then translate into preclinical models. Additionally, I work on AAV capsid engineering for gene therapy, with research published in journals such as Nature Communications and Molecular Therapy.",
@@ -250,7 +250,7 @@ const es: Translation = {
     },
   ],
   about: {
-    heading: "Explorando espacios que ningún laboratorio puede cubrir.",
+    heading: "Encontrando la señal terapéutica en un mar de ruido biológico.",
     bio: [
       "Soy ingeniero de proteínas de formación y científico computacional por necesidad. Me formé en Biotecnología en Barcelona, cursé un máster en Ingeniería Biomédica en la UC Irvine y, durante mi doctorado en la UAB, dediqué cuatro años a diseñar proteínas antimicrobianas abarcando todo el proceso, desde el diseño hasta la producción y el ensayo funcional. Fruto de esta etapa surgieron dos patentes y cuatro artículos como primer autor.",
       "Actualmente, en el CMRI de Sídney, he desarrollado una plataforma que analiza millones de secuencias para descubrir nuevos péptidos antimicrobianos. Utilizo modelos de lenguaje de proteínas para hacer predicciones que luego trasladamos a modelos preclínicos. Además, trabajo en la ingeniería de cápsidas de AAV para terapia génica, con investigaciones publicadas en revistas como Nature Communications y Molecular Therapy.",
@@ -366,7 +366,7 @@ const ca: Translation = {
     },
   ],
   about: {
-    heading: "Explorant espais que cap laboratori pot cobrir.",
+    heading: "Trobant el senyal terapèutic en un mar de soroll biològic.",
     bio: [
       "Soc enginyer de proteïnes de formació i científic computacional per necessitat. Em vaig formar en Biotecnologia a Barcelona, vaig cursar un màster en Enginyeria Biomèdica a la UC Irvine i, durant el doctorat a la UAB, vaig dedicar quatre anys a dissenyar proteïnes antimicrobianes abastant tot el procés, des del disseny fins a la producció i l'assaig funcional. Fruit d'aquesta etapa van sorgir dues patents i quatre articles com a primer autor.",
       "Actualment, al CMRI de Sydney, he desenvolupat una plataforma que analitza milions de seqüències per descobrir nous pèptids antimicrobians. Faig servir models de llenguatge de proteïnes per fer prediccions que després traslladem a models preclínics. A més, treballo en l'enginyeria de càpsides d'AAV per a teràpia gènica, amb treballs publicats a revistes com Nature Communications i Molecular Therapy.",

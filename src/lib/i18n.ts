@@ -56,7 +56,7 @@ const en: Translation = {
   },
   nav: { works: "Works", about: "The Story", contact: "Contact" },
   hero: {
-    title: "Bioengineering\nwith AI.",
+    title: "Dreaming up proteins in silico.\nProving them in the lab.",
     subtitle:
       "Combating antimicrobial resistance and advancing gene therapy through computational design and experimental validation.",
     ctaPrimary: "View Publications",
@@ -172,7 +172,7 @@ const es: Translation = {
   },
   nav: { works: "Trabajos", about: "La Historia", contact: "Contacto" },
   hero: {
-    title: "Bioingeniería\ncon IA.",
+    title: "Soñando proteínas in silico.\nDemostrándolas en el laboratorio.",
     subtitle:
       "Combatiendo la resistencia antimicrobiana y avanzando la terapia génica mediante diseño computacional y validación experimental.",
     ctaPrimary: "Ver publicaciones",
@@ -288,7 +288,7 @@ const ca: Translation = {
   },
   nav: { works: "Treballs", about: "La Història", contact: "Contacte" },
   hero: {
-    title: "Bioenginyeria\namb IA.",
+    title: "Somiant proteïnes in silico.\nDemostrant-les al laboratori.",
     subtitle:
       "Combatent la resistència antimicrobiana i avançant la teràpia gènica mitjançant disseny computacional i validació experimental.",
     ctaPrimary: "Veure publicacions",

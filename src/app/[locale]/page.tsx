@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useEffect, useRef, useState, useCallback } from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import React, { useEffect, useRef, useState } from "react";
+import { motion } from "framer-motion";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { Volume2, VolumeX, Menu, X } from "lucide-react";
@@ -11,7 +11,6 @@ import {
   IconBrandX,
   IconBrandThreads,
 } from "@tabler/icons-react";
-import * as Tone from "tone";
 import {
   translations,
   locales,
@@ -19,6 +18,23 @@ import {
   type Locale,
   type Translation,
 } from "@/lib/i18n";
+
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
+
+// ---------------------------------------------------------------------------
+// Reduced motion hook (static-export safe — defaults to false so video renders)
+// ---------------------------------------------------------------------------
+function useReducedMotionSafe(): boolean {
+  const [prefersReduced, setPrefersReduced] = useState(false);
+  useEffect(() => {
+    const mql = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setPrefersReduced(mql.matches);
+    const handler = (e: MediaQueryListEvent) => setPrefersReduced(e.matches);
+    mql.addEventListener("change", handler);
+    return () => mql.removeEventListener("change", handler);
+  }, []);
+  return prefersReduced;
+}
 
 // ---------------------------------------------------------------------------
 // Immersive Video Background
@@ -32,7 +48,7 @@ function ImmersiveBackground({
   toggleMute: () => void;
   t: Translation;
 }) {
-  const shouldReduceMotion = useReducedMotion();
+  const shouldReduceMotion = useReducedMotionSafe();
   const audioRef = useRef<HTMLAudioElement>(null);
 
   // Smooth fade-in on first play
@@ -101,10 +117,10 @@ function ImmersiveBackground({
             loop
             muted
             playsInline
-            poster="/poster.jpg"
+            poster={`${basePath}/poster.jpg`}
             className="absolute inset-0 w-full h-full object-cover opacity-60 mix-blend-screen"
           >
-            <source src="/background.mp4" type="video/mp4" />
+            <source src={`${basePath}/background.mp4`} type="video/mp4" />
           </video>
         )}
         <div className="absolute inset-0 bg-[#121214]/60 mix-blend-multiply pointer-events-none" />
@@ -112,7 +128,7 @@ function ImmersiveBackground({
       </div>
 
       <audio ref={audioRef} loop className="hidden" muted={isMuted}>
-        <source src="/audio/ambient.mp3" type="audio/mpeg" />
+        <source src={`${basePath}/audio/ambient.mp3`} type="audio/mpeg" />
       </audio>
 
       <button
@@ -157,74 +173,9 @@ export default function PortfolioPage() {
   const locale: Locale = isValidLocale(params.locale) ? params.locale : "en";
   const t = translations[locale];
 
-  const shouldReduceMotion = useReducedMotion();
-  const [isMuted, setIsMuted] = useState(true);
+  const shouldReduceMotion = useReducedMotionSafe();
+  const [isMuted, setIsMuted] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  // Tone.js synths
-  const synthsRef = useRef<{
-    pingSynth: Tone.PolySynth;
-    hoverSynth: Tone.FMSynth;
-  } | null>(null);
-
-  useEffect(() => {
-    if (shouldReduceMotion) return; // skip Tone.js setup if reduced motion
-
-    const pingSynth = new Tone.PolySynth(Tone.Synth, {
-      oscillator: { type: "sine" },
-      envelope: { attack: 0.01, decay: 0.2, sustain: 0, release: 0.1 },
-    }).toDestination();
-
-    const hoverSynth = new Tone.FMSynth({
-      harmonicity: 2,
-      modulationIndex: 1,
-      oscillator: { type: "sine" },
-      envelope: { attack: 0.05, decay: 0.3, sustain: 0.1, release: 1 },
-      modulation: { type: "square" },
-      modulationEnvelope: {
-        attack: 0.1,
-        decay: 0.2,
-        sustain: 0.2,
-        release: 0.1,
-      },
-    }).toDestination();
-
-    const reverb = new Tone.Reverb({ decay: 2.5, wet: 0.4 }).toDestination();
-    const delay = new Tone.FeedbackDelay("8n", 0.3).connect(reverb);
-
-    pingSynth.connect(reverb);
-    hoverSynth.connect(delay);
-    pingSynth.volume.value = -15;
-    hoverSynth.volume.value = -12;
-
-    synthsRef.current = { pingSynth, hoverSynth };
-
-    return () => {
-      pingSynth.dispose();
-      hoverSynth.dispose();
-      reverb.dispose();
-      delay.dispose();
-    };
-  }, [shouldReduceMotion]);
-
-  const playMenuHover = useCallback(() => {
-    if (isMuted || !synthsRef.current) return;
-    if (Tone.getContext().state !== "running") Tone.start();
-    synthsRef.current.pingSynth.triggerAttackRelease("C6", "16n");
-  }, [isMuted]);
-
-  const playProteinHover = useCallback(
-    (index: number) => {
-      if (isMuted || !synthsRef.current) return;
-      if (Tone.getContext().state !== "running") Tone.start();
-      const notes = ["C3", "D3", "E3", "F3", "G3", "A3"];
-      synthsRef.current.hoverSynth.triggerAttackRelease(
-        notes[index % notes.length],
-        "4n"
-      );
-    },
-    [isMuted]
-  );
 
   const fadeUp = {
     hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 30 },
@@ -240,10 +191,7 @@ export default function PortfolioPage() {
     visible: { opacity: 1, transition: { staggerChildren: 0.15 } },
   };
 
-  const toggleMute = () => {
-    if (!isMuted && Tone.getContext().state !== "running") Tone.start();
-    setIsMuted(!isMuted);
-  };
+  const toggleMute = () => setIsMuted(!isMuted);
 
   const navItems = [
     { label: t.nav.works, href: "#works" },
@@ -278,7 +226,7 @@ export default function PortfolioPage() {
               <motion.a
                 key={item.href}
                 href={item.href}
-                
+
                 className="text-sm font-medium tracking-wide text-slate-300 hover:text-white transition-colors uppercase focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -416,7 +364,6 @@ export default function PortfolioPage() {
               {t.works.map((work, i) => (
                 <motion.article
                   key={work.id}
-                  onMouseEnter={() => playProteinHover(i)}
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: "-50px" }}
@@ -514,8 +461,7 @@ export default function PortfolioPage() {
                     <div
                       key={i}
                       className="relative pl-8"
-                      onMouseEnter={() => playProteinHover(i)}
-                    >
+                        >
                       <div className="absolute left-[-4px] top-1.5 w-2 h-2 rounded-full bg-[#427872] shadow-[0_0_10px_rgba(66,120,114,0.8)]" />
                       <span className="text-xs font-mono text-[#427872] mb-1 block">
                         {item.year}

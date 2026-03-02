@@ -138,9 +138,9 @@ const en: Translation = {
   about: {
     heading: "Exploring spaces no bench can cover.",
     bio: [
-      "My background spans from a Biotechnology degree in Barcelona to a Masters in Biomedical Engineering at UC Irvine. During my PhD, I spent four years on multidomain antimicrobial protein design, leading to two patents.",
-      "At the Children's Medical Research Institute (CMRI) in Sydney, I built and led a computational peptide discovery platform. I combined large-scale sequence analysis, protein language models, and GPU-accelerated pipelines to design and experimentally validate over 100 antimicrobial peptide candidates.",
-      "I also contributed heavily to AAV capsid engineering and directed evolution for gene therapies. I don't use computation as a replacement for the bench, but to explore spaces and sequences that no bench can cover alone.",
+      "I am a protein engineer by training and a computational scientist out of necessity. I studied Biotechnology in Barcelona, completed a Master's in Biomedical Engineering at UC Irvine, and during my PhD at the UAB, I spent four years designing antimicrobial proteins covering the entire process, from design to production and functional assays. This period yielded two patents and four first-author papers.",
+      "Currently, at the CMRI in Sydney, I have developed a platform that analyzes millions of sequences to discover new antimicrobial peptides. I use protein language models to make predictions that we then translate into preclinical models. Additionally, I work on AAV capsid engineering for gene therapy, with research published in journals such as Nature Communications and Molecular Therapy.",
+      "Code doesn't kill bacteria. But it tells me where to aim.",
     ],
     competenciesTitle: "Core Competencies",
     competencies: [
@@ -255,9 +255,9 @@ const es: Translation = {
   about: {
     heading: "Explorando espacios que ningún laboratorio puede cubrir.",
     bio: [
-      "Mi formación abarca desde un grado en Biotecnología en Barcelona hasta un máster en Ingeniería Biomédica en UC Irvine. Durante mi doctorado, dediqué cuatro años al diseño de proteínas antimicrobianas multidominio, lo que resultó en dos patentes.",
-      "En el Children's Medical Research Institute (CMRI) en Sídney, construí y lideré una plataforma computacional de descubrimiento de péptidos. Combiné análisis de secuencias a gran escala, modelos de lenguaje de proteínas y pipelines acelerados por GPU para diseñar y validar experimentalmente más de 100 péptidos antimicrobianos candidatos.",
-      "También contribuí significativamente a la ingeniería de cápsides de AAV y evolución dirigida para terapias génicas. No uso la computación como sustituto del laboratorio, sino para explorar espacios y secuencias que ningún laboratorio puede cubrir por sí solo.",
+      "Soy ingeniero de proteínas de formación y científico computacional por necesidad. Me formé en Biotecnología en Barcelona, cursé un máster en Ingeniería Biomédica en la UC Irvine y, durante mi doctorado en la UAB, dediqué cuatro años a diseñar proteínas antimicrobianas abarcando todo el proceso, desde el diseño hasta la producción y el ensayo funcional. Fruto de esta etapa surgieron dos patentes y cuatro artículos como primer autor.",
+      "Actualmente, en el CMRI de Sídney, he desarrollado una plataforma que analiza millones de secuencias para descubrir nuevos péptidos antimicrobianos. Utilizo modelos de lenguaje de proteínas para hacer predicciones que luego trasladamos a modelos preclínicos. Además, trabajo en la ingeniería de cápsidas de AAV para terapia génica, con investigaciones publicadas en revistas como Nature Communications y Molecular Therapy.",
+      "El código no mata bacterias. Pero me dice dónde apuntar.",
     ],
     competenciesTitle: "Competencias principales",
     competencies: [
@@ -372,9 +372,9 @@ const ca: Translation = {
   about: {
     heading: "Explorant espais que cap laboratori pot cobrir.",
     bio: [
-      "La meva formació abasta des d'un grau en Biotecnologia a Barcelona fins a un màster en Enginyeria Biomèdica a UC Irvine. Durant el meu doctorat, vaig dedicar quatre anys al disseny de proteïnes antimicrobianes multidomini, el que va resultar en dues patents.",
-      "Al Children's Medical Research Institute (CMRI) a Sydney, vaig construir i liderar una plataforma computacional de descobriment de pèptids. Vaig combinar anàlisi de seqüències a gran escala, models de llenguatge de proteïnes i pipelines accelerats per GPU per dissenyar i validar experimentalment més de 100 pèptids antimicrobians candidats.",
-      "També vaig contribuir significativament a l'enginyeria de càpsides d'AAV i evolució dirigida per a teràpies gèniques. No faig servir la computació com a substitut del laboratori, sinó per explorar espais i seqüències que cap laboratori pot cobrir per si sol.",
+      "Soc enginyer de proteïnes de formació i científic computacional per necessitat. Em vaig formar en Biotecnologia a Barcelona, vaig cursar un màster en Enginyeria Biomèdica a la UC Irvine i, durant el doctorat a la UAB, vaig dedicar quatre anys a dissenyar proteïnes antimicrobianes abastant tot el procés, des del disseny fins a la producció i l'assaig funcional. Fruit d'aquesta etapa van sorgir dues patents i quatre articles com a primer autor.",
+      "Actualment, al CMRI de Sydney, he desenvolupat una plataforma que analitza milions de seqüències per descobrir nous pèptids antimicrobians. Faig servir models de llenguatge de proteïnes per fer prediccions que després traslladem a models preclínics. A més, treballo en l'enginyeria de càpsides d'AAV per a teràpia gènica, amb treballs publicats a revistes com Nature Communications i Molecular Therapy.",
+      "El codi no mata bacteris. Però em diu on apuntar.",
     ],
     competenciesTitle: "Competències principals",
     competencies: [

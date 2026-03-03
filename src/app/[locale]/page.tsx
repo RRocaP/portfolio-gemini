@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment, useEffect, useMemo, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import Link from "next/link";
 import { useParams } from "next/navigation";
@@ -48,13 +48,14 @@ function useReducedMotionSafe(): boolean {
 function ImmersiveBackground({
   isMuted,
   toggleMute,
+  shouldReduceMotion,
   t,
 }: {
   isMuted: boolean;
   toggleMute: () => void;
+  shouldReduceMotion: boolean;
   t: Translation;
 }) {
-  const shouldReduceMotion = useReducedMotionSafe();
   const audioRef = useRef<HTMLAudioElement>(null);
 
   // Smooth fade-in on first play
@@ -120,6 +121,7 @@ function ImmersiveBackground({
             loop
             muted
             playsInline
+            preload="metadata"
             poster={`${basePath}/poster.jpg`}
             className="absolute inset-0 w-full h-full object-cover opacity-60 mix-blend-screen"
           >
@@ -181,14 +183,11 @@ export default function PortfolioPage() {
   const shouldReduceMotion = useReducedMotionSafe();
   const [isMuted, setIsMuted] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const navItems = useMemo(
-    () => [
-      { label: t.nav.works, href: "#works" },
-      { label: t.nav.about, href: "#about" },
-      { label: t.nav.contact, href: "#contact" },
-    ],
-    [t]
-  );
+  const navItems = [
+    { label: t.nav.works, href: "#works" },
+    { label: t.nav.about, href: "#about" },
+    { label: t.nav.contact, href: "#contact" },
+  ];
 
   const fadeUp = {
     hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 30 },
@@ -217,7 +216,12 @@ export default function PortfolioPage() {
 
   return (
     <>
-      <ImmersiveBackground isMuted={isMuted} toggleMute={toggleMute} t={t} />
+      <ImmersiveBackground
+        isMuted={isMuted}
+        toggleMute={toggleMute}
+        shouldReduceMotion={shouldReduceMotion}
+        t={t}
+      />
 
       <div className="min-h-screen text-[#e9ecf1] selection:bg-[#47618c]/40 selection:text-[#e9ecf1] overflow-x-hidden font-sans relative z-10 bg-transparent">
         {/* ── Navigation ── */}
@@ -241,7 +245,6 @@ export default function PortfolioPage() {
               <motion.a
                 key={item.href}
                 href={item.href}
-
                 className="text-sm font-medium tracking-wide text-slate-300 hover:text-white transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -437,7 +440,9 @@ export default function PortfolioPage() {
                 </h3>
                 <div className="portfolio-about-bio space-y-6 text-slate-400 font-light leading-relaxed">
                   {t.about.bio.map((paragraph, i) => (
-                    <p key={i} lang={locale}>{paragraph}</p>
+                    <p key={i} lang={locale}>
+                      {paragraph}
+                    </p>
                   ))}
                 </div>
 
@@ -466,10 +471,7 @@ export default function PortfolioPage() {
                 <div className="absolute left-0 top-2 bottom-2 w-px bg-white/10" />
                 <div className="space-y-12">
                   {t.timeline.map((item, i) => (
-                    <div
-                      key={i}
-                      className="relative pl-8"
-                        >
+                    <div key={i} className="relative pl-8">
                       <div className="absolute left-[-4px] top-1.5 w-2 h-2 rounded-full bg-[#427872] shadow-[0_0_10px_rgba(66,120,114,0.8)]" />
                       <span className="text-xs font-mono text-[#427872] mb-1 block">
                         {item.year}

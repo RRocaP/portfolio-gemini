@@ -445,7 +445,7 @@ export default function PortfolioPage() {
                       lang={locale}
                       className={
                         i === 0
-                          ? "text-left text-lg pr-4 md:pr-12"
+                          ? "text-left pr-4 md:pr-12"
                           : i === 1
                             ? "text-left pl-6 md:pl-24 border-l-2 border-[#47618c]/30"
                             : "text-left pl-4"

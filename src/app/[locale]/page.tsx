@@ -20,6 +20,8 @@ import {
 } from "@/lib/i18n";
 
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
+const backgroundVideoUrl =
+  process.env.NEXT_PUBLIC_BACKGROUND_VIDEO_URL || `${basePath}/background.mp4`;
 
 const socialLinks = [
   { label: "GitHub", href: "https://github.com/RRocaP", Icon: IconBrandGithub },
@@ -121,7 +123,7 @@ function ImmersiveBackground({
             poster={`${basePath}/poster.jpg`}
             className="absolute inset-0 w-full h-full object-cover opacity-60 mix-blend-screen"
           >
-            <source src={`${basePath}/background.mp4`} type="video/mp4" />
+            <source src={backgroundVideoUrl} type="video/mp4" />
           </video>
         )}
         <div className="absolute inset-0 bg-[#121214]/60 mix-blend-multiply pointer-events-none" />

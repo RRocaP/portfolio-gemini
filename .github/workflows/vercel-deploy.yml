@@ -38,6 +38,11 @@ jobs:
       - name: Pull Vercel Environment Information
         run: vercel pull --yes --environment=production --scope=${{ env.VERCEL_SCOPE }} --token=${{ secrets.VERCEL_TOKEN }}
 
+      - name: Prepare external background video for Vercel
+        run: |
+          rm -f public/background.mp4
+          echo "NEXT_PUBLIC_BACKGROUND_VIDEO_URL=https://rrocap.github.io/portfolio-gemini/background.mp4" >> "$GITHUB_ENV"
+
       - name: Build Project Artifacts
         run: vercel build --prod --scope=${{ env.VERCEL_SCOPE }} --token=${{ secrets.VERCEL_TOKEN }}
 

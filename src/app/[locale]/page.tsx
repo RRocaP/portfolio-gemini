@@ -438,9 +438,19 @@ export default function PortfolioPage() {
                 <h3 className="text-3xl font-bold mb-6 text-white tracking-tight">
                   {t.about.heading}
                 </h3>
-                <div className="portfolio-about-bio space-y-6 text-slate-400 font-light leading-relaxed">
+                <div className="space-y-8 text-slate-400 font-light leading-relaxed">
                   {t.about.bio.map((paragraph, i) => (
-                    <p key={i} lang={locale}>
+                    <p
+                      key={i}
+                      lang={locale}
+                      className={
+                        i === 0
+                          ? "text-left text-lg pr-4 md:pr-12"
+                          : i === 1
+                            ? "text-left pl-6 md:pl-24 border-l-2 border-[#47618c]/30"
+                            : "text-left pl-4"
+                      }
+                    >
                       {paragraph}
                     </p>
                   ))}

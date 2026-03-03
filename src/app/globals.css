@@ -126,11 +126,4 @@
 }
 
 @layer components {
-  .portfolio-about-bio p {
-    text-align: justify;
-    text-justify: inter-word;
-    hyphens: auto;
-    letter-spacing: 0.01em;
-    line-height: 1.9;
-  }
 }

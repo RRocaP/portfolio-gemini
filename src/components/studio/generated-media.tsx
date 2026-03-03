@@ -1,4 +1,3 @@
-import { Badge } from "@/components/ui/badge";
 import type { StudioOutput } from "@/lib/types";
 
 const statusColors: Record<string, string> = {

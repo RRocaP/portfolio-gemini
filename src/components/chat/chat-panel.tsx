@@ -6,7 +6,7 @@ import { Separator } from "@/components/ui/separator";
 import { MessageList } from "./message-list";
 import { ChatInput } from "./chat-input";
 import { SuggestedQuestions } from "./suggested-questions";
-import type { Message, Citation } from "@/lib/types";
+import type { Message } from "@/lib/types";
 
 const mockMessages: Message[] = [
   {

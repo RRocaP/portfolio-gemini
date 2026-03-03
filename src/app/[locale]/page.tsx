@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
-import { motion } from "framer-motion";
+import { Fragment, useEffect, useMemo, useRef, useState } from "react";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { Volume2, VolumeX, Menu, X } from "lucide-react";
@@ -21,19 +21,23 @@ import {
 
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
+const socialLinks = [
+  { label: "GitHub", href: "https://github.com/RRocaP", Icon: IconBrandGithub },
+  {
+    label: "LinkedIn",
+    href: "https://www.linkedin.com/in/ramonrocapinilla/",
+    Icon: IconBrandLinkedin,
+  },
+  { label: "X", href: "https://x.com/RRocapinilla", Icon: IconBrandX },
+  { label: "Threads", href: "https://www.threads.net/@rroca15", Icon: IconBrandThreads },
+] as const;
+
 // ---------------------------------------------------------------------------
 // Reduced motion hook (static-export safe — defaults to false so video renders)
 // ---------------------------------------------------------------------------
 function useReducedMotionSafe(): boolean {
-  const [prefersReduced, setPrefersReduced] = useState(false);
-  useEffect(() => {
-    const mql = window.matchMedia("(prefers-reduced-motion: reduce)");
-    setPrefersReduced(mql.matches);
-    const handler = (e: MediaQueryListEvent) => setPrefersReduced(e.matches);
-    mql.addEventListener("change", handler);
-    return () => mql.removeEventListener("change", handler);
-  }, []);
-  return prefersReduced;
+  const shouldReduceMotion = useReducedMotion();
+  return shouldReduceMotion ?? false;
 }
 
 // ---------------------------------------------------------------------------
@@ -53,7 +57,6 @@ function ImmersiveBackground({
 
   // Smooth fade-in on first play
   useEffect(() => {
-    let interactionListener: () => void;
     const audio = audioRef.current;
     if (!audio) return;
 
@@ -77,7 +80,7 @@ function ImmersiveBackground({
 
     attemptPlay();
 
-    interactionListener = () => {
+    const interactionListener = () => {
       if (!isMuted && audio?.paused) {
         audio.play().then(fadeIn).catch(() => {});
       }
@@ -87,15 +90,13 @@ function ImmersiveBackground({
     };
 
     document.addEventListener("click", interactionListener);
-    document.addEventListener("scroll", interactionListener, { once: true });
-    document.addEventListener("keydown", interactionListener, { once: true });
+    document.addEventListener("scroll", interactionListener);
+    document.addEventListener("keydown", interactionListener);
 
     return () => {
-      if (interactionListener) {
-        document.removeEventListener("click", interactionListener);
-        document.removeEventListener("scroll", interactionListener);
-        document.removeEventListener("keydown", interactionListener);
-      }
+      document.removeEventListener("click", interactionListener);
+      document.removeEventListener("scroll", interactionListener);
+      document.removeEventListener("keydown", interactionListener);
     };
   }, [isMuted]);
 
@@ -149,7 +150,7 @@ function LanguageSwitcher({ locale }: { locale: Locale }) {
   return (
     <div className="flex items-center gap-2">
       {locales.map((l, i) => (
-        <React.Fragment key={l}>
+        <Fragment key={l}>
           {i > 0 && <span className="text-slate-600 text-xs select-none">|</span>}
           <Link
             href={`/${l}`}
@@ -161,7 +162,7 @@ function LanguageSwitcher({ locale }: { locale: Locale }) {
           >
             {l}
           </Link>
-        </React.Fragment>
+        </Fragment>
       ))}
     </div>
   );
@@ -178,6 +179,14 @@ export default function PortfolioPage() {
   const shouldReduceMotion = useReducedMotionSafe();
   const [isMuted, setIsMuted] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const navItems = useMemo(
+    () => [
+      { label: t.nav.works, href: "#works" },
+      { label: t.nav.about, href: "#about" },
+      { label: t.nav.contact, href: "#contact" },
+    ],
+    [t]
+  );
 
   const fadeUp = {
     hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 30 },
@@ -193,13 +202,16 @@ export default function PortfolioPage() {
     visible: { opacity: 1, transition: { staggerChildren: 0.15 } },
   };
 
-  const toggleMute = () => setIsMuted(!isMuted);
+  const toggleMute = () => setIsMuted((prev) => !prev);
 
-  const navItems = [
-    { label: t.nav.works, href: "#works" },
-    { label: t.nav.about, href: "#about" },
-    { label: t.nav.contact, href: "#contact" },
-  ];
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [mobileMenuOpen]);
 
   return (
     <>
@@ -242,7 +254,7 @@ export default function PortfolioPage() {
           {/* Mobile hamburger */}
           <button
             className="md:hidden min-w-[44px] min-h-[44px] p-2 text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            onClick={() => setMobileMenuOpen((open) => !open)}
             aria-label={
               mobileMenuOpen ? t.mobileMenu.close : t.mobileMenu.open
             }
@@ -252,28 +264,30 @@ export default function PortfolioPage() {
         </header>
 
         {/* Mobile menu overlay */}
-        {mobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-40 bg-black/95 backdrop-blur-lg flex flex-col items-center justify-center gap-8"
-          >
-            {navItems.map((item) => (
-              <a
-                key={item.href}
-                href={item.href}
-                onClick={() => setMobileMenuOpen(false)}
-                className="text-2xl font-medium text-white tracking-wide focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-              >
-                {item.label}
-              </a>
-            ))}
-            <div className="mt-4">
-              <LanguageSwitcher locale={locale} />
-            </div>
-          </motion.div>
-        )}
+        <AnimatePresence>
+          {mobileMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-40 bg-black/95 backdrop-blur-lg flex flex-col items-center justify-center gap-8"
+            >
+              {navItems.map((item) => (
+                <a
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="text-2xl font-medium text-white tracking-wide focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                >
+                  {item.label}
+                </a>
+              ))}
+              <div className="mt-4">
+                <LanguageSwitcher locale={locale} />
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         <main>
           {/* ── Hero ── */}
@@ -515,43 +529,19 @@ export default function PortfolioPage() {
                   &copy; {new Date().getFullYear()} Ramon Roca Pinilla.{" "}
                   {t.contact.footer}
                 </p>
-                <div className="flex gap-8">
-                  <a
-                    href="https://github.com/RRocaP"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="flex items-center gap-3 hover:text-slate-300 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-                  >
-                    <IconBrandGithub size={28} stroke={1.75} />
-                    <span className="text-sm">GitHub</span>
-                  </a>
-                  <a
-                    href="https://www.linkedin.com/in/ramonrocapinilla/"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="flex items-center gap-3 hover:text-slate-300 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-                  >
-                    <IconBrandLinkedin size={28} stroke={1.75} />
-                    <span className="text-sm">LinkedIn</span>
-                  </a>
-                  <a
-                    href="https://x.com/RRocapinilla"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="flex items-center gap-3 hover:text-slate-300 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-                  >
-                    <IconBrandX size={28} stroke={1.75} />
-                    <span className="text-sm">X</span>
-                  </a>
-                  <a
-                    href="https://www.threads.net/@rroca15"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="flex items-center gap-3 hover:text-slate-300 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-                  >
-                    <IconBrandThreads size={28} stroke={1.75} />
-                    <span className="text-sm">Threads</span>
-                  </a>
+                <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-8">
+                  {socialLinks.map(({ label, href, Icon }) => (
+                    <a
+                      key={label}
+                      href={href}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="flex items-center gap-2 sm:gap-3 hover:text-slate-300 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                    >
+                      <Icon size={28} stroke={1.75} />
+                      <span className="text-sm">{label}</span>
+                    </a>
+                  ))}
                 </div>
               </motion.div>
             </motion.div>

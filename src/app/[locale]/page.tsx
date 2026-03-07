@@ -417,7 +417,7 @@ export default function PortfolioPage() {
 
                 <motion.h1
                   variants={fadeUp}
-                  className="mb-6 font-display bg-gradient-to-r from-slate-100 to-slate-400 bg-clip-text text-4xl font-black leading-[1.05] tracking-tighter text-transparent md:text-6xl lg:text-7xl"
+                  className="mb-6 font-display bg-gradient-to-r from-slate-100 to-slate-400 bg-clip-text text-4xl font-black leading-[1.05] tracking-tight text-transparent md:text-6xl lg:text-7xl"
                 >
                   {t.hero.title}
                 </motion.h1>
@@ -630,7 +630,7 @@ export default function PortfolioPage() {
                       <span className="mb-4 inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[10px] font-mono uppercase tracking-[0.22em] text-[#7a9ec5]">
                         {aboutStoryLabels[0]}
                       </span>
-                      <p lang={locale} className="text-pretty">
+                      <p lang={locale} className="text-left">
                         {renderInlineEmphasis(t.about.bio[0])}
                       </p>
                     </div>
@@ -642,7 +642,7 @@ export default function PortfolioPage() {
                       <span className="mb-4 inline-flex items-center rounded-full border border-[#6bb5ab]/20 bg-[#6bb5ab]/8 px-3 py-1 text-[10px] font-mono uppercase tracking-[0.22em] text-[#6bb5ab]">
                         {aboutStoryLabels[1]}
                       </span>
-                      <p lang={locale} className="text-pretty">
+                      <p lang={locale} className="text-left">
                         {renderInlineEmphasis(t.about.bio[1])}
                       </p>
                     </div>
@@ -719,7 +719,7 @@ export default function PortfolioPage() {
             >
               <motion.h2
                 variants={fadeScale}
-                className="mb-6 font-display text-4xl font-bold tracking-tighter text-white md:text-6xl"
+                className="mb-6 font-display text-4xl font-bold tracking-tight text-white md:text-6xl"
               >
                 {t.contact.heading}
               </motion.h2>

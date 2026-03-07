@@ -158,7 +158,7 @@ function LanguageSwitcher({ locale }: { locale: Locale }) {
           {i > 0 && <span className="text-slate-600 text-xs select-none">|</span>}
           <Link
             href={`/${l}`}
-            className={`px-2 py-1 text-xs font-mono uppercase rounded transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white ${
+            className={`px-3 py-2 text-xs font-mono uppercase rounded transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white ${
               l === locale
                 ? "bg-white/15 text-white"
                 : "text-slate-400 hover:text-white hover:bg-white/5"
@@ -224,6 +224,14 @@ export default function PortfolioPage() {
       />
 
       <div className="min-h-screen text-[#e9ecf1] selection:bg-[#47618c]/40 selection:text-[#e9ecf1] overflow-x-hidden font-sans relative z-10 bg-transparent">
+        {/* Skip to main content — WCAG 2.4.1 */}
+        <a
+          href="#works"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-1/2 focus:-translate-x-1/2 focus:z-[60] focus:px-6 focus:py-3 focus:bg-white focus:text-black focus:rounded-full focus:font-semibold focus:text-sm"
+        >
+          Skip to main content
+        </a>
+
         {/* ── Navigation ── */}
         <header className="fixed top-0 left-0 right-0 z-50 flex justify-between items-center p-4 sm:p-6 md:p-10 mix-blend-difference">
           <Link
@@ -245,7 +253,7 @@ export default function PortfolioPage() {
               <motion.a
                 key={item.href}
                 href={item.href}
-                className="text-sm font-medium tracking-wide text-slate-300 hover:text-white transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                className="text-sm font-medium tracking-wide text-slate-300 hover:text-white transition-colors py-2 px-1 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 + i * 0.1 }}
@@ -271,7 +279,8 @@ export default function PortfolioPage() {
         {/* Mobile menu overlay */}
         <AnimatePresence>
           {mobileMenuOpen && (
-            <motion.div
+            <motion.nav
+              aria-label="Mobile navigation"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -290,7 +299,7 @@ export default function PortfolioPage() {
               <div className="mt-4">
                 <LanguageSwitcher locale={locale} />
               </div>
-            </motion.div>
+            </motion.nav>
           )}
         </AnimatePresence>
 
@@ -365,7 +374,7 @@ export default function PortfolioPage() {
               variants={fadeUp}
               className="mb-16"
             >
-              <h2 className="text-sm font-bold tracking-widest text-[#47618c] uppercase mb-4">
+              <h2 className="text-sm font-bold tracking-widest text-[#7a9ec5] uppercase mb-4">
                 {t.sections.works}
               </h2>
               <div className="h-[1px] w-full bg-white/10" />
@@ -382,7 +391,7 @@ export default function PortfolioPage() {
                   className="group cursor-pointer border border-white/5 bg-white/5 hover:bg-white/10 p-8 rounded-sm transition-colors duration-500 flex flex-col h-full"
                 >
                   <div className="flex justify-between items-start mb-6">
-                    <span className="text-xs font-mono text-[#427872] border border-[#427872]/30 px-2 py-1 rounded-sm">
+                    <span className="text-xs font-mono text-[#6bb5ab] border border-[#6bb5ab]/30 px-2 py-1 rounded-sm">
                       {work.year}
                     </span>
                   </div>
@@ -399,7 +408,7 @@ export default function PortfolioPage() {
                     {work.tags.map((tag) => (
                       <span
                         key={tag}
-                        className="text-[10px] tracking-wider px-2 py-1 bg-black/40 text-slate-300 rounded-sm"
+                        className="text-[11px] tracking-wider px-2 py-1 bg-black/40 text-slate-300 rounded-sm"
                       >
                         {tag}
                       </span>
@@ -422,7 +431,7 @@ export default function PortfolioPage() {
               variants={fadeUp}
               className="mb-16"
             >
-              <h2 className="text-sm font-bold tracking-widest text-[#47618c] uppercase mb-4">
+              <h2 className="text-sm font-bold tracking-widest text-[#7a9ec5] uppercase mb-4">
                 {t.sections.about}
               </h2>
               <div className="h-[1px] w-full bg-white/10" />
@@ -444,7 +453,7 @@ export default function PortfolioPage() {
                   </p>
                   <p
                     lang={locale}
-                    className="ml-4 md:ml-16 pl-6 border-l border-[#47618c]/40"
+                    className="ml-4 md:ml-16 pl-6 border-l border-[#7a9ec5]/40"
                   >
                     {t.about.bio[1]}
                   </p>
@@ -476,8 +485,8 @@ export default function PortfolioPage() {
                 <div className="space-y-12">
                   {t.timeline.map((item, i) => (
                     <div key={i} className="relative pl-8">
-                      <div className="absolute left-[-4px] top-1.5 w-2 h-2 rounded-full bg-[#427872] shadow-[0_0_10px_rgba(66,120,114,0.8)]" />
-                      <span className="text-xs font-mono text-[#427872] mb-1 block">
+                      <div className="absolute left-[-4px] top-1.5 w-2 h-2 rounded-full bg-[#6bb5ab] shadow-[0_0_10px_rgba(66,120,114,0.8)]" />
+                      <span className="text-xs font-mono text-[#6bb5ab] mb-1 block">
                         {item.year}
                       </span>
                       <h4 className="text-lg font-semibold text-white">
@@ -524,14 +533,14 @@ export default function PortfolioPage() {
               <motion.a
                 variants={fadeUp}
                 href={`mailto:${t.contact.emailLabel}`}
-                className="text-xl md:text-2xl font-semibold border-b-2 border-[#47618c] pb-1 hover:text-[#e9ecf1] transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                className="text-xl md:text-2xl font-semibold border-b-2 border-[#7a9ec5] pb-1 hover:text-[#e9ecf1] transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
               >
                 {t.contact.emailLabel}
               </motion.a>
 
               <motion.div
                 variants={fadeUp}
-                className="mt-32 w-full flex flex-col md:flex-row justify-between items-center gap-8 text-xs text-slate-600 font-mono"
+                className="mt-32 w-full flex flex-col md:flex-row justify-between items-center gap-8 text-xs text-slate-400 font-mono"
               >
                 <p>
                   &copy; {new Date().getFullYear()} Ramon Roca Pinilla.{" "}
@@ -544,7 +553,7 @@ export default function PortfolioPage() {
                       href={href}
                       target="_blank"
                       rel="noreferrer"
-                      className="flex items-center gap-2 sm:gap-3 hover:text-slate-300 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                      className="flex items-center gap-2 sm:gap-3 p-2 hover:text-slate-300 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                     >
                       <Icon size={28} stroke={1.75} />
                       <span className="text-sm">{label}</span>

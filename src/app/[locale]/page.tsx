@@ -77,7 +77,10 @@ const profileLinks = [
   },
 ] as const;
 
-const aboutStoryLabels = ["Barcelona / Irvine / UAB", "Sydney / CMRI"] as const;
+const aboutStoryLabels = [
+  "Barcelona / Irvine (CA, US) / Barcelona (UAB)",
+  "Sydney (CMRI, Aus)",
+] as const;
 
 function renderInlineEmphasis(text: string) {
   return text.split(/<em>(.*?)<\/em>/g).map((part, index) =>

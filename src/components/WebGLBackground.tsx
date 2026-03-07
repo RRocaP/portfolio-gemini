@@ -138,12 +138,12 @@ const displayFrag = /* glsl */ `
   void main() {
     float v = texture2D(uTexture, vUv).g;
 
-    // Color palette: map V concentration to cold scientific colors
-    vec3 c0 = vec3(0.027, 0.039, 0.071);  // #070a12 — empty space
-    vec3 c1 = vec3(0.051, 0.102, 0.180);  // #0d1a2e — low activity
-    vec3 c2 = vec3(0.118, 0.227, 0.373);  // #1e3a5f — medium activity
-    vec3 c3 = vec3(0.478, 0.620, 0.773);  // #7a9ec5 — high (boundaries)
-    vec3 c4 = vec3(0.420, 0.710, 0.671);  // #6bb5ab — peak (rare teal)
+    // Color palette: map V concentration to bioluminescent glow
+    vec3 c0 = vec3(0.0, 0.0, 0.0);        // #000000 — deep black base
+    vec3 c1 = vec3(0.02, 0.02, 0.06);     // #050510 — barely-there violet hint
+    vec3 c2 = vec3(0.24, 0.09, 0.37);     // #3d1760 — violet mid (7B2FBE range)
+    vec3 c3 = vec3(0.48, 0.18, 0.74);     // #7B2FBE — violet glow
+    vec3 c4 = vec3(0.0, 1.0, 0.82);       // #00FFD1 — teal/cyan peak
 
     vec3 color = c0;
     color = mix(color, c1, smoothstep(0.0, 0.3, v));
@@ -382,8 +382,8 @@ export function WebGLBackgroundFallback() {
       className="fixed inset-0 -z-10 pointer-events-none"
       style={{
         background:
-          "radial-gradient(ellipse at 40% 35%, #0d1a2e 0%, #070a12 55%, #020305 100%)",
-        backgroundColor: "#070a12",
+          "radial-gradient(ellipse at 40% 35%, #050510 0%, #000000 55%, #000000 100%)",
+        backgroundColor: "#000000",
       }}
     />
   );
@@ -402,13 +402,13 @@ export default function WebGLBackground({
   const { nx, ny } = useMousePosition();
 
   const onCreated = useCallback((state: { gl: THREE.WebGLRenderer }) => {
-    state.gl.setClearColor(new THREE.Color("#070a12"), 1);
+    state.gl.setClearColor(new THREE.Color("#000000"), 1);
   }, []);
 
   return (
     <div
       className={`fixed inset-0 -z-10 pointer-events-none ${className ?? ""}`}
-      style={{ backgroundColor: "#070a12" }}
+      style={{ backgroundColor: "#000000" }}
     >
       <Canvas
         gl={{

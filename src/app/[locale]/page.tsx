@@ -234,7 +234,7 @@ function ImmersiveBackground({
         if (!isMuted && shouldFade) {
           fadeIn();
         }
-      }).catch(() => {});
+      }).catch(() => { });
     };
 
     startPlayback(!isMuted);
@@ -319,11 +319,10 @@ function LanguageSwitcher({ locale }: { locale: Locale }) {
           {i > 0 && <span className="select-none text-xs text-slate-600">|</span>}
           <Link
             href={`/${l}`}
-            className={`rounded px-3 py-2 text-xs font-mono uppercase transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white ${
-              l === locale
-                ? "bg-white/15 text-white"
-                : "text-slate-400 hover:bg-white/5 hover:text-white"
-            }`}
+            className={`rounded px-3 py-2 text-xs font-mono uppercase transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white ${l === locale
+              ? "bg-white/15 text-white"
+              : "text-slate-400 hover:bg-white/5 hover:text-white"
+              }`}
           >
             {l}
           </Link>
@@ -514,7 +513,7 @@ export default function PortfolioPage() {
 
                 <motion.h1
                   variants={fadeUp}
-                  className="mb-6 font-display bg-gradient-to-r from-slate-100 to-slate-400 bg-clip-text text-[clamp(2.25rem,5vw+0.5rem,4.5rem)] font-normal leading-[1.05] tracking-tight text-transparent"
+                  className="mb-6 font-display bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-white via-slate-200 to-slate-500 bg-clip-text text-[clamp(2.5rem,8vw,7rem)] font-light leading-[0.95] tracking-tighter text-transparent"
                 >
                   {t.hero.title}
                 </motion.h1>
@@ -638,57 +637,66 @@ export default function PortfolioPage() {
               />
             </motion.div>
 
-            <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid grid-cols-1 auto-rows-[minmax(300px,_1fr)] gap-6 md:grid-cols-6 lg:grid-cols-12">
               {[1, 3, 4, 2, 5, 6].map((id, i) => {
                 const work = t.works.find((w) => w.id === id)!;
+                // Create an asymmetrical layout pattern for 6 items
+                const bentoSpan =
+                  i === 0 ? "md:col-span-6 lg:col-span-8" :    // Big feature
+                    i === 1 ? "md:col-span-6 lg:col-span-4" :    // Side feature
+                      i === 2 ? "md:col-span-4 lg:col-span-4" :    // Standard
+                        i === 3 ? "md:col-span-4 lg:col-span-4" :    // Standard
+                          i === 4 ? "md:col-span-4 lg:col-span-4" :    // Standard
+                            "md:col-span-6 lg:col-span-12";              // Full width bottom
+
                 return (
-                <GlowCard key={work.id} disabled={shouldReduceMotion} className={`rounded-sm ${work.span === "wide" ? "md:col-span-2" : ""}`}>
-                <motion.a
-                  href={work.href}
-                  target="_blank"
-                  rel="noreferrer"
-                  initial={{ opacity: 0, scale: shouldReduceMotion ? 1 : 0.97 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true, margin: "-50px" }}
-                  transition={{ duration: 0.6, delay: i * 0.1 }}
-                  className="group relative z-[2] flex h-full cursor-pointer flex-col rounded-sm border border-white/5 bg-white/5 p-8 transition-all duration-500 hover:bg-white/10 hover:border-[#7a9ec5]/30 hover:shadow-[0_0_30px_-5px_rgba(122,158,197,0.15)] motion-safe:hover:scale-[1.02] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-                  aria-label={`${t.workLinkLabel}: ${work.title}`}
-                >
-                  <div className="mb-6 flex items-start justify-between gap-4">
-                    <span className="rounded-sm border border-[#6bb5ab]/30 px-2 py-1 text-xs font-mono text-[#6bb5ab]">
-                      {work.year}
-                    </span>
-                    <span className="max-w-[11rem] text-right text-[11px] font-mono uppercase tracking-[0.2em] text-slate-500">
-                      {work.venue}
-                    </span>
-                  </div>
-
-                  <h3 className={`mb-4 font-semibold leading-snug tracking-tight text-[#e9ecf1] transition-colors duration-300 group-hover:text-[#c4d6ee] ${work.span === "wide" ? "text-2xl" : "text-xl"}`}>
-                    {work.title}
-                  </h3>
-
-                  <p className="mb-8 flex-grow text-sm font-light leading-relaxed text-slate-300">
-                    {work.blurb}
-                  </p>
-
-                  <div className="mt-auto flex items-end justify-between gap-4">
-                    <div className="flex flex-wrap gap-2">
-                      {work.tags.map((tag) => (
-                        <span
-                          key={tag}
-                          className="rounded-sm border border-white/10 bg-white/[0.06] px-2 py-1 text-[11px] tracking-wider text-slate-300"
-                        >
-                          {tag}
+                  <GlowCard key={work.id} disabled={shouldReduceMotion} className={`rounded-sm ${bentoSpan}`}>
+                    <motion.a
+                      href={work.href}
+                      target="_blank"
+                      rel="noreferrer"
+                      initial={{ opacity: 0, scale: shouldReduceMotion ? 1 : 0.97 }}
+                      whileInView={{ opacity: 1, scale: 1 }}
+                      viewport={{ once: true, margin: "-50px" }}
+                      transition={{ duration: 0.6, delay: i * 0.1 }}
+                      className="group relative z-[2] flex h-full cursor-pointer flex-col rounded-sm border border-white/5 bg-white/5 p-8 transition-all duration-500 hover:bg-white/10 hover:border-[#7a9ec5]/30 hover:shadow-[0_0_30px_-5px_rgba(122,158,197,0.15)] motion-safe:hover:scale-[1.02] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                      aria-label={`${t.workLinkLabel}: ${work.title}`}
+                    >
+                      <div className="mb-6 flex items-start justify-between gap-4">
+                        <span className="rounded-sm border border-[#6bb5ab]/30 px-2 py-1 text-xs font-mono text-[#6bb5ab]">
+                          {work.year}
                         </span>
-                      ))}
-                    </div>
-                    <span className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-[0.18em] text-[#7a9ec5]">
-                      {t.workLinkLabel}
-                      <ArrowUpRight className="h-4 w-4" />
-                    </span>
-                  </div>
-                </motion.a>
-                </GlowCard>
+                        <span className="max-w-[11rem] text-right text-[11px] font-mono uppercase tracking-[0.2em] text-slate-500">
+                          {work.venue}
+                        </span>
+                      </div>
+
+                      <h3 className={`mb-4 font-semibold leading-snug tracking-tight text-[#e9ecf1] transition-colors duration-300 group-hover:text-[#c4d6ee] ${bentoSpan.includes("lg:col-span-8") || bentoSpan.includes("lg:col-span-12") ? "text-3xl" : "text-xl"}`}>
+                        {work.title}
+                      </h3>
+
+                      <p className="mb-8 flex-grow text-sm font-light leading-relaxed text-slate-300">
+                        {work.blurb}
+                      </p>
+
+                      <div className="mt-auto flex items-end justify-between gap-4">
+                        <div className="flex flex-wrap gap-2">
+                          {work.tags.map((tag) => (
+                            <span
+                              key={tag}
+                              className="rounded-sm border border-white/10 bg-white/[0.06] px-2 py-1 text-[11px] tracking-wider text-slate-300"
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                        <span className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-[0.18em] text-[#7a9ec5]">
+                          {t.workLinkLabel}
+                          <ArrowUpRight className="h-4 w-4" />
+                        </span>
+                      </div>
+                    </motion.a>
+                  </GlowCard>
                 );
               })}
             </div>
@@ -772,43 +780,43 @@ export default function PortfolioPage() {
                 </motion.div>
 
                 <Tooltip.Provider delayDuration={300}>
-                <GlowCard disabled={shouldReduceMotion} className="mt-8 rounded-sm border border-white/10 bg-white/5 backdrop-blur-sm">
-                  <div className="relative z-[2] p-6">
-                  <h4 className="mb-4 text-sm font-bold uppercase tracking-widest text-white">
-                    {t.about.competenciesTitle}
-                  </h4>
-                  <ul className="grid grid-cols-2 gap-y-3 text-sm text-slate-300">
-                    {t.about.competencies.map((c, ci) => {
-                      const Icon = competencyIcons[ci];
-                      const description = t.about.competencyDescriptions[ci];
-                      return (
-                      <li key={c}>
-                        <Tooltip.Root>
-                          <Tooltip.Trigger asChild>
-                            <button type="button" className="flex items-center gap-2 text-left">
-                              {Icon ? <Icon className="h-4 w-4 shrink-0 text-[#7a9ec5]" /> : <span className="h-1.5 w-1.5 rounded-full bg-[#47618c]" />}
-                              {c}
-                            </button>
-                          </Tooltip.Trigger>
-                          {description && (
-                          <Tooltip.Portal>
-                            <Tooltip.Content
-                              side="top"
-                              sideOffset={6}
-                              className="z-50 max-w-xs rounded-md border border-white/10 bg-[#1a1a1e] px-3 py-2 text-xs text-slate-200 shadow-lg animate-in fade-in-0 zoom-in-95"
-                            >
-                              {description}
-                              <Tooltip.Arrow className="fill-[#1a1a1e]" />
-                            </Tooltip.Content>
-                          </Tooltip.Portal>
-                          )}
-                        </Tooltip.Root>
-                      </li>
-                      );
-                    })}
-                  </ul>
-                  </div>
-                </GlowCard>
+                  <GlowCard disabled={shouldReduceMotion} className="mt-8 rounded-sm border border-white/10 bg-white/5 backdrop-blur-sm">
+                    <div className="relative z-[2] p-6">
+                      <h4 className="mb-4 text-sm font-bold uppercase tracking-widest text-white">
+                        {t.about.competenciesTitle}
+                      </h4>
+                      <ul className="grid grid-cols-2 gap-y-3 text-sm text-slate-300">
+                        {t.about.competencies.map((c, ci) => {
+                          const Icon = competencyIcons[ci];
+                          const description = t.about.competencyDescriptions[ci];
+                          return (
+                            <li key={c}>
+                              <Tooltip.Root>
+                                <Tooltip.Trigger asChild>
+                                  <button type="button" className="flex items-center gap-2 text-left">
+                                    {Icon ? <Icon className="h-4 w-4 shrink-0 text-[#7a9ec5]" /> : <span className="h-1.5 w-1.5 rounded-full bg-[#47618c]" />}
+                                    {c}
+                                  </button>
+                                </Tooltip.Trigger>
+                                {description && (
+                                  <Tooltip.Portal>
+                                    <Tooltip.Content
+                                      side="top"
+                                      sideOffset={6}
+                                      className="z-50 max-w-xs rounded-md border border-white/10 bg-[#1a1a1e] px-3 py-2 text-xs text-slate-200 shadow-lg animate-in fade-in-0 zoom-in-95"
+                                    >
+                                      {description}
+                                      <Tooltip.Arrow className="fill-[#1a1a1e]" />
+                                    </Tooltip.Content>
+                                  </Tooltip.Portal>
+                                )}
+                              </Tooltip.Root>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </div>
+                  </GlowCard>
                 </Tooltip.Provider>
               </motion.div>
 
@@ -867,7 +875,7 @@ export default function PortfolioPage() {
             >
               <motion.h2
                 variants={fadeScale}
-                className="mb-6 font-display text-4xl font-normal tracking-tight text-white md:text-6xl"
+                className="mb-6 font-accent text-4xl font-medium tracking-tight text-white md:text-6xl"
               >
                 {t.contact.heading}
               </motion.h2>

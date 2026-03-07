@@ -25,7 +25,11 @@ import {
   X,
 } from "lucide-react";
 import * as Tooltip from "@radix-ui/react-tooltip";
+import dynamic from "next/dynamic";
 import { useCursorGlow } from "@/hooks/use-cursor-glow";
+import { useMagneticEffect } from "@/hooks/use-magnetic-effect";
+import { useRefraction } from "@/hooks/use-refraction";
+import KineticText from "@/components/kinetic-text";
 import { IconBrandGithub, IconBrandLinkedin } from "@tabler/icons-react";
 import {
   translations,
@@ -35,11 +39,15 @@ import {
   type Translation,
 } from "@/lib/i18n";
 
+const ShaderBackground = dynamic(
+  () => import("@/components/ShaderBackground"),
+  { ssr: false },
+);
+
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
-const backgroundVideoUrl =
-  process.env.NEXT_PUBLIC_BACKGROUND_VIDEO_URL || `${basePath}/background.mp4`;
 const backgroundAudioUrl =
-  process.env.NEXT_PUBLIC_BACKGROUND_AUDIO_URL || `${basePath}/audio/ambient-mastered.mp3`;
+  process.env.NEXT_PUBLIC_BACKGROUND_AUDIO_URL ||
+  `${basePath}/audio/ambient-mastered.mp3`;
 const backgroundAudioTargetVolume = 0.72;
 const backgroundAudioDurationFallback = 180;
 
@@ -122,6 +130,52 @@ function GlowCard({
   const glowRef = useCursorGlow({ disabled });
   return (
     <div ref={glowRef} className={`glow-card ${className}`}>
+      {children}
+    </div>
+  );
+}
+
+function MagneticLink({
+  href,
+  children,
+  className = "",
+  disabled = false,
+}: {
+  href: string;
+  children: React.ReactNode;
+  className?: string;
+  disabled?: boolean;
+}) {
+  const { ref, x, y } = useMagneticEffect({ strength: 6, radius: 100, disabled });
+  return (
+    <motion.a
+      ref={ref}
+      href={href}
+      style={{ x, y }}
+      className={className}
+    >
+      {children}
+    </motion.a>
+  );
+}
+
+function RefractionGlowCard({
+  children,
+  className = "",
+  disabled = false,
+}: {
+  children: React.ReactNode;
+  className?: string;
+  disabled?: boolean;
+}) {
+  const glowRef = useCursorGlow({ disabled });
+  const refractionRef = useRefraction({ disabled });
+  const combinedRef = (node: HTMLElement | null) => {
+    glowRef(node);
+    refractionRef(node);
+  };
+  return (
+    <div ref={combinedRef} className={`glow-card refraction-card ${className}`}>
       {children}
     </div>
   );
@@ -275,22 +329,9 @@ function ImmersiveBackground({
 
   return (
     <>
-      <div className="fixed inset-0 z-0 bg-[#0a0a0a]">
-        {!shouldReduceMotion && (
-          <video
-            autoPlay
-            loop
-            muted
-            playsInline
-            preload="metadata"
-            poster={`${basePath}/poster.jpg`}
-            className="absolute inset-0 h-full w-full object-cover opacity-60 mix-blend-screen"
-          >
-            <source src={backgroundVideoUrl} type="video/mp4" />
-          </video>
-        )}
-        <div className="pointer-events-none absolute inset-0 bg-[#121214]/60 mix-blend-multiply" />
-        <div className="pointer-events-none absolute inset-0 bg-[#47618c]/10 mix-blend-overlay" />
+      <div className="fixed inset-0 z-0 bg-[#070709]">
+        <ShaderBackground reducedMotion={shouldReduceMotion} />
+        <div className="pointer-events-none absolute inset-0 bg-[#121214]/20 mix-blend-multiply" />
       </div>
 
       <audio ref={audioRef} loop className="hidden" muted={isMuted} preload="auto">
@@ -513,9 +554,9 @@ export default function PortfolioPage() {
 
                 <motion.h1
                   variants={fadeUp}
-                  className="mb-6 font-display bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-white via-slate-200 to-slate-500 bg-clip-text text-[clamp(2.5rem,8vw,7rem)] font-light leading-[0.95] tracking-tighter text-transparent"
+                  className="mb-6 max-w-4xl font-display text-[clamp(3.5rem,8vw,7rem)] font-medium leading-[0.95] tracking-tighter text-slate-100 drop-shadow-lg"
                 >
-                  {t.hero.title}
+                  <KineticText text={t.hero.title} />
                 </motion.h1>
 
                 <motion.p
@@ -557,8 +598,9 @@ export default function PortfolioPage() {
                   variants={fadeUp}
                   className="flex w-full flex-col gap-4 min-[480px]:w-auto min-[480px]:flex-row min-[480px]:flex-wrap"
                 >
-                  <a
+                  <MagneticLink
                     href="#works"
+                    disabled={shouldReduceMotion}
                     className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-8 py-4 font-semibold text-black transition-all duration-300 hover:bg-slate-200 hover:shadow-[0_0_25px_rgba(255,255,255,0.3)] motion-safe:hover:scale-[1.03] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                   >
                     {t.hero.ctaPrimary}
@@ -575,13 +617,14 @@ export default function PortfolioPage() {
                         d="M17 8l4 4m0 0l-4 4m4-4H3"
                       />
                     </svg>
-                  </a>
-                  <a
+                  </MagneticLink>
+                  <MagneticLink
                     href="#about"
+                    disabled={shouldReduceMotion}
                     className="rounded-full border border-white/20 px-6 py-3 text-center font-semibold text-white transition-all duration-300 hover:bg-white/5 hover:border-white/40 hover:shadow-[0_0_20px_rgba(255,255,255,0.08)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                   >
                     {t.hero.ctaSecondary}
-                  </a>
+                  </MagneticLink>
                 </motion.div>
               </motion.div>
             </motion.div>
@@ -733,7 +776,7 @@ export default function PortfolioPage() {
                   {t.about.heading}
                 </h3>
                 <div className="flex flex-col gap-6 text-base font-light leading-relaxed text-slate-300">
-                  <GlowCard disabled={shouldReduceMotion} className="relative mr-0 rounded-[1.75rem] md:mr-16">
+                  <RefractionGlowCard disabled={shouldReduceMotion} className="relative mr-0 rounded-[1.75rem] md:mr-16">
                     <div className="absolute -inset-3 rounded-[2rem] bg-[radial-gradient(circle_at_top_left,rgba(122,158,197,0.16),transparent_72%)]" />
                     <div className="relative z-[2] rounded-[1.75rem] border border-white/10 bg-black/15 p-6 shadow-[0_24px_80px_rgba(0,0,0,0.18)] backdrop-blur-sm md:p-8">
                       <span className="mb-4 inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[10px] font-mono uppercase tracking-[0.22em] text-[#7a9ec5]">
@@ -743,9 +786,9 @@ export default function PortfolioPage() {
                         {renderInlineEmphasis(t.about.bio[0])}
                       </p>
                     </div>
-                  </GlowCard>
+                  </RefractionGlowCard>
 
-                  <GlowCard disabled={shouldReduceMotion} className="relative ml-0 rounded-[1.75rem] md:ml-20">
+                  <RefractionGlowCard disabled={shouldReduceMotion} className="relative ml-0 rounded-[1.75rem] md:ml-20">
                     <div className="absolute -inset-3 rounded-[2rem] bg-[radial-gradient(circle_at_bottom_right,rgba(107,181,171,0.18),transparent_72%)]" />
                     <div className="relative z-[2] rounded-[1.75rem] border border-[#7a9ec5]/20 bg-[#0d1721]/65 p-6 shadow-[0_24px_80px_rgba(0,0,0,0.22)] backdrop-blur-md md:p-8">
                       <span className="mb-4 inline-flex items-center rounded-full border border-[#6bb5ab]/20 bg-[#6bb5ab]/8 px-3 py-1 text-[10px] font-mono uppercase tracking-[0.22em] text-[#6bb5ab]">
@@ -755,7 +798,7 @@ export default function PortfolioPage() {
                         {renderInlineEmphasis(t.about.bio[1])}
                       </p>
                     </div>
-                  </GlowCard>
+                  </RefractionGlowCard>
                 </div>
 
                 <motion.div

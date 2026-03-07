@@ -67,6 +67,8 @@ const profileLinks = [
   },
 ] as const;
 
+const aboutStoryLabels = ["Barcelona / Irvine / UAB", "Sydney / CMRI"] as const;
+
 function ProfileLinks({
   className,
   linkClassName,
@@ -245,6 +247,7 @@ export default function PortfolioPage() {
   const shouldReduceMotion = useReducedMotionSafe();
   const [isMuted, setIsMuted] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const navItems = [
     { label: t.nav.works, href: "#works" },
     { label: t.nav.about, href: "#about" },
@@ -265,6 +268,15 @@ export default function PortfolioPage() {
     visible: { opacity: 1, transition: { staggerChildren: 0.15 } },
   };
 
+  const fadeScale = {
+    hidden: { opacity: 0, scale: shouldReduceMotion ? 1 : 0.95 },
+    visible: {
+      opacity: 1,
+      scale: 1,
+      transition: { duration: 0.8, ease: "easeOut" as const },
+    },
+  };
+
   const toggleMute = () => setIsMuted((prev) => !prev);
 
   useEffect(() => {
@@ -276,6 +288,13 @@ export default function PortfolioPage() {
     };
   }, [mobileMenuOpen]);
 
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 50);
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
     <>
       <ImmersiveBackground
@@ -285,7 +304,7 @@ export default function PortfolioPage() {
         t={t}
       />
 
-      <div className="relative z-10 min-h-screen overflow-x-hidden bg-transparent font-sans text-[#e9ecf1] selection:bg-[#47618c]/40 selection:text-[#e9ecf1]">
+      <div className="noise-overlay relative z-10 min-h-screen overflow-x-hidden bg-transparent font-sans text-[#e9ecf1] selection:bg-[#47618c]/40 selection:text-[#e9ecf1]">
         <a
           href="#works"
           className="sr-only focus:not-sr-only focus:fixed focus:left-1/2 focus:top-4 focus:z-[60] focus:-translate-x-1/2 focus:rounded-full focus:bg-white focus:px-6 focus:py-3 focus:text-sm focus:font-semibold focus:text-black"
@@ -293,7 +312,7 @@ export default function PortfolioPage() {
           Skip to main content
         </a>
 
-        <header className="fixed left-0 right-0 top-0 z-50 flex items-center justify-between p-4 mix-blend-difference sm:p-6 md:p-10">
+        <header className={`fixed left-0 right-0 top-0 z-50 flex items-center justify-between p-4 transition-all duration-500 sm:p-6 md:p-10 ${scrolled ? "backdrop-blur-lg bg-black/50 border-b border-white/5" : ""}`}>
           <Link
             href={`/${locale}`}
             className="text-xl font-bold tracking-tighter text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
@@ -386,7 +405,7 @@ export default function PortfolioPage() {
 
                 <motion.h1
                   variants={fadeUp}
-                  className="mb-6 bg-gradient-to-r from-slate-100 to-slate-400 bg-clip-text text-4xl font-black leading-[1.05] tracking-tighter text-transparent md:text-6xl lg:text-7xl"
+                  className="mb-6 font-display bg-gradient-to-r from-slate-100 to-slate-400 bg-clip-text text-4xl font-black leading-[1.05] tracking-tighter text-transparent md:text-6xl lg:text-7xl"
                 >
                   {t.hero.title}
                 </motion.h1>
@@ -432,7 +451,7 @@ export default function PortfolioPage() {
                 >
                   <a
                     href="#works"
-                    className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-8 py-4 font-semibold text-black transition-colors hover:bg-slate-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                    className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-8 py-4 font-semibold text-black transition-all duration-300 hover:bg-slate-200 hover:shadow-[0_0_25px_rgba(255,255,255,0.3)] motion-safe:hover:scale-[1.03] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                   >
                     {t.hero.ctaPrimary}
                     <svg
@@ -451,13 +470,43 @@ export default function PortfolioPage() {
                   </a>
                   <a
                     href="#about"
-                    className="rounded-full border border-white/20 px-6 py-3 text-center font-semibold text-white transition-colors hover:bg-white/5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                    className="rounded-full border border-white/20 px-6 py-3 text-center font-semibold text-white transition-all duration-300 hover:bg-white/5 hover:border-white/40 hover:shadow-[0_0_20px_rgba(255,255,255,0.08)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                   >
                     {t.hero.ctaSecondary}
                   </a>
                 </motion.div>
               </motion.div>
             </div>
+
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 2, duration: 1 }}
+              className="absolute bottom-8 left-1/2 flex -translate-x-1/2 flex-col items-center gap-2"
+            >
+              <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-slate-500">
+                Scroll
+              </span>
+              <motion.svg
+                animate={shouldReduceMotion ? {} : { y: [0, 8, 0] }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+                className="h-5 w-5 text-slate-500"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1.5}
+                  d="M19 9l-7 7-7-7"
+                />
+              </motion.svg>
+            </motion.div>
           </section>
 
           <section id="works" className="mx-auto max-w-7xl px-6 py-32 md:px-12">
@@ -471,7 +520,13 @@ export default function PortfolioPage() {
               <h2 className="mb-4 text-sm font-bold uppercase tracking-widest text-[#7a9ec5]">
                 {t.sections.works}
               </h2>
-              <div className="h-[1px] w-full bg-white/10" />
+              <motion.div
+                className="h-[1px] w-full origin-left bg-white/10"
+                initial={{ scaleX: 0 }}
+                whileInView={{ scaleX: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 1.2, ease: "easeOut" }}
+              />
             </motion.div>
 
             <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
@@ -481,11 +536,11 @@ export default function PortfolioPage() {
                   href={work.href}
                   target="_blank"
                   rel="noreferrer"
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
+                  initial={{ opacity: 0, scale: shouldReduceMotion ? 1 : 0.97 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true, margin: "-50px" }}
                   transition={{ duration: 0.6, delay: i * 0.1 }}
-                  className="group flex h-full cursor-pointer flex-col rounded-sm border border-white/5 bg-white/5 p-8 transition-colors duration-500 hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                  className="group flex h-full cursor-pointer flex-col rounded-sm border border-white/5 bg-white/5 p-8 transition-all duration-500 hover:bg-white/10 hover:border-[#7a9ec5]/30 hover:shadow-[0_0_30px_-5px_rgba(122,158,197,0.15)] motion-safe:hover:scale-[1.02] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                   aria-label={`${t.workLinkLabel}: ${work.title}`}
                 >
                   <div className="mb-6 flex items-start justify-between gap-4">
@@ -510,7 +565,7 @@ export default function PortfolioPage() {
                       {work.tags.map((tag) => (
                         <span
                           key={tag}
-                          className="rounded-sm bg-black/40 px-2 py-1 text-[11px] tracking-wider text-slate-300"
+                          className="rounded-sm border border-white/10 bg-white/[0.06] px-2 py-1 text-[11px] tracking-wider text-slate-300"
                         >
                           {tag}
                         </span>
@@ -537,7 +592,13 @@ export default function PortfolioPage() {
               <h2 className="mb-4 text-sm font-bold uppercase tracking-widest text-[#7a9ec5]">
                 {t.sections.about}
               </h2>
-              <div className="h-[1px] w-full bg-white/10" />
+              <motion.div
+                className="h-[1px] w-full origin-left bg-white/10"
+                initial={{ scaleX: 0 }}
+                whileInView={{ scaleX: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 1.2, ease: "easeOut" }}
+              />
             </motion.div>
 
             <div className="grid grid-cols-1 gap-16 lg:grid-cols-2">
@@ -547,19 +608,33 @@ export default function PortfolioPage() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.8 }}
               >
-                <h3 className="mb-6 text-3xl font-bold tracking-tight text-white">
+                <h3 className="mb-6 font-display text-3xl font-bold tracking-tight text-white">
                   {t.about.heading}
                 </h3>
-                <div className="flex flex-col gap-8 text-base font-light leading-relaxed text-slate-400">
-                  <p lang={locale} className="mr-4 md:mr-16">
-                    {t.about.bio[0]}
-                  </p>
-                  <p
-                    lang={locale}
-                    className="ml-4 border-l border-[#7a9ec5]/40 pl-6 md:ml-16"
-                  >
-                    {t.about.bio[1]}
-                  </p>
+                <div className="flex flex-col gap-6 text-base font-light leading-relaxed text-slate-300">
+                  <div className="relative mr-0 md:mr-16">
+                    <div className="absolute -inset-3 rounded-[2rem] bg-[radial-gradient(circle_at_top_left,rgba(122,158,197,0.16),transparent_72%)]" />
+                    <div className="relative rounded-[1.75rem] border border-white/10 bg-black/15 p-6 shadow-[0_24px_80px_rgba(0,0,0,0.18)] backdrop-blur-sm md:p-8">
+                      <span className="mb-4 inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[10px] font-mono uppercase tracking-[0.22em] text-[#7a9ec5]">
+                        {aboutStoryLabels[0]}
+                      </span>
+                      <p lang={locale} className="text-pretty">
+                        {t.about.bio[0]}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="relative ml-0 md:ml-20">
+                    <div className="absolute -inset-3 rounded-[2rem] bg-[radial-gradient(circle_at_bottom_right,rgba(107,181,171,0.18),transparent_72%)]" />
+                    <div className="relative rounded-[1.75rem] border border-[#7a9ec5]/20 bg-[#0d1721]/65 p-6 shadow-[0_24px_80px_rgba(0,0,0,0.22)] backdrop-blur-md md:p-8">
+                      <span className="mb-4 inline-flex items-center rounded-full border border-[#6bb5ab]/20 bg-[#6bb5ab]/8 px-3 py-1 text-[10px] font-mono uppercase tracking-[0.22em] text-[#6bb5ab]">
+                        {aboutStoryLabels[1]}
+                      </span>
+                      <p lang={locale} className="text-pretty">
+                        {t.about.bio[1]}
+                      </p>
+                    </div>
+                  </div>
                 </div>
 
                 <div className="mt-12 rounded-sm border border-white/10 bg-white/5 p-6 backdrop-blur-sm">
@@ -587,7 +662,18 @@ export default function PortfolioPage() {
                 <div className="absolute bottom-2 left-0 top-2 w-px bg-white/10" />
                 <div className="space-y-12">
                   {t.timeline.map((item, i) => (
-                    <div key={i} className="relative pl-8">
+                    <motion.div
+                      key={i}
+                      className="relative pl-8"
+                      initial={{ opacity: 0, x: shouldReduceMotion ? 0 : -20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                      transition={{
+                        duration: 0.6,
+                        delay: i * 0.1,
+                        ease: "easeOut",
+                      }}
+                    >
                       <div className="absolute left-[-4px] top-1.5 h-2 w-2 rounded-full bg-[#6bb5ab] shadow-[0_0_10px_rgba(66,120,114,0.8)]" />
                       <span className="mb-1 block text-xs font-mono text-[#6bb5ab]">
                         {item.year}
@@ -601,7 +687,7 @@ export default function PortfolioPage() {
                       <p className="text-sm font-light text-slate-500">
                         {item.desc}
                       </p>
-                    </div>
+                    </motion.div>
                   ))}
                 </div>
               </motion.div>
@@ -620,8 +706,8 @@ export default function PortfolioPage() {
               className="flex flex-col items-center text-center"
             >
               <motion.h2
-                variants={fadeUp}
-                className="mb-6 text-4xl font-bold tracking-tighter text-white md:text-6xl"
+                variants={fadeScale}
+                className="mb-6 font-display text-4xl font-bold tracking-tighter text-white md:text-6xl"
               >
                 {t.contact.heading}
               </motion.h2>

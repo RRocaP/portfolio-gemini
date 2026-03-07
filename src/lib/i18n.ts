@@ -64,7 +64,7 @@ const en: Translation = {
   hero: {
     eyebrow:
       "Biomedical Engineer | Protein Engineering | Antimicrobial Discovery | Gene Therapy",
-    title: "Protein engineering from computational design to preclinical validation.",
+    title: "Dreaming up proteins in silico. Proving them in the lab.",
     subtitle:
       "I design and validate proteins for antimicrobial discovery and gene therapy, translating sequence-level ideas into experimental proof.",
     supportingLine: "From protein language models to mouse models.",
@@ -164,8 +164,8 @@ const en: Translation = {
   about: {
     heading: "Finding the therapeutic signal in a sea of biological noise.",
     bio: [
-      "I am a protein engineer by training and a computational scientist out of necessity. I studied Biotechnology in Barcelona, completed a Master's in Biomedical Engineering at UC Irvine, and during my PhD at the UAB, I spent four years designing antimicrobial proteins covering the entire process, from design to production and functional assays. This period yielded two patents and four first-author papers.",
-      "At the CMRI in Sydney, I developed a platform that mines millions of sequences to find new antimicrobial peptides. I used protein language models to predict activity and translated that into preclinical models. I also engineered AAV capsids for gene therapy - Nature Communications, Molecular Therapy.",
+      "I studied Biotechnology at the Universitat Autonoma de Barcelona. Then I boarded a flight to sunny California to pursue a Master's in Biomedical Engineering at UC Irvine. The flight back led me into a PhD at the UAB, where I spent four years designing antimicrobial proteins, from design through recombinant production and functional assays. That stage produced two patents and four first-author papers.",
+      "The last flight took me to Sydney, to the CMRI, where I have built a platform to analyze millions of sequences and find hundreds, or thousands, of new antimicrobial peptides. Thanks to protein language models and recent advances in AI, we have been able to test those predictions both in the lab and in preclinical models. In parallel, I have also applied generative AI to protein engineering to design AAV capsids for gene therapy.",
     ],
     competenciesTitle: "Core Competencies",
     competencies: [
@@ -201,8 +201,7 @@ const es: Translation = {
   hero: {
     eyebrow:
       "Ingeniería biomédica | Ingeniería de proteínas | Descubrimiento antimicrobiano | Terapia génica",
-    title:
-      "Ingeniería de proteínas desde el diseño computacional hasta la validación preclínica.",
+    title: "Soñando proteínas in silico. Demostrándolas en el laboratorio.",
     subtitle:
       "Diseño y valido proteínas para descubrimiento antimicrobiano y terapia génica, traduciendo ideas a nivel de secuencia en evidencia experimental.",
     supportingLine: "De modelos de lenguaje de proteínas a modelos de ratón.",
@@ -302,8 +301,8 @@ const es: Translation = {
   about: {
     heading: "Encontrando la señal terapéutica en un mar de ruido biológico.",
     bio: [
-      "Soy ingeniero de proteínas de formación y científico computacional por necesidad. Me formé en Biotecnología en Barcelona, cursé un máster en Ingeniería Biomédica en la UC Irvine y, durante mi doctorado en la UAB, dediqué cuatro años a diseñar proteínas antimicrobianas abarcando todo el proceso, desde el diseño hasta la producción y el ensayo funcional. Fruto de esta etapa surgieron dos patentes y cuatro artículos como primer autor.",
-      "En el CMRI de Sídney, desarrollé una plataforma que mina millones de secuencias para encontrar nuevos péptidos antimicrobianos. Usé modelos de lenguaje de proteínas para predecir actividad y lo trasladé a modelos preclínicos. También hice ingeniería de cápsidas de AAV para terapia génica - Nature Communications, Molecular Therapy.",
+      "Estudié Biotecnología en la Universitat Autonoma de Barcelona. Después cogí un vuelo hacia la California soleada para cursar un máster en Ingeniería Biomédica en UC Irvine. El vuelo de vuelta me llevó a un doctorado en la UAB, donde pasé cuatro años diseñando proteínas antimicrobianas, desde el diseño hasta la producción recombinante y los ensayos funcionales. De esa etapa salieron dos patentes y cuatro artículos como primer autor.",
+      "El último vuelo me llevó a Sídney, al CMRI, donde he establecido una plataforma para analizar millones de secuencias y encontrar cientos, o miles, de nuevos péptidos antimicrobianos. Gracias a los modelos de lenguaje de proteínas y a los últimos avances en IA, hemos podido llevar esas predicciones tanto al laboratorio como a modelos preclínicos. En paralelo, también he aplicado IA generativa a la ingeniería de proteínas para diseñar cápsides de AAV para terapia génica.",
     ],
     competenciesTitle: "Competencias principales",
     competencies: [
@@ -339,8 +338,7 @@ const ca: Translation = {
   hero: {
     eyebrow:
       "Enginyeria biomèdica | Enginyeria de proteïnes | Descobriment antimicrobià | Teràpia gènica",
-    title:
-      "Enginyeria de proteïnes des del disseny computacional fins a la validació preclínica.",
+    title: "Somiant proteïnes in silico. Demostrant-les al laboratori.",
     subtitle:
       "Dissenyo i valido proteïnes per al descobriment antimicrobià i la teràpia gènica, traduint idees a nivell de seqüència en evidència experimental.",
     supportingLine: "De models de llenguatge de proteïnes a models de ratolí.",
@@ -440,8 +438,8 @@ const ca: Translation = {
   about: {
     heading: "Trobant el senyal terapèutic en un mar de soroll biològic.",
     bio: [
-      "Sóc enginyer de proteïnes de formació i científic computacional per necessitat. Em vaig formar en Biotecnologia a Barcelona, vaig fer un màster en Enginyeria Biomèdica a la UC Irvine, i durant el doctorat a la UAB vaig dedicar quatre anys a dissenyar proteïnes antimicrobianes - des del disseny fins a la producció i l'assaig funcional. D'allà en surten dues patents i quatre articles com a primer autor.",
-      "A Sydney, al CMRI, vaig muntar una plataforma que mina milions de seqüències per trobar pèptids antimicrobians nous. Vaig fer servir models de llenguatge de proteïnes per predir i acabar-ho traduint en models preclínics. També vaig fer enginyeria de càpsides d'AAV per a teràpia gènica - Nature Communications, Molecular Therapy.",
+      "Vaig estudiar Biotecnologia a la UAB i després vaig volar a la \"Sunny\" Califòrnia per fer un màster en Enginyeria Biomèdica a la UC Irvine. El vol de tornada em va portar a un doctorat a la UAB, on vaig dedicar quatre anys a dissenyar proteïnes antimicrobianes. D'aquella etapa en van sortir dues patents comercialitzades i quatre articles com a primer autor.",
+      "L'últim vol em va portar a Sydney. Al CMRI he construït una plataforma per analitzar milions de seqüències i trobar nous pèptids antimicrobians amb models de llenguatge de proteïnes i IA. El que el model assenyala, ho portem al laboratori i ho validem en models preclínics. En paral·lel, he aplicat IA generativa per dissenyar càpsides d'AAV per a teràpia gènica.",
     ],
     competenciesTitle: "Competències principals",
     competencies: [

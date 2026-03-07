@@ -69,6 +69,18 @@ const profileLinks = [
 
 const aboutStoryLabels = ["Barcelona / Irvine / UAB", "Sydney / CMRI"] as const;
 
+function renderInlineEmphasis(text: string) {
+  return text.split(/<em>(.*?)<\/em>/g).map((part, index) =>
+    index % 2 === 1 ? (
+      <em key={`${part}-${index}`} className="italic">
+        {part}
+      </em>
+    ) : (
+      <Fragment key={`${part}-${index}`}>{part}</Fragment>
+    )
+  );
+}
+
 function ProfileLinks({
   className,
   linkClassName,
@@ -619,7 +631,7 @@ export default function PortfolioPage() {
                         {aboutStoryLabels[0]}
                       </span>
                       <p lang={locale} className="text-pretty">
-                        {t.about.bio[0]}
+                        {renderInlineEmphasis(t.about.bio[0])}
                       </p>
                     </div>
                   </div>
@@ -631,7 +643,7 @@ export default function PortfolioPage() {
                         {aboutStoryLabels[1]}
                       </span>
                       <p lang={locale} className="text-pretty">
-                        {t.about.bio[1]}
+                        {renderInlineEmphasis(t.about.bio[1])}
                       </p>
                     </div>
                   </div>

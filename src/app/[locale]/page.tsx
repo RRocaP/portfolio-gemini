@@ -27,6 +27,7 @@ import {
 import * as Tooltip from "@radix-ui/react-tooltip";
 import dynamic from "next/dynamic";
 import { useCursorGlow } from "@/hooks/use-cursor-glow";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { useMagneticEffect } from "@/hooks/use-magnetic-effect";
 import { useRefraction } from "@/hooks/use-refraction";
 import KineticText from "@/components/kinetic-text";
@@ -39,8 +40,15 @@ import {
   type Translation,
 } from "@/lib/i18n";
 
-const ShaderBackground = dynamic(
-  () => import("@/components/ShaderBackground"),
+const WebGLBackground = dynamic(
+  () => import("@/components/WebGLBackground"),
+  { ssr: false },
+);
+const WebGLBackgroundFallback = dynamic(
+  () =>
+    import("@/components/WebGLBackground").then((m) => ({
+      default: m.WebGLBackgroundFallback,
+    })),
   { ssr: false },
 );
 
@@ -225,11 +233,13 @@ function ImmersiveBackground({
   isMuted,
   toggleMute,
   shouldReduceMotion,
+  isMobile,
   t,
 }: {
   isMuted: boolean;
   toggleMute: () => void;
   shouldReduceMotion: boolean;
+  isMobile: boolean;
   t: Translation;
 }) {
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -329,10 +339,11 @@ function ImmersiveBackground({
 
   return (
     <>
-      <div className="fixed inset-0 z-0 bg-[#070709]">
-        <ShaderBackground reducedMotion={shouldReduceMotion} />
-        <div className="pointer-events-none absolute inset-0 bg-[#121214]/20 mix-blend-multiply" />
-      </div>
+      {isMobile ? (
+        <WebGLBackgroundFallback />
+      ) : (
+        <WebGLBackground prefersReducedMotion={shouldReduceMotion} />
+      )}
 
       <audio ref={audioRef} loop className="hidden" muted={isMuted} preload="auto">
         <source src={backgroundAudioUrl} type="audio/mpeg" />
@@ -382,6 +393,7 @@ export default function PortfolioPage() {
   const t = translations[locale];
 
   const shouldReduceMotion = useReducedMotionSafe();
+  const isMobile = useIsMobile();
   const heroRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
     target: heroRef,
@@ -446,6 +458,7 @@ export default function PortfolioPage() {
         isMuted={isMuted}
         toggleMute={toggleMute}
         shouldReduceMotion={shouldReduceMotion}
+        isMobile={isMobile}
         t={t}
       />
 
@@ -473,16 +486,20 @@ export default function PortfolioPage() {
 
           <nav className="hidden items-center gap-6 md:flex">
             {navItems.map((item, i) => (
-              <motion.a
+              <MagneticLink
                 key={item.href}
                 href={item.href}
+                disabled={shouldReduceMotion}
                 className="px-1 py-2 text-sm font-medium tracking-wide text-slate-300 transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 + i * 0.1 }}
               >
-                {item.label}
-              </motion.a>
+                <motion.span
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 + i * 0.1 }}
+                >
+                  {item.label}
+                </motion.span>
+              </MagneticLink>
             ))}
             <ProfileLinks
               className="flex items-center gap-3"
@@ -693,7 +710,7 @@ export default function PortfolioPage() {
                             "md:col-span-6 lg:col-span-12";              // Full width bottom
 
                 return (
-                  <GlowCard key={work.id} disabled={shouldReduceMotion} className={`rounded-sm ${bentoSpan}`}>
+                  <RefractionGlowCard key={work.id} disabled={shouldReduceMotion} className={`rounded-sm ${bentoSpan}`}>
                     <motion.a
                       href={work.href}
                       target="_blank"
@@ -739,7 +756,7 @@ export default function PortfolioPage() {
                         </span>
                       </div>
                     </motion.a>
-                  </GlowCard>
+                  </RefractionGlowCard>
                 );
               })}
             </div>
@@ -936,13 +953,15 @@ export default function PortfolioPage() {
                 />
               </motion.div>
 
-              <motion.a
-                variants={fadeUp}
-                href={`mailto:${t.contact.emailLabel}`}
-                className="border-b-2 border-[#7a9ec5] pb-1 text-xl font-semibold transition-colors hover:text-[#e9ecf1] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white md:text-2xl"
-              >
-                {t.contact.emailLabel}
-              </motion.a>
+              <motion.div variants={fadeUp}>
+                <MagneticLink
+                  href={`mailto:${t.contact.emailLabel}`}
+                  disabled={shouldReduceMotion}
+                  className="border-b-2 border-[#7a9ec5] pb-1 text-xl font-semibold transition-colors hover:text-[#e9ecf1] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white md:text-2xl"
+                >
+                  {t.contact.emailLabel}
+                </MagneticLink>
+              </motion.div>
 
               <motion.div
                 variants={fadeUp}

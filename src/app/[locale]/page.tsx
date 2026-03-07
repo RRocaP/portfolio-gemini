@@ -25,21 +25,14 @@ const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
 const backgroundVideoUrl =
   process.env.NEXT_PUBLIC_BACKGROUND_VIDEO_URL || `${basePath}/background.mp4`;
 const backgroundAudioUrl =
-  process.env.NEXT_PUBLIC_BACKGROUND_AUDIO_URL || `${basePath}/audio/ambient-sync.wav`;
-const syncedLoopDuration = 8;
-const syncDriftThreshold = 0.08;
+  process.env.NEXT_PUBLIC_BACKGROUND_AUDIO_URL || `${basePath}/audio/ambient-mastered.mp3`;
+const backgroundAudioTargetVolume = 0.72;
+const backgroundAudioDurationFallback = 180;
 
 function getLoopTime(time: number, duration: number) {
   if (!Number.isFinite(duration) || duration <= 0) return 0;
   const normalized = ((time % duration) + duration) % duration;
   return Math.min(normalized, Math.max(duration - 0.01, 0));
-}
-
-function getLoopDrift(currentTime: number, targetTime: number, duration: number) {
-  let drift = currentTime - targetTime;
-  if (drift > duration / 2) drift -= duration;
-  if (drift < -duration / 2) drift += duration;
-  return drift;
 }
 
 function OrcidIcon(props: React.SVGProps<SVGSVGElement>) {
@@ -149,39 +142,17 @@ function ImmersiveBackground({
   shouldReduceMotion: boolean;
   t: Translation;
 }) {
-  const videoRef = useRef<HTMLVideoElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
   const fadeFrameRef = useRef<number | null>(null);
-
-  const syncAudioToVideo = (force = false) => {
-    const audio = audioRef.current;
-    const video = videoRef.current;
-    if (!audio || !video) return;
-
-    const duration = Math.min(
-      syncedLoopDuration,
-      Number.isFinite(video.duration) && video.duration > 0
-        ? video.duration
-        : syncedLoopDuration,
-      Number.isFinite(audio.duration) && audio.duration > 0
-        ? audio.duration
-        : syncedLoopDuration
-    );
-
-    const targetTime = getLoopTime(video.currentTime, duration);
-    const currentTime = getLoopTime(audio.currentTime, duration);
-    const drift = getLoopDrift(currentTime, targetTime, duration);
-
-    if (force || Math.abs(drift) > syncDriftThreshold) {
-      audio.currentTime = targetTime;
-    }
-  };
+  const mountedAtRef = useRef<number | null>(null);
 
   // Smooth fade-in on first play
   useEffect(() => {
     const audio = audioRef.current;
-    const video = videoRef.current;
-    if (!audio || !video) return;
+    if (!audio) return;
+    if (mountedAtRef.current === null) {
+      mountedAtRef.current = performance.now();
+    }
 
     const stopFade = () => {
       if (fadeFrameRef.current !== null) {
@@ -195,9 +166,9 @@ function ImmersiveBackground({
       audio.volume = 0;
       let vol = 0;
       const step = () => {
-        vol = Math.min(vol + 0.02, 0.5);
+        vol = Math.min(vol + 0.03, backgroundAudioTargetVolume);
         if (audio) audio.volume = vol;
-        if (vol < 0.5) {
+        if (vol < backgroundAudioTargetVolume) {
           fadeFrameRef.current = requestAnimationFrame(step);
         } else {
           fadeFrameRef.current = null;
@@ -206,34 +177,48 @@ function ImmersiveBackground({
       fadeFrameRef.current = requestAnimationFrame(step);
     };
 
-    const attemptPlay = () => {
-      if (audio && video && !isMuted) {
-        syncAudioToVideo(true);
-        if (audio.paused) {
-          audio.play().then(fadeIn).catch(() => {});
+    const startPlayback = (shouldFade: boolean) => {
+      audio.muted = isMuted;
+
+      if (!audio.paused) {
+        if (!isMuted && shouldFade) {
+          fadeIn();
         }
+        return;
       }
+
+      const elapsedSeconds = (performance.now() - (mountedAtRef.current ?? performance.now())) / 1000;
+      const duration =
+        Number.isFinite(audio.duration) && audio.duration > 0
+          ? audio.duration
+          : backgroundAudioDurationFallback;
+
+      audio.currentTime = getLoopTime(elapsedSeconds, duration);
+      audio.play().then(() => {
+        if (!isMuted && shouldFade) {
+          fadeIn();
+        }
+      }).catch(() => {});
     };
 
-    attemptPlay();
+    startPlayback(!isMuted);
 
     const interactionListener = () => {
-      attemptPlay();
+      startPlayback(!isMuted);
       document.removeEventListener("click", interactionListener);
       document.removeEventListener("scroll", interactionListener);
       document.removeEventListener("keydown", interactionListener);
     };
 
     const metadataListener = () => {
-      if (!isMuted) {
-        syncAudioToVideo(true);
+      if (audio.paused) {
+        startPlayback(false);
       }
     };
 
     document.addEventListener("click", interactionListener);
     document.addEventListener("scroll", interactionListener);
     document.addEventListener("keydown", interactionListener);
-    video.addEventListener("loadedmetadata", metadataListener);
     audio.addEventListener("loadedmetadata", metadataListener);
 
     return () => {
@@ -241,44 +226,15 @@ function ImmersiveBackground({
       document.removeEventListener("click", interactionListener);
       document.removeEventListener("scroll", interactionListener);
       document.removeEventListener("keydown", interactionListener);
-      video.removeEventListener("loadedmetadata", metadataListener);
       audio.removeEventListener("loadedmetadata", metadataListener);
     };
   }, [isMuted]);
 
   useEffect(() => {
     const audio = audioRef.current;
-    const video = videoRef.current;
-    if (!audio || !video) return;
+    if (!audio) return;
 
     audio.muted = isMuted;
-    if (isMuted) {
-      audio.pause();
-      return;
-    }
-
-    syncAudioToVideo(true);
-    if (audio.paused) {
-      audio.play().catch(() => {});
-    }
-  }, [isMuted]);
-
-  useEffect(() => {
-    if (isMuted) return;
-
-    let frame = 0;
-
-    const tick = () => {
-      const audio = audioRef.current;
-      if (audio && !audio.paused) {
-        syncAudioToVideo();
-      }
-      frame = requestAnimationFrame(tick);
-    };
-
-    frame = requestAnimationFrame(tick);
-
-    return () => cancelAnimationFrame(frame);
   }, [isMuted]);
 
   return (
@@ -286,7 +242,6 @@ function ImmersiveBackground({
       <div className="fixed inset-0 z-0 bg-[#0a0a0a]">
         {!shouldReduceMotion && (
           <video
-            ref={videoRef}
             autoPlay
             loop
             muted
@@ -303,7 +258,7 @@ function ImmersiveBackground({
       </div>
 
       <audio ref={audioRef} loop className="hidden" muted={isMuted} preload="auto">
-        <source src={backgroundAudioUrl} type="audio/wav" />
+        <source src={backgroundAudioUrl} type="audio/mpeg" />
       </audio>
 
       <button

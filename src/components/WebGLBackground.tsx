@@ -1,372 +1,178 @@
 /**
- * WebGLBackground.tsx — AI Protein Engineering Hero Background
+ * WebGLBackground.tsx — Gray-Scott Reaction-Diffusion Background
  *
- * Three visual layers, each mapping to real scientific constructs:
+ * Implements a GPU-accelerated Gray-Scott reaction-diffusion system as a
+ * fullscreen WebGL shader background. The Gray-Scott model describes two
+ * interacting chemical species (U activator, V inhibitor) whose diffusion
+ * and reaction rates produce spontaneous Turing instability patterns.
  *
- * Layer 1: Alpha Helix (50%) — ~1500 particles along two interleaved helices
- *   evoke the alpha-helix secondary structure of proteins. Two strands offset
- *   by PI represent the hydrogen-bonded backbone turns. Slowly rotates on Y.
+ * Scientific relevance to the owner's research:
+ *   - Turing patterns (1952) underlie biological morphogenesis
+ *   - The labyrinthine structures mirror peptide self-assembly boundaries
+ *   - Biofilm colony boundary formation follows reaction-diffusion dynamics
+ *   - Protein aggregation fronts exhibit the same mathematical framework
  *
- * Layer 2: Attention Matrix (35%) — ~1050 particles in a 30x35 grid
- *   evoke ESM-2 / protein language model attention weight maps. A traveling
- *   sin*cos wave modulates opacity — attention score propagation through sequence.
+ * The PDE system:
+ *   du/dt = Du * laplacian(u) - u*v^2 + F*(1-u)
+ *   dv/dt = Dv * laplacian(v) + u*v^2 - (F+k)*v
  *
- * Layer 3: Peptide Bond Graph — ~400 line segments connecting helix particles
- *   sequential connections = peptide bonds; every 7th cross-strand = hydrogen bonds.
+ * Parameters (F=0.037, k=0.060) produce labyrinthine / coral-like patterns
+ * that evoke confocal microscopy imagery of membrane channel networks.
  *
- * Color palette: #0d1a2e (deep navy) → #7a9ec5 (steel blue) → #6bb5ab (teal, sparse)
- * Aesthetic: deep-sea research submarine instrument panel at night.
+ * Architecture: ping-pong WebGLRenderTarget at 512x512, one simulation step
+ * per frame, display pass maps V concentration to cold scientific palette.
+ * The display mesh lives in R3F's scene graph so EffectComposer can process it.
  */
 "use client";
 
-import { useRef, useMemo, useEffect, useCallback } from "react";
+import { useRef, useEffect, useCallback } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import { useMousePosition } from "@/hooks/use-mouse-position";
 
 // ---------------------------------------------------------------------------
-// Ashima Arts simplex noise 3D — classic GLSL implementation (inline)
+// Shared vertex shader — fullscreen quad
 // ---------------------------------------------------------------------------
-const snoise3GLSL = /* glsl */ `
-vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
-vec4 mod289(vec4 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
-vec4 permute(vec4 x) { return mod289(((x * 34.0) + 1.0) * x); }
-vec4 taylorInvSqrt(vec4 r) { return 1.79284291400159 - 0.85373472095314 * r; }
-
-float snoise(vec3 v) {
-  const vec2 C = vec2(1.0 / 6.0, 1.0 / 3.0);
-  const vec4 D = vec4(0.0, 0.5, 1.0, 2.0);
-
-  vec3 i  = floor(v + dot(v, C.yyy));
-  vec3 x0 = v - i + dot(i, C.xxx);
-
-  vec3 g = step(x0.yzx, x0.xyz);
-  vec3 l = 1.0 - g;
-  vec3 i1 = min(g.xyz, l.zxy);
-  vec3 i2 = max(g.xyz, l.zxy);
-
-  vec3 x1 = x0 - i1 + C.xxx;
-  vec3 x2 = x0 - i2 + C.yyy;
-  vec3 x3 = x0 - D.yyy;
-
-  i = mod289(i);
-  vec4 p = permute(permute(permute(
-    i.z + vec4(0.0, i1.z, i2.z, 1.0))
-  + i.y + vec4(0.0, i1.y, i2.y, 1.0))
-  + i.x + vec4(0.0, i1.x, i2.x, 1.0));
-
-  float n_ = 0.142857142857;
-  vec3 ns = n_ * D.wyz - D.xzx;
-
-  vec4 j = p - 49.0 * floor(p * ns.z * ns.z);
-
-  vec4 x_ = floor(j * ns.z);
-  vec4 y_ = floor(j - 7.0 * x_);
-
-  vec4 x = x_ * ns.x + ns.yyyy;
-  vec4 y = y_ * ns.x + ns.yyyy;
-  vec4 h = 1.0 - abs(x) - abs(y);
-
-  vec4 b0 = vec4(x.xy, y.xy);
-  vec4 b1 = vec4(x.zw, y.zw);
-
-  vec4 s0 = floor(b0) * 2.0 + 1.0;
-  vec4 s1 = floor(b1) * 2.0 + 1.0;
-  vec4 sh = -step(h, vec4(0.0));
-
-  vec4 a0 = b0.xzyw + s0.xzyw * sh.xxyy;
-  vec4 a1 = b1.xzyw + s1.xzyw * sh.zzww;
-
-  vec3 p0 = vec3(a0.xy, h.x);
-  vec3 p1 = vec3(a0.zw, h.y);
-  vec3 p2 = vec3(a1.xy, h.z);
-  vec3 p3 = vec3(a1.zw, h.w);
-
-  vec4 norm = taylorInvSqrt(vec4(dot(p0, p0), dot(p1, p1), dot(p2, p2), dot(p3, p3)));
-  p0 *= norm.x;
-  p1 *= norm.y;
-  p2 *= norm.z;
-  p3 *= norm.w;
-
-  vec4 m = max(0.6 - vec4(dot(x0, x0), dot(x1, x1), dot(x2, x2), dot(x3, x3)), 0.0);
-  m = m * m;
-  return 42.0 * dot(m * m, vec4(dot(p0, x0), dot(p1, x1), dot(p2, x2), dot(p3, x3)));
-}
+const fullscreenVert = /* glsl */ `
+  varying vec2 vUv;
+  void main() {
+    vUv = uv;
+    gl_Position = vec4(position, 1.0);
+  }
 `;
 
 // ---------------------------------------------------------------------------
-// Vertex shader — helix + attention particles
+// Simulation shader — Gray-Scott reaction-diffusion step
 // ---------------------------------------------------------------------------
-const vertexShader = /* glsl */ `
-${snoise3GLSL}
+const simulationFrag = /* glsl */ `
+  precision highp float;
 
-uniform float uTime;
-uniform vec2  uMouse;
-uniform float uHelixRotation;
-uniform float uBasePointSize;
+  uniform sampler2D uTexture;
+  uniform vec2 uResolution;
+  uniform float uF;
+  uniform float uK;
+  uniform vec2 uMouse;
+  uniform float uMouseActive;
 
-attribute float aLayer;     // 0 = helix, 1 = attention
-attribute float aIndex;     // particle index within layer
+  varying vec2 vUv;
 
-varying float vNoise;
-varying float vLayer;
-varying float vAlpha;
+  void main() {
+    vec2 texel = 1.0 / uResolution;
 
-void main() {
-  vec3 pos = position;
+    // Sample neighborhood (5-point Laplacian stencil)
+    vec4 center = texture2D(uTexture, vUv);
+    vec4 top    = texture2D(uTexture, vUv + vec2(0.0, texel.y));
+    vec4 bottom = texture2D(uTexture, vUv - vec2(0.0, texel.y));
+    vec4 right  = texture2D(uTexture, vUv + vec2(texel.x, 0.0));
+    vec4 left   = texture2D(uTexture, vUv - vec2(texel.x, 0.0));
 
-  // Simplex noise displacement — thermal fluctuation / molecular dynamics
-  float noiseVal = snoise(vec3(pos.x * 1.2, pos.y * 1.2, uTime * 0.18));
-  pos += normal * noiseVal * 0.03;
+    vec2 laplacian = (top.rg + bottom.rg + right.rg + left.rg) - 4.0 * center.rg;
 
-  // Mouse parallax — closer particles (higher z) shift more
-  vec2 mouseOffset = (uMouse - 0.5) * 0.06 * (1.0 - abs(pos.z) * 0.5);
-  pos.xy += mouseOffset;
+    float u = center.r;
+    float v = center.g;
+    float uvv = u * v * v;
 
-  // Apply helix rotation for layer 0
-  if (aLayer < 0.5) {
-    float cosR = cos(uHelixRotation);
-    float sinR = sin(uHelixRotation);
-    float newX = pos.x * cosR - pos.z * sinR;
-    float newZ = pos.x * sinR + pos.z * cosR;
-    pos.x = newX;
-    pos.z = newZ;
+    // Diffusion constants
+    float Du = 0.2097;
+    float Dv = 0.1050;
+
+    // Gray-Scott update
+    float du = Du * laplacian.r - uvv + uF * (1.0 - u);
+    float dv = Dv * laplacian.g + uvv - (uF + uK) * v;
+
+    float newU = clamp(u + du, 0.0, 1.0);
+    float newV = clamp(v + dv, 0.0, 1.0);
+
+    // Mouse perturbation: inject V at cursor position
+    if (uMouseActive > 0.5) {
+      float dist = length(vUv - uMouse);
+      float perturbation = 0.5 * exp(-dist * dist / (2.0 * 0.015 * 0.015));
+      newV = clamp(newV + perturbation, 0.0, 1.0);
+    }
+
+    gl_FragColor = vec4(newU, newV, 0.0, 1.0);
   }
-
-  vNoise = noiseVal * 0.5 + 0.5; // remap to 0-1
-  vLayer = aLayer;
-
-  // Attention layer: traveling wave opacity
-  if (aLayer > 0.5) {
-    float col = mod(aIndex, 30.0);
-    float row = floor(aIndex / 30.0);
-    float wave = sin(col * 0.6 + uTime * 0.25) * cos(row * 0.45 - uTime * 0.15);
-    vAlpha = 0.012 + abs(wave) * 0.03;
-  } else {
-    vAlpha = 0.04;
-  }
-
-  vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
-  gl_Position = projectionMatrix * mvPosition;
-
-  float sizeMod = aLayer > 0.5 ? 0.8 : (uBasePointSize + (vNoise - 0.5) * 0.3);
-  gl_PointSize = sizeMod * (8.0 / -mvPosition.z);
-}
 `;
 
 // ---------------------------------------------------------------------------
-// Fragment shader — circular soft points, cold scientific palette
+// Seed shader — initial conditions
 // ---------------------------------------------------------------------------
-const fragmentShader = /* glsl */ `
-varying float vNoise;
-varying float vLayer;
-varying float vAlpha;
+const seedFrag = /* glsl */ `
+  precision highp float;
 
-void main() {
-  float dist = length(gl_PointCoord - vec2(0.5));
-  if (dist > 0.5) discard;
+  varying vec2 vUv;
 
-  // Soft edge falloff
-  float edgeAlpha = 1.0 - smoothstep(0.3, 0.5, dist);
-
-  // Color by noise level
-  vec3 deepNavy  = vec3(0.051, 0.102, 0.180);  // #0d1a2e
-  vec3 steelBlue = vec3(0.478, 0.620, 0.773);  // #7a9ec5
-  vec3 teal      = vec3(0.420, 0.710, 0.671);  // #6bb5ab
-
-  vec3 color;
-  if (vLayer > 0.5) {
-    // Attention matrix — dimmer steel blue
-    color = steelBlue;
-  } else {
-    // Helix particles — noise-driven gradient
-    if (vNoise < 0.45) {
-      color = mix(deepNavy, steelBlue, vNoise / 0.45);
-    } else if (vNoise < 0.85) {
-      color = steelBlue;
-    } else {
-      // Top 15% — sparse teal highlights
-      color = mix(steelBlue, teal, (vNoise - 0.85) / 0.15);
-    }
+  float hash(vec2 p) {
+    return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
   }
 
-  gl_FragColor = vec4(color, vAlpha * edgeAlpha);
-}
+  void main() {
+    float u = 1.0;
+    float v = 0.0;
+
+    // Sparse random seeds (~3% of pixels) in a central region
+    float h = hash(vUv);
+    float centralMask = smoothstep(0.6, 0.4, length(vUv - 0.5));
+    if (fract(h * 17.3) > 0.97 && centralMask > 0.1) {
+      v = 1.0;
+      u = 0.5;
+    }
+
+    gl_FragColor = vec4(u, v, 0.0, 1.0);
+  }
 `;
 
 // ---------------------------------------------------------------------------
-// Line vertex/fragment shaders — peptide bonds
+// Display shader — V concentration to color palette
 // ---------------------------------------------------------------------------
-const lineVertexShader = /* glsl */ `
-uniform float uHelixRotation;
-uniform vec2  uMouse;
+const displayFrag = /* glsl */ `
+  precision highp float;
 
-void main() {
-  vec3 pos = position;
+  uniform sampler2D uTexture;
+  uniform vec2 uResolution;
+  uniform float uTime;
 
-  // Mouse parallax
-  vec2 mouseOffset = (uMouse - 0.5) * 0.06 * (1.0 - abs(pos.z) * 0.5);
-  pos.xy += mouseOffset;
+  varying vec2 vUv;
 
-  // Apply helix rotation
-  float cosR = cos(uHelixRotation);
-  float sinR = sin(uHelixRotation);
-  float newX = pos.x * cosR - pos.z * sinR;
-  float newZ = pos.x * sinR + pos.z * cosR;
-  pos.x = newX;
-  pos.z = newZ;
+  void main() {
+    float v = texture2D(uTexture, vUv).g;
 
-  gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
-}
+    // Color palette: map V concentration to cold scientific colors
+    vec3 c0 = vec3(0.027, 0.039, 0.071);  // #070a12 — empty space
+    vec3 c1 = vec3(0.051, 0.102, 0.180);  // #0d1a2e — low activity
+    vec3 c2 = vec3(0.118, 0.227, 0.373);  // #1e3a5f — medium activity
+    vec3 c3 = vec3(0.478, 0.620, 0.773);  // #7a9ec5 — high (boundaries)
+    vec3 c4 = vec3(0.420, 0.710, 0.671);  // #6bb5ab — peak (rare teal)
+
+    vec3 color = c0;
+    color = mix(color, c1, smoothstep(0.0, 0.3, v));
+    color = mix(color, c2, smoothstep(0.15, 0.6, v));
+    color = mix(color, c3, smoothstep(0.45, 0.85, v));
+    color = mix(color, c4, smoothstep(0.8, 1.0, v));
+
+    // Vignette — darken edges
+    float vig = 1.0 - length(vUv - 0.5) * 1.2;
+    vig = clamp(vig, 0.0, 1.0);
+    vig = vig * vig; // quadratic falloff
+    color *= mix(0.3, 1.0, vig);
+
+    // Subtle scanlines (instrument panel aesthetic)
+    float scanline = 0.98 + 0.02 * sin(vUv.y * uResolution.y * 1.5);
+    color *= scanline;
+
+    gl_FragColor = vec4(color, 1.0);
+  }
 `;
 
-const lineFragmentShader = /* glsl */ `
-void main() {
-  gl_FragColor = vec4(0.478, 0.620, 0.773, 0.04);
-}
-`;
+// ---------------------------------------------------------------------------
+// Simulation resolution
+// ---------------------------------------------------------------------------
+const SIM_SIZE = typeof window !== "undefined" && window.devicePixelRatio > 1.5 ? 384 : 512;
 
 // ---------------------------------------------------------------------------
-// Geometry builders — deterministic, structurally placed
+// Scene component — ping-pong render target simulation + display mesh
 // ---------------------------------------------------------------------------
-
-const TWO_PI = Math.PI * 2;
-
-function buildHelixGeometry(count: number): {
-  positions: Float32Array;
-  normals: Float32Array;
-  layers: Float32Array;
-  indices: Float32Array;
-} {
-  const positions = new Float32Array(count * 3);
-  const normals = new Float32Array(count * 3);
-  const layers = new Float32Array(count);
-  const indices = new Float32Array(count);
-
-  const halfCount = Math.floor(count / 2);
-
-  for (let strand = 0; strand < 2; strand++) {
-    const phaseOffset = strand * Math.PI;
-    const startIdx = strand * halfCount;
-
-    for (let i = 0; i < halfCount; i++) {
-      const t = i / halfCount;
-      const angle = t * TWO_PI * 8.0 + phaseOffset;
-      // Deterministic noise-like variation via sin harmonics (no Math.random)
-      const radiusVar = Math.sin(i * 0.73) * 0.02 + Math.cos(i * 1.17) * 0.02;
-      const radius = 0.28 + radiusVar;
-
-      const idx = startIdx + i;
-      const i3 = idx * 3;
-
-      positions[i3] = Math.cos(angle) * radius;
-      positions[i3 + 1] = t * 2.2 - 1.1;
-      positions[i3 + 2] = Math.sin(angle) * radius;
-
-      // Normals point outward from helix axis
-      normals[i3] = Math.cos(angle);
-      normals[i3 + 1] = 0;
-      normals[i3 + 2] = Math.sin(angle);
-
-      layers[idx] = 0;
-      indices[idx] = i;
-    }
-  }
-
-  return { positions, normals, layers, indices };
-}
-
-function buildAttentionGeometry(cols: number, rows: number): {
-  positions: Float32Array;
-  normals: Float32Array;
-  layers: Float32Array;
-  indices: Float32Array;
-} {
-  const count = cols * rows;
-  const positions = new Float32Array(count * 3);
-  const normals = new Float32Array(count * 3);
-  const layers = new Float32Array(count);
-  const indices = new Float32Array(count);
-
-  const spacing = 0.065;
-  const offsetX = -(cols - 1) * spacing * 0.5;
-  const offsetY = -(rows - 1) * spacing * 0.5;
-
-  for (let row = 0; row < rows; row++) {
-    for (let col = 0; col < cols; col++) {
-      const idx = row * cols + col;
-      const i3 = idx * 3;
-
-      positions[i3] = offsetX + col * spacing;
-      positions[i3 + 1] = offsetY + row * spacing;
-      positions[i3 + 2] = -0.9;
-
-      normals[i3] = 0;
-      normals[i3 + 1] = 0;
-      normals[i3 + 2] = 1;
-
-      layers[idx] = 1;
-      indices[idx] = idx;
-    }
-  }
-
-  return { positions, normals, layers, indices };
-}
-
-function buildPeptideBondGeometry(
-  helixPositions: Float32Array,
-  helixCount: number,
-): Float32Array {
-  const halfCount = Math.floor(helixCount / 2);
-  const lineVertices: number[] = [];
-
-  // Sequential peptide bonds within each strand
-  for (let strand = 0; strand < 2; strand++) {
-    const start = strand * halfCount;
-    for (let i = 0; i < halfCount - 1; i++) {
-      const a = (start + i) * 3;
-      const b = (start + i + 1) * 3;
-      lineVertices.push(
-        helixPositions[a], helixPositions[a + 1], helixPositions[a + 2],
-        helixPositions[b], helixPositions[b + 1], helixPositions[b + 2],
-      );
-    }
-  }
-
-  // Cross-strand hydrogen bonds every 7th particle
-  for (let i = 0; i < halfCount; i += 7) {
-    // Find nearest particle on other strand by Y proximity
-    const aIdx = i;
-    const aY = helixPositions[aIdx * 3 + 1];
-    let bestIdx = halfCount;
-    let bestDist = Infinity;
-
-    for (let j = 0; j < halfCount; j++) {
-      const bIdx = halfCount + j;
-      const bY = helixPositions[bIdx * 3 + 1];
-      const d = Math.abs(aY - bY);
-      if (d < bestDist) {
-        bestDist = d;
-        bestIdx = bIdx;
-      }
-    }
-
-    const a = aIdx * 3;
-    const b = bestIdx * 3;
-    lineVertices.push(
-      helixPositions[a], helixPositions[a + 1], helixPositions[a + 2],
-      helixPositions[b], helixPositions[b + 1], helixPositions[b + 2],
-    );
-  }
-
-  return new Float32Array(lineVertices);
-}
-
-// ---------------------------------------------------------------------------
-// Scene component — manages all three layers
-// ---------------------------------------------------------------------------
-
 interface SceneProps {
   nx: { get: () => number };
   ny: { get: () => number };
@@ -374,85 +180,127 @@ interface SceneProps {
 }
 
 function Scene({ nx, ny, prefersReducedMotion }: SceneProps) {
-  const pointsRef = useRef<THREE.Points>(null);
-  const linesRef = useRef<THREE.LineSegments>(null);
-  const helixRotation = useRef(0);
+  const { gl, invalidate } = useThree();
+  const meshRef = useRef<THREE.Mesh>(null);
   const pausedRef = useRef(false);
-  const pointsMatRef = useRef<THREE.ShaderMaterial | null>(null);
-  const lineMatRef = useRef<THREE.ShaderMaterial | null>(null);
-  const { size } = useThree();
+  const initializedRef = useRef(false);
+  const mouseActiveRef = useRef(false);
+  const lastMouseRef = useRef({ x: 0.5, y: 0.5 });
+  const framesSinceMouseMove = useRef(0);
+  const timeRef = useRef(0);
 
-  // Build geometries and materials once, store materials in refs for mutation
-  const { pointsGeo, lineGeo, pointsMat, lineMat } = useMemo(() => {
-    const helixCount = 1500;
-    const attCols = 30;
-    const attRows = 35;
+  // All GPU resources stored in a single ref
+  const resources = useRef<{
+    rtA: THREE.WebGLRenderTarget;
+    rtB: THREE.WebGLRenderTarget;
+    quad: THREE.Mesh;
+    simMaterial: THREE.ShaderMaterial;
+    displayMaterial: THREE.ShaderMaterial;
+    seedMaterial: THREE.ShaderMaterial;
+    simScene: THREE.Scene;
+    simCamera: THREE.Camera;
+  } | null>(null);
 
-    const helix = buildHelixGeometry(helixCount);
-    const att = buildAttentionGeometry(attCols, attRows);
-    const attCount = attCols * attRows;
-    const totalCount = helixCount + attCount;
-
-    const mergedPos = new Float32Array(totalCount * 3);
-    const mergedNorm = new Float32Array(totalCount * 3);
-    const mergedLayer = new Float32Array(totalCount);
-    const mergedIndex = new Float32Array(totalCount);
-
-    mergedPos.set(helix.positions);
-    mergedPos.set(att.positions, helixCount * 3);
-    mergedNorm.set(helix.normals);
-    mergedNorm.set(att.normals, helixCount * 3);
-    mergedLayer.set(helix.layers);
-    mergedLayer.set(att.layers, helixCount);
-    mergedIndex.set(helix.indices);
-    mergedIndex.set(att.indices, helixCount);
-
-    const geo = new THREE.BufferGeometry();
-    geo.setAttribute("position", new THREE.BufferAttribute(mergedPos, 3));
-    geo.setAttribute("normal", new THREE.BufferAttribute(mergedNorm, 3));
-    geo.setAttribute("aLayer", new THREE.BufferAttribute(mergedLayer, 1));
-    geo.setAttribute("aIndex", new THREE.BufferAttribute(mergedIndex, 1));
-
-    const mat = new THREE.ShaderMaterial({
-      vertexShader,
-      fragmentShader,
-      uniforms: {
-        uTime: { value: 0 },
-        uMouse: { value: new THREE.Vector2(0.5, 0.5) },
-        uHelixRotation: { value: 0 },
-        uBasePointSize: { value: 1.8 },
-      },
-      transparent: true,
-      depthWrite: false,
-      blending: THREE.NormalBlending,
-    });
-
-    const linePositions = buildPeptideBondGeometry(helix.positions, helixCount);
-    const lGeo = new THREE.BufferGeometry();
-    lGeo.setAttribute("position", new THREE.BufferAttribute(linePositions, 3));
-
-    const lMat = new THREE.ShaderMaterial({
-      vertexShader: lineVertexShader,
-      fragmentShader: lineFragmentShader,
-      uniforms: {
-        uHelixRotation: { value: 0 },
-        uMouse: { value: new THREE.Vector2(0.5, 0.5) },
-      },
-      transparent: true,
-      depthWrite: false,
-      blending: THREE.NormalBlending,
-    });
-
-    return { pointsGeo: geo, lineGeo: lGeo, pointsMat: mat, lineMat: lMat };
-  }, []);
-
-  // Store materials in refs for useFrame mutation (after initial render)
+  // Initialize all resources + warmup
   useEffect(() => {
-    pointsMatRef.current = pointsMat;
-    lineMatRef.current = lineMat;
-  }, [pointsMat, lineMat]);
+    const rtOptions: THREE.RenderTargetOptions = {
+      minFilter: THREE.NearestFilter,
+      magFilter: THREE.NearestFilter,
+      format: THREE.RGBAFormat,
+      type: THREE.FloatType,
+    };
 
-  // Pause on tab hidden
+    const rtA = new THREE.WebGLRenderTarget(SIM_SIZE, SIM_SIZE, rtOptions);
+    const rtB = new THREE.WebGLRenderTarget(SIM_SIZE, SIM_SIZE, rtOptions);
+
+    const geometry = new THREE.PlaneGeometry(2, 2);
+
+    const simMaterial = new THREE.ShaderMaterial({
+      vertexShader: fullscreenVert,
+      fragmentShader: simulationFrag,
+      uniforms: {
+        uTexture: { value: null },
+        uResolution: { value: new THREE.Vector2(SIM_SIZE, SIM_SIZE) },
+        uF: { value: 0.037 },
+        uK: { value: 0.060 },
+        uMouse: { value: new THREE.Vector2(0.5, 0.5) },
+        uMouseActive: { value: 0.0 },
+      },
+      depthWrite: false,
+      depthTest: false,
+    });
+
+    const displayMaterial = new THREE.ShaderMaterial({
+      vertexShader: fullscreenVert,
+      fragmentShader: displayFrag,
+      uniforms: {
+        uTexture: { value: null },
+        uResolution: { value: new THREE.Vector2(SIM_SIZE, SIM_SIZE) },
+        uTime: { value: 0.0 },
+      },
+      depthWrite: false,
+      depthTest: false,
+    });
+
+    const seedMaterial = new THREE.ShaderMaterial({
+      vertexShader: fullscreenVert,
+      fragmentShader: seedFrag,
+      depthWrite: false,
+      depthTest: false,
+    });
+
+    const quad = new THREE.Mesh(geometry, simMaterial);
+    const simScene = new THREE.Scene();
+    simScene.add(quad);
+    const simCamera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+
+    resources.current = {
+      rtA, rtB, quad, simMaterial, displayMaterial, seedMaterial, simScene, simCamera,
+    };
+
+    // Seed initial conditions
+    quad.material = seedMaterial;
+    gl.setRenderTarget(rtA);
+    gl.render(simScene, simCamera);
+    gl.setRenderTarget(null);
+
+    // Warmup: run 800 simulation steps to develop fully labyrinthine patterns
+    for (let i = 0; i < 800; i++) {
+      simMaterial.uniforms.uTexture.value = rtA.texture;
+      simMaterial.uniforms.uMouseActive.value = 0.0;
+      quad.material = simMaterial;
+      gl.setRenderTarget(rtB);
+      gl.render(simScene, simCamera);
+
+      simMaterial.uniforms.uTexture.value = rtB.texture;
+      gl.setRenderTarget(rtA);
+      gl.render(simScene, simCamera);
+    }
+    gl.setRenderTarget(null);
+
+    // Attach display material to the visible mesh in R3F's scene graph
+    displayMaterial.uniforms.uTexture.value = rtA.texture;
+    if (meshRef.current) {
+      meshRef.current.material = displayMaterial;
+    }
+
+    initializedRef.current = true;
+
+    // Request one render frame so the warmed-up pattern is visible
+    // (critical for frameloop="never" / reduced-motion mode)
+    invalidate();
+
+    return () => {
+      rtA.dispose();
+      rtB.dispose();
+      geometry.dispose();
+      simMaterial.dispose();
+      displayMaterial.dispose();
+      seedMaterial.dispose();
+    };
+  }, [gl, invalidate]);
+
+  // Visibility change — pause when hidden
   useEffect(() => {
     const onVisibility = () => {
       pausedRef.current = document.hidden;
@@ -461,60 +309,80 @@ function Scene({ nx, ny, prefersReducedMotion }: SceneProps) {
     return () => document.removeEventListener("visibilitychange", onVisibility);
   }, []);
 
-  // Update resolution uniform via ref
-  useEffect(() => {
-    if (pointsMatRef.current) {
-      pointsMatRef.current.uniforms.uBasePointSize.value = Math.min(size.width / 700, 2.2);
-    }
-  }, [size]);
-
-  // Cleanup
-  useEffect(() => {
-    return () => {
-      pointsGeo.dispose();
-      lineGeo.dispose();
-      pointsMat.dispose();
-      lineMat.dispose();
-    };
-  }, [pointsGeo, lineGeo, pointsMat, lineMat]);
-
-  useFrame((_, delta) => {
+  // Simulation in useFrame — display mesh is rendered by R3F + EffectComposer
+  useFrame((state, delta) => {
+    if (!resources.current || !initializedRef.current) return;
     if (pausedRef.current || prefersReducedMotion) return;
 
-    const pMat = pointsMatRef.current;
-    const lMat = lineMatRef.current;
-    if (!pMat || !lMat) return;
-
+    const { rtA, rtB, quad, simMaterial, displayMaterial, simScene, simCamera } = resources.current;
+    const renderer = state.gl;
     const clampedDelta = Math.min(delta, 0.05);
-    helixRotation.current += 0.04 * clampedDelta * 60;
+    timeRef.current += clampedDelta;
 
-    pMat.uniforms.uTime.value += clampedDelta;
-    pMat.uniforms.uHelixRotation.value = helixRotation.current;
-    lMat.uniforms.uHelixRotation.value = helixRotation.current;
+    // Interpolate F/k parameters for slow morphology drift (40s cycle)
+    const t = Math.sin(timeRef.current * 0.025) * 0.5 + 0.5;
+    simMaterial.uniforms.uF.value = 0.035 + t * 0.002;
+    simMaterial.uniforms.uK.value = 0.060 + (1.0 - t) * 0.003;
 
-    pMat.uniforms.uMouse.value.set(nx.get(), ny.get());
-    lMat.uniforms.uMouse.value.set(nx.get(), ny.get());
+    // Mouse interaction
+    const mouseX = nx.get();
+    const mouseY = ny.get();
+    const mouseMoved =
+      Math.abs(mouseX - lastMouseRef.current.x) > 0.001 ||
+      Math.abs(mouseY - lastMouseRef.current.y) > 0.001;
+
+    if (mouseMoved) {
+      lastMouseRef.current.x = mouseX;
+      lastMouseRef.current.y = mouseY;
+      mouseActiveRef.current = true;
+      framesSinceMouseMove.current = 0;
+    } else {
+      framesSinceMouseMove.current++;
+      if (framesSinceMouseMove.current > 3) {
+        mouseActiveRef.current = false;
+      }
+    }
+
+    simMaterial.uniforms.uMouse.value.set(mouseX, mouseY);
+    simMaterial.uniforms.uMouseActive.value = mouseActiveRef.current ? 1.0 : 0.0;
+
+    // Simulation step: read A → write B
+    simMaterial.uniforms.uTexture.value = rtA.texture;
+    quad.material = simMaterial;
+    renderer.setRenderTarget(rtB);
+    renderer.render(simScene, simCamera);
+
+    // Copy B → A for next frame
+    simMaterial.uniforms.uTexture.value = rtB.texture;
+    renderer.setRenderTarget(rtA);
+    renderer.render(simScene, simCamera);
+
+    // Reset render target so R3F can render to screen
+    renderer.setRenderTarget(null);
+
+    // Update display material uniforms — R3F renders this mesh to screen
+    displayMaterial.uniforms.uTexture.value = rtA.texture;
+    displayMaterial.uniforms.uTime.value = timeRef.current;
   });
 
+  // Visible mesh in R3F's scene graph — material attached via useEffect
   return (
-    <>
-      <points ref={pointsRef} geometry={pointsGeo} material={pointsMat} />
-      <lineSegments ref={linesRef} geometry={lineGeo} material={lineMat} />
-    </>
+    <mesh ref={meshRef}>
+      <planeGeometry args={[2, 2]} />
+    </mesh>
   );
 }
 
 // ---------------------------------------------------------------------------
 // CSS-only fallback for mobile / no WebGL
 // ---------------------------------------------------------------------------
-
 export function WebGLBackgroundFallback() {
   return (
     <div
       className="fixed inset-0 -z-10 pointer-events-none"
       style={{
         background:
-          "radial-gradient(ellipse at 30% 40%, #0d1525 0%, #070a12 60%, #020305 100%)",
+          "radial-gradient(ellipse at 40% 35%, #0d1a2e 0%, #070a12 55%, #020305 100%)",
         backgroundColor: "#070a12",
       }}
     />
@@ -524,20 +392,24 @@ export function WebGLBackgroundFallback() {
 // ---------------------------------------------------------------------------
 // Public component
 // ---------------------------------------------------------------------------
-
 export default function WebGLBackground({
   prefersReducedMotion = false,
+  className,
 }: {
   prefersReducedMotion?: boolean;
+  className?: string;
 }) {
   const { nx, ny } = useMousePosition();
 
   const onCreated = useCallback((state: { gl: THREE.WebGLRenderer }) => {
-    state.gl.setClearColor(new THREE.Color("#070a12"), 0);
+    state.gl.setClearColor(new THREE.Color("#070a12"), 1);
   }, []);
 
   return (
-    <div className="fixed inset-0 -z-10 pointer-events-none" style={{ backgroundColor: "#070a12" }}>
+    <div
+      className={`fixed inset-0 -z-10 pointer-events-none ${className ?? ""}`}
+      style={{ backgroundColor: "#070a12" }}
+    >
       <Canvas
         gl={{
           antialias: false,
@@ -546,17 +418,17 @@ export default function WebGLBackground({
           stencil: false,
           depth: false,
         }}
-        dpr={[1, 1.5]}
-        camera={{ position: [0, 0, 2], fov: 50 }}
+        dpr={[1, 1]}
+        camera={{ position: [0, 0, 1] }}
         onCreated={onCreated}
-        frameloop={prefersReducedMotion ? "never" : "always"}
+        frameloop={prefersReducedMotion ? "demand" : "always"}
       >
         <Scene nx={nx} ny={ny} prefersReducedMotion={prefersReducedMotion} />
         <EffectComposer>
           <Bloom
-            luminanceThreshold={0.9}
-            intensity={0.06}
-            luminanceSmoothing={0.95}
+            luminanceThreshold={0.6}
+            intensity={0.25}
+            luminanceSmoothing={0.5}
             mipmapBlur
           />
         </EffectComposer>

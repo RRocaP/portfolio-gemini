@@ -164,8 +164,8 @@ const en: Translation = {
   about: {
     heading: "Finding the therapeutic signal in a sea of biological noise.",
     bio: [
-      "I studied Biotechnology at the Universitat Autonoma de Barcelona. Then I boarded a flight to sunny California to pursue a Master's in Biomedical Engineering at UC Irvine. The flight back led me into a PhD at the UAB, where I spent four years designing antimicrobial proteins, from design through recombinant production and functional assays. That stage produced two patents and four first-author papers.",
-      "The last flight took me to Sydney, to the CMRI, where I have built a platform to analyze millions of sequences and find hundreds, or thousands, of new antimicrobial peptides. Thanks to protein language models and recent advances in AI, we have been able to test those predictions both in the lab and in preclinical models. In parallel, I have also applied generative AI to protein engineering to design AAV capsids for gene therapy.",
+      "I studied Biotechnology at the UAB and then flew to <em>Sunny</em> California for a Master's in Biomedical Engineering at UC Irvine. The flight back took me to a PhD at the UAB, where I spent four years designing antimicrobial proteins. That stage produced two commercialized patents and four first-author papers.",
+      "The last flight took me to Sydney. At the CMRI I have built a platform to analyze millions of sequences and find new antimicrobial peptides with protein language models and AI. What the model points to, we take into the lab and validate in preclinical models. In parallel, I have applied generative AI to design AAV capsids for gene therapy.",
     ],
     competenciesTitle: "Core Competencies",
     competencies: [
@@ -301,8 +301,8 @@ const es: Translation = {
   about: {
     heading: "Encontrando la señal terapéutica en un mar de ruido biológico.",
     bio: [
-      "Estudié Biotecnología en la Universitat Autonoma de Barcelona. Después cogí un vuelo hacia la California soleada para cursar un máster en Ingeniería Biomédica en UC Irvine. El vuelo de vuelta me llevó a un doctorado en la UAB, donde pasé cuatro años diseñando proteínas antimicrobianas, desde el diseño hasta la producción recombinante y los ensayos funcionales. De esa etapa salieron dos patentes y cuatro artículos como primer autor.",
-      "El último vuelo me llevó a Sídney, al CMRI, donde he establecido una plataforma para analizar millones de secuencias y encontrar cientos, o miles, de nuevos péptidos antimicrobianos. Gracias a los modelos de lenguaje de proteínas y a los últimos avances en IA, hemos podido llevar esas predicciones tanto al laboratorio como a modelos preclínicos. En paralelo, también he aplicado IA generativa a la ingeniería de proteínas para diseñar cápsides de AAV para terapia génica.",
+      "Estudié Biotecnología en la UAB y después volé a la California <em>Sunny</em> para hacer un máster en Ingeniería Biomédica en UC Irvine. El vuelo de vuelta me llevó a un doctorado en la UAB, donde dediqué cuatro años a diseñar proteínas antimicrobianas. De esa etapa salieron dos patentes comercializadas y cuatro artículos como primer autor.",
+      "El último vuelo me llevó a Sídney. En el CMRI he construido una plataforma para analizar millones de secuencias y encontrar nuevos péptidos antimicrobianos con modelos de lenguaje de proteínas e IA. Lo que el modelo señala, lo llevamos al laboratorio y lo validamos en modelos preclínicos. En paralelo, he aplicado IA generativa para diseñar cápsides de AAV para terapia génica.",
     ],
     competenciesTitle: "Competencias principales",
     competencies: [
@@ -438,7 +438,7 @@ const ca: Translation = {
   about: {
     heading: "Trobant el senyal terapèutic en un mar de soroll biològic.",
     bio: [
-      "Vaig estudiar Biotecnologia a la UAB i després vaig volar a la \"Sunny\" Califòrnia per fer un màster en Enginyeria Biomèdica a la UC Irvine. El vol de tornada em va portar a un doctorat a la UAB, on vaig dedicar quatre anys a dissenyar proteïnes antimicrobianes. D'aquella etapa en van sortir dues patents comercialitzades i quatre articles com a primer autor.",
+      "Vaig estudiar Biotecnologia a la UAB i després vaig volar a la <em>Sunny</em> Califòrnia per fer un màster en Enginyeria Biomèdica a la UC Irvine. El vol de tornada em va portar a un doctorat a la UAB, on vaig dedicar quatre anys a dissenyar proteïnes antimicrobianes. D'aquella etapa en van sortir dues patents comercialitzades i quatre articles com a primer autor.",
       "L'últim vol em va portar a Sydney. Al CMRI he construït una plataforma per analitzar milions de seqüències i trobar nous pèptids antimicrobians amb models de llenguatge de proteïnes i IA. El que el model assenyala, ho portem al laboratori i ho validem en models preclínics. En paral·lel, he aplicat IA generativa per dissenyar càpsides d'AAV per a teràpia gènica.",
     ],
     competenciesTitle: "Competències principals",

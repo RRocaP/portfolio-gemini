@@ -4,13 +4,15 @@ import { Fragment, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { Volume2, VolumeX, Menu, X } from "lucide-react";
 import {
-  IconBrandGithub,
-  IconBrandLinkedin,
-  IconBrandX,
-  IconBrandThreads,
-} from "@tabler/icons-react";
+  ArrowUpRight,
+  GraduationCap,
+  Menu,
+  Volume2,
+  VolumeX,
+  X,
+} from "lucide-react";
+import { IconBrandGithub, IconBrandLinkedin } from "@tabler/icons-react";
 import {
   translations,
   locales,
@@ -23,16 +25,76 @@ const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
 const backgroundVideoUrl =
   process.env.NEXT_PUBLIC_BACKGROUND_VIDEO_URL || `${basePath}/background.mp4`;
 
-const socialLinks = [
-  { label: "GitHub", href: "https://github.com/RRocaP", Icon: IconBrandGithub },
+function OrcidIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
+      <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.8" />
+      <text
+        x="12"
+        y="15"
+        fill="currentColor"
+        fontFamily="ui-sans-serif, system-ui, sans-serif"
+        fontSize="8.25"
+        fontWeight="700"
+        textAnchor="middle"
+      >
+        iD
+      </text>
+    </svg>
+  );
+}
+
+const profileLinks = [
+  {
+    label: "Google Scholar",
+    href: "https://scholar.google.com/citations?user=jYIZGT0AAAAJ&hl=en",
+    Icon: GraduationCap,
+  },
+  {
+    label: "ORCID",
+    href: "https://orcid.org/0000-0002-7393-6200",
+    Icon: OrcidIcon,
+  },
+  {
+    label: "GitHub",
+    href: "https://github.com/RRocaP",
+    Icon: IconBrandGithub,
+  },
   {
     label: "LinkedIn",
     href: "https://www.linkedin.com/in/ramonrocapinilla/",
     Icon: IconBrandLinkedin,
   },
-  { label: "X", href: "https://x.com/RRocapinilla", Icon: IconBrandX },
-  { label: "Threads", href: "https://www.threads.net/@rroca15", Icon: IconBrandThreads },
 ] as const;
+
+function ProfileLinks({
+  className,
+  linkClassName,
+  iconClassName = "h-4 w-4",
+}: {
+  className?: string;
+  linkClassName?: string;
+  iconClassName?: string;
+}) {
+  return (
+    <div className={className}>
+      {profileLinks.map(({ label, href, Icon }) => (
+        <a
+          key={label}
+          href={href}
+          target="_blank"
+          rel="noreferrer"
+          aria-label={label}
+          title={label}
+          className={`inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-slate-300 transition-all hover:border-white/25 hover:bg-white/10 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white ${linkClassName ?? ""}`}
+        >
+          <Icon className={iconClassName} />
+          <span className="sr-only">{label}</span>
+        </a>
+      ))}
+    </div>
+  );
+}
 
 // ---------------------------------------------------------------------------
 // Reduced motion hook (static-export safe — defaults to false so video renders)
@@ -63,7 +125,7 @@ function ImmersiveBackground({
     const audio = audioRef.current;
     if (!audio) return;
 
-    audio.volume = 0; // start silent, fade in
+    audio.volume = 0;
 
     const fadeIn = () => {
       let vol = 0;
@@ -123,13 +185,13 @@ function ImmersiveBackground({
             playsInline
             preload="metadata"
             poster={`${basePath}/poster.jpg`}
-            className="absolute inset-0 w-full h-full object-cover opacity-60 mix-blend-screen"
+            className="absolute inset-0 h-full w-full object-cover opacity-60 mix-blend-screen"
           >
             <source src={backgroundVideoUrl} type="video/mp4" />
           </video>
         )}
-        <div className="absolute inset-0 bg-[#121214]/60 mix-blend-multiply pointer-events-none" />
-        <div className="absolute inset-0 bg-[#47618c]/10 mix-blend-overlay pointer-events-none" />
+        <div className="pointer-events-none absolute inset-0 bg-[#121214]/60 mix-blend-multiply" />
+        <div className="pointer-events-none absolute inset-0 bg-[#47618c]/10 mix-blend-overlay" />
       </div>
 
       <audio ref={audioRef} loop className="hidden" muted={isMuted}>
@@ -138,7 +200,7 @@ function ImmersiveBackground({
 
       <button
         onClick={toggleMute}
-        className="fixed bottom-4 left-4 sm:bottom-8 sm:left-8 z-50 min-w-[44px] min-h-[44px] p-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-full backdrop-blur-md transition-all duration-300 text-white/50 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+        className="fixed bottom-4 left-4 z-50 min-h-[44px] min-w-[44px] rounded-full border border-white/10 bg-white/5 p-3 text-white/50 backdrop-blur-md transition-all duration-300 hover:bg-white/10 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:bottom-8 sm:left-8"
         aria-label={isMuted ? t.audio.unmute : t.audio.mute}
       >
         {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
@@ -155,13 +217,13 @@ function LanguageSwitcher({ locale }: { locale: Locale }) {
     <div className="flex items-center gap-2">
       {locales.map((l, i) => (
         <Fragment key={l}>
-          {i > 0 && <span className="text-slate-600 text-xs select-none">|</span>}
+          {i > 0 && <span className="select-none text-xs text-slate-600">|</span>}
           <Link
             href={`/${l}`}
-            className={`px-3 py-2 text-xs font-mono uppercase rounded transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white ${
+            className={`rounded px-3 py-2 text-xs font-mono uppercase transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white ${
               l === locale
                 ? "bg-white/15 text-white"
-                : "text-slate-400 hover:text-white hover:bg-white/5"
+                : "text-slate-400 hover:bg-white/5 hover:text-white"
             }`}
           >
             {l}
@@ -223,17 +285,15 @@ export default function PortfolioPage() {
         t={t}
       />
 
-      <div className="min-h-screen text-[#e9ecf1] selection:bg-[#47618c]/40 selection:text-[#e9ecf1] overflow-x-hidden font-sans relative z-10 bg-transparent">
-        {/* Skip to main content — WCAG 2.4.1 */}
+      <div className="relative z-10 min-h-screen overflow-x-hidden bg-transparent font-sans text-[#e9ecf1] selection:bg-[#47618c]/40 selection:text-[#e9ecf1]">
         <a
           href="#works"
-          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-1/2 focus:-translate-x-1/2 focus:z-[60] focus:px-6 focus:py-3 focus:bg-white focus:text-black focus:rounded-full focus:font-semibold focus:text-sm"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-1/2 focus:top-4 focus:z-[60] focus:-translate-x-1/2 focus:rounded-full focus:bg-white focus:px-6 focus:py-3 focus:text-sm focus:font-semibold focus:text-black"
         >
           Skip to main content
         </a>
 
-        {/* ── Navigation ── */}
-        <header className="fixed top-0 left-0 right-0 z-50 flex justify-between items-center p-4 sm:p-6 md:p-10 mix-blend-difference">
+        <header className="fixed left-0 right-0 top-0 z-50 flex items-center justify-between p-4 mix-blend-difference sm:p-6 md:p-10">
           <Link
             href={`/${locale}`}
             className="text-xl font-bold tracking-tighter text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
@@ -247,13 +307,12 @@ export default function PortfolioPage() {
             </motion.span>
           </Link>
 
-          {/* Desktop nav */}
-          <nav className="hidden md:flex items-center gap-8">
+          <nav className="hidden items-center gap-6 md:flex">
             {navItems.map((item, i) => (
               <motion.a
                 key={item.href}
                 href={item.href}
-                className="text-sm font-medium tracking-wide text-slate-300 hover:text-white transition-colors py-2 px-1 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                className="px-1 py-2 text-sm font-medium tracking-wide text-slate-300 transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 + i * 0.1 }}
@@ -261,12 +320,15 @@ export default function PortfolioPage() {
                 {item.label}
               </motion.a>
             ))}
+            <ProfileLinks
+              className="flex items-center gap-3"
+              linkClassName="h-9 w-9 border-white/0 bg-transparent text-slate-300 hover:border-white/20 hover:bg-white/10"
+            />
             <LanguageSwitcher locale={locale} />
           </nav>
 
-          {/* Mobile hamburger */}
           <button
-            className="md:hidden min-w-[44px] min-h-[44px] p-2 text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+            className="min-h-[44px] min-w-[44px] p-2 text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white md:hidden"
             onClick={() => setMobileMenuOpen((open) => !open)}
             aria-label={
               mobileMenuOpen ? t.mobileMenu.close : t.mobileMenu.open
@@ -276,7 +338,6 @@ export default function PortfolioPage() {
           </button>
         </header>
 
-        {/* Mobile menu overlay */}
         <AnimatePresence>
           {mobileMenuOpen && (
             <motion.nav
@@ -284,19 +345,20 @@ export default function PortfolioPage() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 z-40 bg-black/95 backdrop-blur-lg flex flex-col items-center justify-center gap-8"
+              className="fixed inset-0 z-40 flex flex-col items-center justify-center gap-8 bg-black/95 backdrop-blur-lg"
             >
               {navItems.map((item) => (
                 <a
                   key={item.href}
                   href={item.href}
                   onClick={() => setMobileMenuOpen(false)}
-                  className="text-2xl font-medium text-white tracking-wide focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                  className="text-2xl font-medium tracking-wide text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                 >
                   {item.label}
                 </a>
               ))}
-              <div className="mt-4">
+              <ProfileLinks className="flex items-center gap-3" />
+              <div className="mt-2">
                 <LanguageSwitcher locale={locale} />
               </div>
             </motion.nav>
@@ -304,40 +366,77 @@ export default function PortfolioPage() {
         </AnimatePresence>
 
         <main>
-          {/* ── Hero ── */}
           <section
             id="top"
-            className="relative h-screen flex flex-col items-center justify-center overflow-hidden"
+            className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden"
           >
-            <div className="relative z-10 w-full max-w-7xl mx-auto px-6 md:px-12 flex flex-col items-start">
+            <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-col items-start px-6 md:px-12">
               <motion.div
                 initial="hidden"
                 animate="visible"
                 variants={staggerContainer}
                 className="max-w-4xl"
               >
+                <motion.p
+                  variants={fadeUp}
+                  className="mb-5 max-w-3xl text-[11px] font-mono uppercase tracking-[0.28em] text-[#7a9ec5] md:text-xs"
+                >
+                  {t.hero.eyebrow}
+                </motion.p>
+
                 <motion.h1
                   variants={fadeUp}
-                  className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tighter leading-[1.1] text-transparent bg-clip-text bg-gradient-to-r from-slate-100 to-slate-400 mb-8 whitespace-pre-line"
+                  className="mb-6 bg-gradient-to-r from-slate-100 to-slate-400 bg-clip-text text-4xl font-black leading-[1.05] tracking-tighter text-transparent md:text-6xl lg:text-7xl"
                 >
                   {t.hero.title}
                 </motion.h1>
 
                 <motion.p
                   variants={fadeUp}
-                  className="text-lg md:text-xl text-slate-400 max-w-2xl font-light tracking-wide mb-10 leading-relaxed"
+                  className="mb-4 max-w-3xl text-lg font-light leading-relaxed tracking-wide text-slate-300 md:text-xl"
                 >
                   {t.hero.subtitle}
                 </motion.p>
 
-                <motion.div variants={fadeUp} className="flex flex-col min-[480px]:flex-row flex-wrap gap-4 w-full min-[480px]:w-auto">
+                <motion.p
+                  variants={fadeUp}
+                  className="mb-6 text-sm font-medium uppercase tracking-[0.22em] text-[#6bb5ab] md:text-base"
+                >
+                  {t.hero.supportingLine}
+                </motion.p>
+
+                <motion.ul
+                  variants={fadeUp}
+                  className="mb-6 flex flex-wrap gap-3"
+                >
+                  {t.hero.proof.map((item) => (
+                    <li
+                      key={item}
+                      className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs font-mono uppercase tracking-[0.18em] text-slate-200 backdrop-blur-sm"
+                    >
+                      {item}
+                    </li>
+                  ))}
+                </motion.ul>
+
+                <motion.div variants={fadeUp}>
+                  <ProfileLinks
+                    className="mb-10 flex items-center gap-3"
+                    iconClassName="h-4.5 w-4.5"
+                  />
+                </motion.div>
+
+                <motion.div
+                  variants={fadeUp}
+                  className="flex w-full flex-col gap-4 min-[480px]:w-auto min-[480px]:flex-row min-[480px]:flex-wrap"
+                >
                   <a
                     href="#works"
-                    className="px-8 py-4 bg-white text-black font-semibold rounded-full hover:bg-slate-200 transition-colors inline-flex items-center justify-center gap-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                    className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-8 py-4 font-semibold text-black transition-colors hover:bg-slate-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                   >
                     {t.hero.ctaPrimary}
                     <svg
-                      className="w-4 h-4"
+                      className="h-4 w-4"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -352,21 +451,16 @@ export default function PortfolioPage() {
                   </a>
                   <a
                     href="#about"
-                    className="px-6 py-3 border border-white/20 text-white font-semibold rounded-full hover:bg-white/5 transition-colors text-center focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                    className="rounded-full border border-white/20 px-6 py-3 text-center font-semibold text-white transition-colors hover:bg-white/5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                   >
                     {t.hero.ctaSecondary}
                   </a>
                 </motion.div>
               </motion.div>
             </div>
-
           </section>
 
-          {/* ── Works ── */}
-          <section
-            id="works"
-            className="py-32 px-6 md:px-12 max-w-7xl mx-auto"
-          >
+          <section id="works" className="mx-auto max-w-7xl px-6 py-32 md:px-12">
             <motion.div
               initial="hidden"
               whileInView="visible"
@@ -374,56 +468,65 @@ export default function PortfolioPage() {
               variants={fadeUp}
               className="mb-16"
             >
-              <h2 className="text-sm font-bold tracking-widest text-[#7a9ec5] uppercase mb-4">
+              <h2 className="mb-4 text-sm font-bold uppercase tracking-widest text-[#7a9ec5]">
                 {t.sections.works}
               </h2>
               <div className="h-[1px] w-full bg-white/10" />
             </motion.div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
               {t.works.map((work, i) => (
-                <motion.article
+                <motion.a
                   key={work.id}
+                  href={work.href}
+                  target="_blank"
+                  rel="noreferrer"
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: "-50px" }}
                   transition={{ duration: 0.6, delay: i * 0.1 }}
-                  className="group cursor-pointer border border-white/5 bg-white/5 hover:bg-white/10 p-8 rounded-sm transition-colors duration-500 flex flex-col h-full"
+                  className="group flex h-full cursor-pointer flex-col rounded-sm border border-white/5 bg-white/5 p-8 transition-colors duration-500 hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                  aria-label={`${t.workLinkLabel}: ${work.title}`}
                 >
-                  <div className="flex justify-between items-start mb-6">
-                    <span className="text-xs font-mono text-[#6bb5ab] border border-[#6bb5ab]/30 px-2 py-1 rounded-sm">
+                  <div className="mb-6 flex items-start justify-between gap-4">
+                    <span className="rounded-sm border border-[#6bb5ab]/30 px-2 py-1 text-xs font-mono text-[#6bb5ab]">
                       {work.year}
+                    </span>
+                    <span className="max-w-[11rem] text-right text-[11px] font-mono uppercase tracking-[0.2em] text-slate-500">
+                      {work.venue}
                     </span>
                   </div>
 
-                  <h3 className="text-xl font-semibold text-[#e9ecf1] tracking-tight leading-snug mb-4 group-hover:text-[#64728a] transition-colors duration-300">
+                  <h3 className="mb-4 text-xl font-semibold leading-snug tracking-tight text-[#e9ecf1] transition-colors duration-300 group-hover:text-[#c4d6ee]">
                     {work.title}
                   </h3>
 
-                  <p className="text-sm text-slate-400 font-light mb-8 flex-grow line-clamp-2 group-hover:line-clamp-none transition-all duration-300">
+                  <p className="mb-8 flex-grow text-sm font-light leading-relaxed text-slate-300">
                     {work.blurb}
                   </p>
 
-                  <div className="flex flex-wrap gap-2 mt-auto">
-                    {work.tags.map((tag) => (
-                      <span
-                        key={tag}
-                        className="text-[11px] tracking-wider px-2 py-1 bg-black/40 text-slate-300 rounded-sm"
-                      >
-                        {tag}
-                      </span>
-                    ))}
+                  <div className="mt-auto flex items-end justify-between gap-4">
+                    <div className="flex flex-wrap gap-2">
+                      {work.tags.map((tag) => (
+                        <span
+                          key={tag}
+                          className="rounded-sm bg-black/40 px-2 py-1 text-[11px] tracking-wider text-slate-300"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                    <span className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-[0.18em] text-[#7a9ec5]">
+                      {t.workLinkLabel}
+                      <ArrowUpRight className="h-4 w-4" />
+                    </span>
                   </div>
-                </motion.article>
+                </motion.a>
               ))}
             </div>
           </section>
 
-          {/* ── About ── */}
-          <section
-            id="about"
-            className="py-32 px-6 md:px-12 max-w-7xl mx-auto"
-          >
+          <section id="about" className="mx-auto max-w-7xl px-6 py-32 md:px-12">
             <motion.div
               initial="hidden"
               whileInView="visible"
@@ -431,42 +534,42 @@ export default function PortfolioPage() {
               variants={fadeUp}
               className="mb-16"
             >
-              <h2 className="text-sm font-bold tracking-widest text-[#7a9ec5] uppercase mb-4">
+              <h2 className="mb-4 text-sm font-bold uppercase tracking-widest text-[#7a9ec5]">
                 {t.sections.about}
               </h2>
               <div className="h-[1px] w-full bg-white/10" />
             </motion.div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
+            <div className="grid grid-cols-1 gap-16 lg:grid-cols-2">
               <motion.div
                 initial={{ opacity: 0, x: -30 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.8 }}
               >
-                <h3 className="text-3xl font-bold mb-6 text-white tracking-tight">
+                <h3 className="mb-6 text-3xl font-bold tracking-tight text-white">
                   {t.about.heading}
                 </h3>
-                <div className="flex flex-col gap-8 text-base text-slate-400 font-light leading-relaxed">
+                <div className="flex flex-col gap-8 text-base font-light leading-relaxed text-slate-400">
                   <p lang={locale} className="mr-4 md:mr-16">
                     {t.about.bio[0]}
                   </p>
                   <p
                     lang={locale}
-                    className="ml-4 md:ml-16 pl-6 border-l border-[#7a9ec5]/40"
+                    className="ml-4 border-l border-[#7a9ec5]/40 pl-6 md:ml-16"
                   >
                     {t.about.bio[1]}
                   </p>
                 </div>
 
-                <div className="mt-12 p-6 border border-white/10 bg-white/5 rounded-sm backdrop-blur-sm">
-                  <h4 className="text-sm font-bold tracking-widest text-white uppercase mb-4">
+                <div className="mt-12 rounded-sm border border-white/10 bg-white/5 p-6 backdrop-blur-sm">
+                  <h4 className="mb-4 text-sm font-bold uppercase tracking-widest text-white">
                     {t.about.competenciesTitle}
                   </h4>
                   <ul className="grid grid-cols-2 gap-y-3 text-sm text-slate-300">
                     {t.about.competencies.map((c) => (
                       <li key={c} className="flex items-center gap-2">
-                        <span className="w-1.5 h-1.5 rounded-full bg-[#47618c]" />
+                        <span className="h-1.5 w-1.5 rounded-full bg-[#47618c]" />
                         {c}
                       </li>
                     ))}
@@ -481,21 +584,21 @@ export default function PortfolioPage() {
                 transition={{ duration: 0.8 }}
                 className="relative"
               >
-                <div className="absolute left-0 top-2 bottom-2 w-px bg-white/10" />
+                <div className="absolute bottom-2 left-0 top-2 w-px bg-white/10" />
                 <div className="space-y-12">
                   {t.timeline.map((item, i) => (
                     <div key={i} className="relative pl-8">
-                      <div className="absolute left-[-4px] top-1.5 w-2 h-2 rounded-full bg-[#6bb5ab] shadow-[0_0_10px_rgba(66,120,114,0.8)]" />
-                      <span className="text-xs font-mono text-[#6bb5ab] mb-1 block">
+                      <div className="absolute left-[-4px] top-1.5 h-2 w-2 rounded-full bg-[#6bb5ab] shadow-[0_0_10px_rgba(66,120,114,0.8)]" />
+                      <span className="mb-1 block text-xs font-mono text-[#6bb5ab]">
                         {item.year}
                       </span>
                       <h4 className="text-lg font-semibold text-white">
                         {item.role}
                       </h4>
-                      <span className="text-sm font-medium text-slate-300 mb-3 block">
+                      <span className="mb-3 block text-sm font-medium text-slate-300">
                         {item.company}
                       </span>
-                      <p className="text-sm text-slate-500 font-light">
+                      <p className="text-sm font-light text-slate-500">
                         {item.desc}
                       </p>
                     </div>
@@ -505,10 +608,9 @@ export default function PortfolioPage() {
             </div>
           </section>
 
-          {/* ── Contact ── */}
           <section
             id="contact"
-            className="py-32 px-6 md:px-12 max-w-7xl mx-auto border-t border-white/5"
+            className="mx-auto max-w-7xl border-t border-white/5 px-6 py-32 md:px-12"
           >
             <motion.div
               initial="hidden"
@@ -519,47 +621,45 @@ export default function PortfolioPage() {
             >
               <motion.h2
                 variants={fadeUp}
-                className="text-4xl md:text-6xl font-bold tracking-tighter text-white mb-6"
+                className="mb-6 text-4xl font-bold tracking-tighter text-white md:text-6xl"
               >
                 {t.contact.heading}
               </motion.h2>
               <motion.p
                 variants={fadeUp}
-                className="text-slate-400 max-w-xl font-light mb-12"
+                className="mb-8 max-w-xl font-light text-slate-400"
               >
                 {t.contact.subtitle}
               </motion.p>
 
+              <motion.div variants={fadeUp}>
+                <ProfileLinks
+                  className="mb-8 flex flex-wrap items-center justify-center gap-3"
+                  iconClassName="h-4.5 w-4.5"
+                />
+              </motion.div>
+
               <motion.a
                 variants={fadeUp}
                 href={`mailto:${t.contact.emailLabel}`}
-                className="text-xl md:text-2xl font-semibold border-b-2 border-[#7a9ec5] pb-1 hover:text-[#e9ecf1] transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                className="border-b-2 border-[#7a9ec5] pb-1 text-xl font-semibold transition-colors hover:text-[#e9ecf1] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white md:text-2xl"
               >
                 {t.contact.emailLabel}
               </motion.a>
 
               <motion.div
                 variants={fadeUp}
-                className="mt-32 w-full flex flex-col md:flex-row justify-between items-center gap-8 text-xs text-slate-400 font-mono"
+                className="mt-32 flex w-full flex-col items-center justify-between gap-8 text-xs font-mono text-slate-400 md:flex-row"
               >
                 <p>
                   &copy; {new Date().getFullYear()} Ramon Roca Pinilla.{" "}
                   {t.contact.footer}
                 </p>
-                <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-8">
-                  {socialLinks.map(({ label, href, Icon }) => (
-                    <a
-                      key={label}
-                      href={href}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="flex items-center gap-2 sm:gap-3 p-2 hover:text-slate-300 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-                    >
-                      <Icon size={28} stroke={1.75} />
-                      <span className="text-sm">{label}</span>
-                    </a>
-                  ))}
-                </div>
+                <ProfileLinks
+                  className="flex flex-wrap items-center justify-center gap-3"
+                  linkClassName="h-11 w-11"
+                  iconClassName="h-5 w-5"
+                />
               </motion.div>
             </motion.div>
           </section>

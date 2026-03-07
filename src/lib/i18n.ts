@@ -13,6 +13,7 @@ export interface WorkItem {
   tags: string[];
   blurb: string;
   href: string;
+  span?: "wide";
 }
 
 export interface TimelineItem {
@@ -20,6 +21,11 @@ export interface TimelineItem {
   role: string;
   company: string;
   desc: string;
+}
+
+export interface StatItem {
+  value: string;
+  label: string;
 }
 
 export interface Translation {
@@ -41,8 +47,10 @@ export interface Translation {
   about: {
     heading: string;
     bio: string[];
+    stats: StatItem[];
     competenciesTitle: string;
     competencies: string[];
+    competencyDescriptions: string[];
   };
   contact: {
     heading: string;
@@ -88,6 +96,7 @@ const en: Translation = {
       blurb:
         "Evolved AAV capsids that improved targeted CAR-T generation and reduced the vector dose needed for primary T cell editing.",
       href: "https://doi.org/10.1016/j.ymthe.2024.12.012",
+      span: "wide",
     },
     {
       id: 2,
@@ -98,6 +107,7 @@ const en: Translation = {
       blurb:
         "Used whole human liver perfusion to compare AAV vectors in a clinically relevant preclinical model.",
       href: "https://doi.org/10.1038/s41467-024-46194-y",
+      span: "wide",
     },
     {
       id: 3,
@@ -167,6 +177,12 @@ const en: Translation = {
       "I studied Biotechnology at the Universitat Autonoma de Barcelona. Then I boarded a flight to sunny California to pursue a Master's in Biomedical Engineering at UC Irvine. The flight back led me into a PhD at the UAB, where I spent four years designing antimicrobial proteins, from design through recombinant production and functional assays. That stage produced two patents and four first-author papers.",
       "The last flight took me to Sydney, to the CMRI, where I have built a platform to analyze millions of sequences and find hundreds, or thousands, of new antimicrobial peptides. Thanks to protein language models and recent advances in AI, we have been able to test those predictions both in the lab and in preclinical models. In parallel, I have also applied generative AI to protein engineering to design AAV capsids for gene therapy.",
     ],
+    stats: [
+      { value: "20+", label: "Publications" },
+      { value: "300+", label: "Citations" },
+      { value: "2", label: "Patents" },
+      { value: "3", label: "Countries" },
+    ],
     competenciesTitle: "Core Competencies",
     competencies: [
       "Protein Language Models",
@@ -175,6 +191,14 @@ const en: Translation = {
       "Antimicrobial Discovery",
       "Preclinical Validation",
       "Molecular Biology",
+    ],
+    competencyDescriptions: [
+      "ESM-2, ProtTrans, pLM-based sequence analysis",
+      "Directed evolution, capsid libraries, tropism engineering",
+      "PyTorch, scikit-learn, pandas, data pipelines",
+      "Peptide design, MIC assays, in vivo efficacy",
+      "Mouse models, pharmacokinetics, toxicology",
+      "Cloning, protein expression, functional assays",
     ],
   },
   contact: {
@@ -225,6 +249,7 @@ const es: Translation = {
       blurb:
         "Evolucioné cápsidas AAV que mejoraron la generación dirigida de CAR-T y redujeron la dosis vectorial necesaria en edición de linfocitos T primarios.",
       href: "https://doi.org/10.1016/j.ymthe.2024.12.012",
+      span: "wide",
     },
     {
       id: 2,
@@ -235,6 +260,7 @@ const es: Translation = {
       blurb:
         "Usé perfusión de hígado humano completo para comparar vectores AAV en un modelo preclínico con relevancia clínica.",
       href: "https://doi.org/10.1038/s41467-024-46194-y",
+      span: "wide",
     },
     {
       id: 3,
@@ -304,6 +330,12 @@ const es: Translation = {
       "Estudié Biotecnología en la Universitat Autònoma de Barcelona. Después embarqué en un vuelo a la soleada California para hacer un máster en Ingeniería Biomédica en UC Irvine. El vuelo de vuelta me llevó a un doctorado en la UAB, donde dediqué cuatro años a diseñar proteínas antimicrobianas, desde el diseño hasta la producción recombinante y los ensayos funcionales. De esa etapa salieron dos patentes y cuatro artículos como primer autor.",
       "El último vuelo me llevó a Sídney, al CMRI, donde he construido una plataforma para analizar millones de secuencias y encontrar cientos, o miles, de nuevos péptidos antimicrobianos. Gracias a los modelos de lenguaje de proteínas y los avances recientes en IA, hemos podido probar esas predicciones tanto en el laboratorio como en modelos preclínicos. En paralelo, he aplicado IA generativa a la ingeniería de proteínas para diseñar cápsides de AAV para terapia génica.",
     ],
+    stats: [
+      { value: "20+", label: "Publicaciones" },
+      { value: "300+", label: "Citas" },
+      { value: "2", label: "Patentes" },
+      { value: "3", label: "Países" },
+    ],
     competenciesTitle: "Competencias principales",
     competencies: [
       "Modelos de lenguaje de proteínas",
@@ -312,6 +344,14 @@ const es: Translation = {
       "Descubrimiento antimicrobiano",
       "Validación preclínica",
       "Biología molecular",
+    ],
+    competencyDescriptions: [
+      "ESM-2, ProtTrans, análisis de secuencias con pLM",
+      "Evolución dirigida, librerías de cápsides, ingeniería de tropismo",
+      "PyTorch, scikit-learn, pandas, pipelines de datos",
+      "Diseño de péptidos, ensayos MIC, eficacia in vivo",
+      "Modelos de ratón, farmacocinética, toxicología",
+      "Clonaje, expresión proteica, ensayos funcionales",
     ],
   },
   contact: {
@@ -362,6 +402,7 @@ const ca: Translation = {
       blurb:
         "Vaig evolucionar càpsides AAV que milloraven la generació dirigida de CAR-T i reduïen la dosi vectorial necessària en l'edició de limfòcits T primaris.",
       href: "https://doi.org/10.1016/j.ymthe.2024.12.012",
+      span: "wide",
     },
     {
       id: 2,
@@ -372,6 +413,7 @@ const ca: Translation = {
       blurb:
         "Vaig fer servir perfusió de fetge humà complet per comparar vectors AAV en un model preclínic amb rellevància clínica.",
       href: "https://doi.org/10.1038/s41467-024-46194-y",
+      span: "wide",
     },
     {
       id: 3,
@@ -441,6 +483,12 @@ const ca: Translation = {
       "Vaig estudiar Biotecnologia a la Universitat Autònoma de Barcelona. Després vaig agafar un vol cap a la assolellada Califòrnia per fer un màster en Enginyeria Biomèdica a la UC Irvine. El vol de tornada em va portar a un doctorat a la UAB, on vaig dedicar quatre anys a dissenyar proteïnes antimicrobianes, des del disseny fins a la producció recombinant i els assajos funcionals. D'aquella etapa en van sortir dues patents i quatre articles com a primer autor.",
       "L'últim vol em va portar a Sydney, al CMRI, on he muntat una plataforma per analitzar milions de seqüències i trobar centenars, o milers, de nous pèptids antimicrobians. Gràcies als models de llenguatge de proteïnes i els avenços recents en IA, hem pogut provar aquestes prediccions tant al laboratori com en models preclínics. En paral·lel, he aplicat IA generativa a l'enginyeria de proteïnes per dissenyar càpsides d'AAV per a teràpia gènica.",
     ],
+    stats: [
+      { value: "20+", label: "Publicacions" },
+      { value: "300+", label: "Citacions" },
+      { value: "2", label: "Patents" },
+      { value: "3", label: "Països" },
+    ],
     competenciesTitle: "Competències principals",
     competencies: [
       "Models de llenguatge de proteïnes",
@@ -449,6 +497,14 @@ const ca: Translation = {
       "Descobriment antimicrobià",
       "Validació preclínica",
       "Biologia molecular",
+    ],
+    competencyDescriptions: [
+      "ESM-2, ProtTrans, anàlisi de seqüències amb pLM",
+      "Evolució dirigida, llibreries de càpsides, enginyeria de tropisme",
+      "PyTorch, scikit-learn, pandas, pipelines de dades",
+      "Disseny de pèptids, assajos MIC, eficàcia in vivo",
+      "Models de ratolí, farmacocinètica, toxicologia",
+      "Clonatge, expressió proteica, assajos funcionals",
     ],
   },
   contact: {

@@ -1,17 +1,31 @@
 "use client";
 
 import { Fragment, useEffect, useRef, useState } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import {
+  AnimatePresence,
+  motion,
+  useReducedMotion,
+  useScroll,
+  useTransform,
+} from "framer-motion";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import {
   ArrowUpRight,
+  Brain,
+  Code2,
+  Dna,
+  FlaskConical,
   GraduationCap,
   Menu,
+  Microscope,
+  Shield,
   Volume2,
   VolumeX,
   X,
 } from "lucide-react";
+import * as Tooltip from "@radix-ui/react-tooltip";
+import { useCursorGlow } from "@/hooks/use-cursor-glow";
 import { IconBrandGithub, IconBrandLinkedin } from "@tabler/icons-react";
 import {
   translations,
@@ -91,6 +105,25 @@ function renderInlineEmphasis(text: string) {
     ) : (
       <Fragment key={`${part}-${index}`}>{part}</Fragment>
     )
+  );
+}
+
+const competencyIcons = [Brain, FlaskConical, Code2, Shield, Microscope, Dna];
+
+function GlowCard({
+  children,
+  className = "",
+  disabled = false,
+}: {
+  children: React.ReactNode;
+  className?: string;
+  disabled?: boolean;
+}) {
+  const glowRef = useCursorGlow({ disabled });
+  return (
+    <div ref={glowRef} className={`glow-card ${className}`}>
+      {children}
+    </div>
   );
 }
 
@@ -309,6 +342,14 @@ export default function PortfolioPage() {
   const t = translations[locale];
 
   const shouldReduceMotion = useReducedMotionSafe();
+  const heroRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: heroRef,
+    offset: ["start start", "end start"],
+  });
+  const heroOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
+  const heroY = useTransform(scrollYProgress, [0, 0.5], [0, -60]);
+
   const [isMuted, setIsMuted] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -450,10 +491,14 @@ export default function PortfolioPage() {
 
         <main>
           <section
+            ref={heroRef}
             id="top"
             className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden"
           >
-            <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-col items-start px-6 md:px-12">
+            <motion.div
+              className="relative z-10 mx-auto flex w-full max-w-7xl flex-col items-start px-6 md:px-12"
+              style={shouldReduceMotion ? {} : { opacity: heroOpacity, y: heroY }}
+            >
               <motion.div
                 initial="hidden"
                 animate="visible"
@@ -469,7 +514,7 @@ export default function PortfolioPage() {
 
                 <motion.h1
                   variants={fadeUp}
-                  className="mb-6 font-display bg-gradient-to-r from-slate-100 to-slate-400 bg-clip-text text-4xl font-normal leading-[1.05] tracking-tight text-transparent md:text-6xl lg:text-7xl"
+                  className="mb-6 font-display bg-gradient-to-r from-slate-100 to-slate-400 bg-clip-text text-[clamp(2.25rem,5vw+0.5rem,4.5rem)] font-normal leading-[1.05] tracking-tight text-transparent"
                 >
                   {t.hero.title}
                 </motion.h1>
@@ -540,7 +585,7 @@ export default function PortfolioPage() {
                   </a>
                 </motion.div>
               </motion.div>
-            </div>
+            </motion.div>
 
             <motion.div
               initial={{ opacity: 0 }}
@@ -594,9 +639,11 @@ export default function PortfolioPage() {
             </motion.div>
 
             <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-              {t.works.map((work, i) => (
+              {[1, 3, 4, 2, 5, 6].map((id, i) => {
+                const work = t.works.find((w) => w.id === id)!;
+                return (
+                <GlowCard key={work.id} disabled={shouldReduceMotion} className={`rounded-sm ${work.span === "wide" ? "md:col-span-2" : ""}`}>
                 <motion.a
-                  key={work.id}
                   href={work.href}
                   target="_blank"
                   rel="noreferrer"
@@ -604,7 +651,7 @@ export default function PortfolioPage() {
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true, margin: "-50px" }}
                   transition={{ duration: 0.6, delay: i * 0.1 }}
-                  className="group flex h-full cursor-pointer flex-col rounded-sm border border-white/5 bg-white/5 p-8 transition-all duration-500 hover:bg-white/10 hover:border-[#7a9ec5]/30 hover:shadow-[0_0_30px_-5px_rgba(122,158,197,0.15)] motion-safe:hover:scale-[1.02] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                  className="group relative z-[2] flex h-full cursor-pointer flex-col rounded-sm border border-white/5 bg-white/5 p-8 transition-all duration-500 hover:bg-white/10 hover:border-[#7a9ec5]/30 hover:shadow-[0_0_30px_-5px_rgba(122,158,197,0.15)] motion-safe:hover:scale-[1.02] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                   aria-label={`${t.workLinkLabel}: ${work.title}`}
                 >
                   <div className="mb-6 flex items-start justify-between gap-4">
@@ -616,7 +663,7 @@ export default function PortfolioPage() {
                     </span>
                   </div>
 
-                  <h3 className="mb-4 text-xl font-semibold leading-snug tracking-tight text-[#e9ecf1] transition-colors duration-300 group-hover:text-[#c4d6ee]">
+                  <h3 className={`mb-4 font-semibold leading-snug tracking-tight text-[#e9ecf1] transition-colors duration-300 group-hover:text-[#c4d6ee] ${work.span === "wide" ? "text-2xl" : "text-xl"}`}>
                     {work.title}
                   </h3>
 
@@ -641,7 +688,9 @@ export default function PortfolioPage() {
                     </span>
                   </div>
                 </motion.a>
-              ))}
+                </GlowCard>
+                );
+              })}
             </div>
           </section>
 
@@ -676,9 +725,9 @@ export default function PortfolioPage() {
                   {t.about.heading}
                 </h3>
                 <div className="flex flex-col gap-6 text-base font-light leading-relaxed text-slate-300">
-                  <div className="relative mr-0 md:mr-16">
+                  <GlowCard disabled={shouldReduceMotion} className="relative mr-0 rounded-[1.75rem] md:mr-16">
                     <div className="absolute -inset-3 rounded-[2rem] bg-[radial-gradient(circle_at_top_left,rgba(122,158,197,0.16),transparent_72%)]" />
-                    <div className="relative rounded-[1.75rem] border border-white/10 bg-black/15 p-6 shadow-[0_24px_80px_rgba(0,0,0,0.18)] backdrop-blur-sm md:p-8">
+                    <div className="relative z-[2] rounded-[1.75rem] border border-white/10 bg-black/15 p-6 shadow-[0_24px_80px_rgba(0,0,0,0.18)] backdrop-blur-sm md:p-8">
                       <span className="mb-4 inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[10px] font-mono uppercase tracking-[0.22em] text-[#7a9ec5]">
                         {aboutStoryLabels[0]}
                       </span>
@@ -686,11 +735,11 @@ export default function PortfolioPage() {
                         {renderInlineEmphasis(t.about.bio[0])}
                       </p>
                     </div>
-                  </div>
+                  </GlowCard>
 
-                  <div className="relative ml-0 md:ml-20">
+                  <GlowCard disabled={shouldReduceMotion} className="relative ml-0 rounded-[1.75rem] md:ml-20">
                     <div className="absolute -inset-3 rounded-[2rem] bg-[radial-gradient(circle_at_bottom_right,rgba(107,181,171,0.18),transparent_72%)]" />
-                    <div className="relative rounded-[1.75rem] border border-[#7a9ec5]/20 bg-[#0d1721]/65 p-6 shadow-[0_24px_80px_rgba(0,0,0,0.22)] backdrop-blur-md md:p-8">
+                    <div className="relative z-[2] rounded-[1.75rem] border border-[#7a9ec5]/20 bg-[#0d1721]/65 p-6 shadow-[0_24px_80px_rgba(0,0,0,0.22)] backdrop-blur-md md:p-8">
                       <span className="mb-4 inline-flex items-center rounded-full border border-[#6bb5ab]/20 bg-[#6bb5ab]/8 px-3 py-1 text-[10px] font-mono uppercase tracking-[0.22em] text-[#6bb5ab]">
                         {aboutStoryLabels[1]}
                       </span>
@@ -698,22 +747,69 @@ export default function PortfolioPage() {
                         {renderInlineEmphasis(t.about.bio[1])}
                       </p>
                     </div>
-                  </div>
+                  </GlowCard>
                 </div>
 
-                <div className="mt-12 rounded-sm border border-white/10 bg-white/5 p-6 backdrop-blur-sm">
+                <motion.div
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, margin: "-50px" }}
+                  variants={staggerContainer}
+                  className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-4"
+                >
+                  {t.about.stats.map((stat) => (
+                    <GlowCard key={stat.label} disabled={shouldReduceMotion} className="rounded-sm border border-white/10 bg-white/5 backdrop-blur-sm">
+                      <motion.div variants={fadeUp} className="relative z-[2] p-4 text-center">
+                        <span className="block font-mono text-2xl font-bold text-white">
+                          {stat.value}
+                        </span>
+                        <span className="mt-1 block text-xs uppercase tracking-[0.18em] text-slate-400">
+                          {stat.label}
+                        </span>
+                      </motion.div>
+                    </GlowCard>
+                  ))}
+                </motion.div>
+
+                <Tooltip.Provider delayDuration={300}>
+                <GlowCard disabled={shouldReduceMotion} className="mt-8 rounded-sm border border-white/10 bg-white/5 backdrop-blur-sm">
+                  <div className="relative z-[2] p-6">
                   <h4 className="mb-4 text-sm font-bold uppercase tracking-widest text-white">
                     {t.about.competenciesTitle}
                   </h4>
                   <ul className="grid grid-cols-2 gap-y-3 text-sm text-slate-300">
-                    {t.about.competencies.map((c) => (
-                      <li key={c} className="flex items-center gap-2">
-                        <span className="h-1.5 w-1.5 rounded-full bg-[#47618c]" />
-                        {c}
+                    {t.about.competencies.map((c, ci) => {
+                      const Icon = competencyIcons[ci];
+                      const description = t.about.competencyDescriptions[ci];
+                      return (
+                      <li key={c}>
+                        <Tooltip.Root>
+                          <Tooltip.Trigger asChild>
+                            <button type="button" className="flex items-center gap-2 text-left">
+                              {Icon ? <Icon className="h-4 w-4 shrink-0 text-[#7a9ec5]" /> : <span className="h-1.5 w-1.5 rounded-full bg-[#47618c]" />}
+                              {c}
+                            </button>
+                          </Tooltip.Trigger>
+                          {description && (
+                          <Tooltip.Portal>
+                            <Tooltip.Content
+                              side="top"
+                              sideOffset={6}
+                              className="z-50 max-w-xs rounded-md border border-white/10 bg-[#1a1a1e] px-3 py-2 text-xs text-slate-200 shadow-lg animate-in fade-in-0 zoom-in-95"
+                            >
+                              {description}
+                              <Tooltip.Arrow className="fill-[#1a1a1e]" />
+                            </Tooltip.Content>
+                          </Tooltip.Portal>
+                          )}
+                        </Tooltip.Root>
                       </li>
-                    ))}
+                      );
+                    })}
                   </ul>
-                </div>
+                  </div>
+                </GlowCard>
+                </Tooltip.Provider>
               </motion.div>
 
               <motion.div

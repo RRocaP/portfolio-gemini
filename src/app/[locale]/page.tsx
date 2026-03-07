@@ -24,6 +24,23 @@ import {
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
 const backgroundVideoUrl =
   process.env.NEXT_PUBLIC_BACKGROUND_VIDEO_URL || `${basePath}/background.mp4`;
+const backgroundAudioUrl =
+  process.env.NEXT_PUBLIC_BACKGROUND_AUDIO_URL || `${basePath}/audio/ambient-sync.wav`;
+const syncedLoopDuration = 8;
+const syncDriftThreshold = 0.08;
+
+function getLoopTime(time: number, duration: number) {
+  if (!Number.isFinite(duration) || duration <= 0) return 0;
+  const normalized = ((time % duration) + duration) % duration;
+  return Math.min(normalized, Math.max(duration - 0.01, 0));
+}
+
+function getLoopDrift(currentTime: number, targetTime: number, duration: number) {
+  let drift = currentTime - targetTime;
+  if (drift > duration / 2) drift -= duration;
+  if (drift < -duration / 2) drift += duration;
+  return drift;
+}
 
 function OrcidIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
@@ -132,60 +149,136 @@ function ImmersiveBackground({
   shouldReduceMotion: boolean;
   t: Translation;
 }) {
+  const videoRef = useRef<HTMLVideoElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
+  const fadeFrameRef = useRef<number | null>(null);
+
+  const syncAudioToVideo = (force = false) => {
+    const audio = audioRef.current;
+    const video = videoRef.current;
+    if (!audio || !video) return;
+
+    const duration = Math.min(
+      syncedLoopDuration,
+      Number.isFinite(video.duration) && video.duration > 0
+        ? video.duration
+        : syncedLoopDuration,
+      Number.isFinite(audio.duration) && audio.duration > 0
+        ? audio.duration
+        : syncedLoopDuration
+    );
+
+    const targetTime = getLoopTime(video.currentTime, duration);
+    const currentTime = getLoopTime(audio.currentTime, duration);
+    const drift = getLoopDrift(currentTime, targetTime, duration);
+
+    if (force || Math.abs(drift) > syncDriftThreshold) {
+      audio.currentTime = targetTime;
+    }
+  };
 
   // Smooth fade-in on first play
   useEffect(() => {
     const audio = audioRef.current;
-    if (!audio) return;
+    const video = videoRef.current;
+    if (!audio || !video) return;
 
-    audio.volume = 0;
+    const stopFade = () => {
+      if (fadeFrameRef.current !== null) {
+        cancelAnimationFrame(fadeFrameRef.current);
+        fadeFrameRef.current = null;
+      }
+    };
 
     const fadeIn = () => {
+      stopFade();
+      audio.volume = 0;
       let vol = 0;
       const step = () => {
         vol = Math.min(vol + 0.02, 0.5);
         if (audio) audio.volume = vol;
-        if (vol < 0.5) requestAnimationFrame(step);
+        if (vol < 0.5) {
+          fadeFrameRef.current = requestAnimationFrame(step);
+        } else {
+          fadeFrameRef.current = null;
+        }
       };
-      requestAnimationFrame(step);
+      fadeFrameRef.current = requestAnimationFrame(step);
     };
 
     const attemptPlay = () => {
-      if (audio && audio.paused && !isMuted) {
-        audio.play().then(fadeIn).catch(() => {});
+      if (audio && video && !isMuted) {
+        syncAudioToVideo(true);
+        if (audio.paused) {
+          audio.play().then(fadeIn).catch(() => {});
+        }
       }
     };
 
     attemptPlay();
 
     const interactionListener = () => {
-      if (!isMuted && audio?.paused) {
-        audio.play().then(fadeIn).catch(() => {});
-      }
+      attemptPlay();
       document.removeEventListener("click", interactionListener);
       document.removeEventListener("scroll", interactionListener);
       document.removeEventListener("keydown", interactionListener);
+    };
+
+    const metadataListener = () => {
+      if (!isMuted) {
+        syncAudioToVideo(true);
+      }
     };
 
     document.addEventListener("click", interactionListener);
     document.addEventListener("scroll", interactionListener);
     document.addEventListener("keydown", interactionListener);
+    video.addEventListener("loadedmetadata", metadataListener);
+    audio.addEventListener("loadedmetadata", metadataListener);
 
     return () => {
+      stopFade();
       document.removeEventListener("click", interactionListener);
       document.removeEventListener("scroll", interactionListener);
       document.removeEventListener("keydown", interactionListener);
+      video.removeEventListener("loadedmetadata", metadataListener);
+      audio.removeEventListener("loadedmetadata", metadataListener);
     };
   }, [isMuted]);
 
   useEffect(() => {
     const audio = audioRef.current;
-    if (!audio) return;
+    const video = videoRef.current;
+    if (!audio || !video) return;
+
     audio.muted = isMuted;
-    if (!isMuted && audio.paused) {
+    if (isMuted) {
+      audio.pause();
+      return;
+    }
+
+    syncAudioToVideo(true);
+    if (audio.paused) {
       audio.play().catch(() => {});
     }
+  }, [isMuted]);
+
+  useEffect(() => {
+    if (isMuted) return;
+
+    let frame = 0;
+
+    const tick = () => {
+      const audio = audioRef.current;
+      if (audio && !audio.paused) {
+        syncAudioToVideo();
+      }
+      frame = requestAnimationFrame(tick);
+    };
+
+    frame = requestAnimationFrame(tick);
+
+    return () => cancelAnimationFrame(frame);
   }, [isMuted]);
 
   return (
@@ -193,6 +286,7 @@ function ImmersiveBackground({
       <div className="fixed inset-0 z-0 bg-[#0a0a0a]">
         {!shouldReduceMotion && (
           <video
+            ref={videoRef}
             autoPlay
             loop
             muted
@@ -208,8 +302,8 @@ function ImmersiveBackground({
         <div className="pointer-events-none absolute inset-0 bg-[#47618c]/10 mix-blend-overlay" />
       </div>
 
-      <audio ref={audioRef} loop className="hidden" muted={isMuted}>
-        <source src={`${basePath}/audio/ambient.mp3`} type="audio/mpeg" />
+      <audio ref={audioRef} loop className="hidden" muted={isMuted} preload="auto">
+        <source src={backgroundAudioUrl} type="audio/wav" />
       </audio>
 
       <button
@@ -417,7 +511,7 @@ export default function PortfolioPage() {
 
                 <motion.h1
                   variants={fadeUp}
-                  className="mb-6 font-display bg-gradient-to-r from-slate-100 to-slate-400 bg-clip-text text-4xl font-black leading-[1.05] tracking-tight text-transparent md:text-6xl lg:text-7xl"
+                  className="mb-6 font-display bg-gradient-to-r from-slate-100 to-slate-400 bg-clip-text text-4xl font-normal leading-[1.05] tracking-tight text-transparent md:text-6xl lg:text-7xl"
                 >
                   {t.hero.title}
                 </motion.h1>
@@ -620,7 +714,7 @@ export default function PortfolioPage() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.8 }}
               >
-                <h3 className="mb-6 font-display text-3xl font-bold tracking-tight text-white">
+                <h3 className="mb-6 font-display text-3xl font-normal tracking-tight text-white">
                   {t.about.heading}
                 </h3>
                 <div className="flex flex-col gap-6 text-base font-light leading-relaxed text-slate-300">
@@ -719,7 +813,7 @@ export default function PortfolioPage() {
             >
               <motion.h2
                 variants={fadeScale}
-                className="mb-6 font-display text-4xl font-bold tracking-tight text-white md:text-6xl"
+                className="mb-6 font-display text-4xl font-normal tracking-tight text-white md:text-6xl"
               >
                 {t.contact.heading}
               </motion.h2>

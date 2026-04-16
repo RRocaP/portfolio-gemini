@@ -219,14 +219,6 @@ function ProfileLinks({
 }
 
 // ---------------------------------------------------------------------------
-// Reduced motion hook (static-export safe — defaults to false so video renders)
-// ---------------------------------------------------------------------------
-function useReducedMotionSafe(): boolean {
-  const shouldReduceMotion = useReducedMotion();
-  return shouldReduceMotion ?? false;
-}
-
-// ---------------------------------------------------------------------------
 // Immersive Video Background
 // ---------------------------------------------------------------------------
 function ImmersiveBackground({
@@ -392,7 +384,7 @@ export default function PortfolioPage() {
   const locale: Locale = isValidLocale(params.locale) ? params.locale : "en";
   const t = translations[locale];
 
-  const shouldReduceMotion = useReducedMotionSafe();
+  const shouldReduceMotion = useReducedMotion() ?? false;
   const isMobile = useIsMobile();
   const heroRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({

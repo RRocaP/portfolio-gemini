@@ -95,9 +95,7 @@ export function StudioPanel() {
     },
   ]);
 
-  const handleGenerate = (type: StudioOutputType) => {
-    console.log("Generate:", type);
-  };
+  const handleGenerate = () => {};
 
   const handlePodcastGenerated = useCallback(
     (audioUrl: string, title: string) => {
@@ -141,7 +139,7 @@ export function StudioPanel() {
                   label={ot.label}
                   icon={ot.icon}
                   description={ot.description}
-                  onGenerate={() => handleGenerate(ot.type)}
+                  onGenerate={handleGenerate}
                 />
               ))}
             </div>

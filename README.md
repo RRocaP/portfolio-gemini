@@ -1,36 +1,51 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Portfolio — Ramon Roca Pinilla
 
-## Getting Started
+Personal portfolio site. Static export from Next.js, deployed in parallel to **Vercel** (canonical) and **GitHub Pages** (mirror + media CDN).
 
-First, run the development server:
+Live:
+- https://rrocap.github.io/portfolio-gemini/
+
+## Stack
+
+- Next.js 16 (App Router, `output: "export"`)
+- React 19, TypeScript 5.9
+- Tailwind CSS v4
+- Three.js + React Three Fiber (WebGL Gray-Scott reaction-diffusion background)
+- Framer Motion, Radix UI, Lucide / Tabler icons
+- i18n: en / es / ca (locale-routed under `/[locale]`)
+
+## Develop
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev      # http://localhost:3000
+npm run lint
+npm run build    # → out/ (static)
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Deploy
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Both deploys trigger on push to `main`:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Target | Workflow | Base path | Notes |
+|---|---|---|---|
+| Vercel (prod) | `.github/workflows/vercel-deploy.yml` | `""` | Removes `public/background.mp4` and points `NEXT_PUBLIC_BACKGROUND_VIDEO_URL` at the GH Pages copy to keep the bundle small. |
+| GitHub Pages | `.github/workflows/github-pages-deploy.yml` | `/portfolio-gemini` | Auto-resolves base path from repo name. Hosts the heavy `background.mp4` asset. |
 
-## Learn More
+`NEXT_PUBLIC_BASE_PATH` is read by `next.config.ts`, `sitemap.ts`, `robots.ts`, and root metadata so OG/canonical URLs resolve correctly per target.
 
-To learn more about Next.js, take a look at the following resources:
+## Layout
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+src/
+  app/
+    layout.tsx              global metadata, fonts, analytics
+    page.tsx                static shell → /en (with hreflang)
+    sitemap.ts / robots.ts  Next.js metadata routes
+    [locale]/               en / es / ca routes
+  components/               UI + WebGL background
+  hooks/  lib/              i18n strings, helpers
+public/
+  background.mp4            served via GH Pages on Vercel builds
+  poster.jpg, audio/, works/
+```

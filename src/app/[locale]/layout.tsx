@@ -1,8 +1,13 @@
-import { translations, isValidLocale, type Locale } from "@/lib/i18n";
+import {
+  translations,
+  isValidLocale,
+  locales,
+  type Locale,
+} from "@/lib/i18n";
 import type { Metadata } from "next";
 
 export async function generateStaticParams() {
-  return [{ locale: "en" }, { locale: "es" }, { locale: "ca" }];
+  return locales.map((locale) => ({ locale }));
 }
 
 export async function generateMetadata({
@@ -14,10 +19,27 @@ export async function generateMetadata({
   const locale: Locale = isValidLocale(rawLocale) ? rawLocale : "en";
   const t = translations[locale];
 
+  const languages = Object.fromEntries(
+    locales.map((l) => [l, `/${l}`]),
+  ) as Record<Locale, string>;
+
   return {
     title: t.meta.title,
     description: t.meta.description,
-    other: { "theme-color": "#0a0a0a" },
+    alternates: {
+      canonical: `/${locale}`,
+      languages: { ...languages, "x-default": "/en" },
+    },
+    openGraph: {
+      title: t.meta.title,
+      description: t.meta.description,
+      locale,
+      url: `/${locale}`,
+    },
+    twitter: {
+      title: t.meta.title,
+      description: t.meta.description,
+    },
   };
 }
 

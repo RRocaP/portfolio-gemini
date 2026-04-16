@@ -40,3 +40,11 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 .env*.local
+
+# local visual-test artifacts (root only — public/ is fine)
+/screenshot-*.png
+/playwright-*.png
+/verify-*.png
+/unified-*.png
+/webgl-*.png
+/.playwright-mcp/

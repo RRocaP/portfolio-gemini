@@ -40,6 +40,24 @@ export const metadata: Metadata = {
     "Combating antimicrobial resistance and advancing gene therapy through computational design and experimental validation.",
 };
 
+const personJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: "Ramon Roca Pinilla",
+  url: "https://rrocap.github.io/portfolio-gemini/",
+  jobTitle: "Biomedical Engineer / Research Officer",
+  affiliation: {
+    "@type": "Organization",
+    name: "Children's Medical Research Institute (CMRI)",
+  },
+  sameAs: [
+    "https://scholar.google.com/citations?user=jYIZGT0AAAAJ&hl=en",
+    "https://orcid.org/0000-0002-7393-6200",
+    "https://github.com/RRocaP",
+    "https://www.linkedin.com/in/ramonrocapinilla/",
+  ],
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -52,6 +70,10 @@ export default function RootLayout({
       className={`${instrumentSerif.variable} ${plusJakartaSans.variable} ${jetbrainsMono.variable} ${spaceGrotesk.variable}`}
     >
       <body className="font-sans antialiased">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
+        />
         {children}
         <Analytics />
         <SpeedInsights />

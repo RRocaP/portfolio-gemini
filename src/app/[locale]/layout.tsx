@@ -1,9 +1,13 @@
 import { translations, isValidLocale, type Locale } from "@/lib/i18n";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 
 export async function generateStaticParams() {
   return [{ locale: "en" }, { locale: "es" }, { locale: "ca" }];
 }
+
+export const viewport: Viewport = {
+  themeColor: "#0a0a0a",
+};
 
 export async function generateMetadata({
   params,
@@ -17,7 +21,6 @@ export async function generateMetadata({
   return {
     title: t.meta.title,
     description: t.meta.description,
-    other: { "theme-color": "#0a0a0a" },
   };
 }
 

@@ -571,14 +571,14 @@ export default function PortfolioPage() {
 
                 <motion.h1
                   variants={fadeUp}
-                  className="mb-6 max-w-4xl font-display text-[clamp(3.5rem,8vw,7rem)] font-medium leading-[0.95] tracking-tighter text-slate-100 drop-shadow-lg"
+                  className="mb-6 max-w-4xl text-balance font-display text-[clamp(3.5rem,8vw,7rem)] font-medium leading-[0.95] tracking-tighter text-slate-100 drop-shadow-lg"
                 >
                   <KineticText text={t.hero.title} />
                 </motion.h1>
 
                 <motion.p
                   variants={fadeUp}
-                  className="mb-4 max-w-3xl text-lg font-light leading-relaxed tracking-wide text-slate-300 md:text-xl"
+                  className="mb-4 max-w-3xl text-pretty text-lg font-light leading-relaxed tracking-wide text-slate-300 md:text-xl"
                 >
                   {t.hero.subtitle}
                 </motion.p>
@@ -638,7 +638,7 @@ export default function PortfolioPage() {
                   <MagneticLink
                     href="#about"
                     disabled={shouldReduceMotion}
-                    className="rounded-full border border-white/20 px-6 py-3 text-center font-semibold text-white transition-all duration-300 hover:bg-white/5 hover:border-white/40 hover:shadow-[0_0_20px_rgba(255,255,255,0.08)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                    className="inline-flex items-center justify-center rounded-full border border-white/20 px-8 py-4 text-center font-semibold text-white transition-all duration-300 hover:bg-white/5 hover:border-white/40 hover:shadow-[0_0_20px_rgba(255,255,255,0.08)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                   >
                     {t.hero.ctaSecondary}
                   </MagneticLink>
@@ -656,9 +656,9 @@ export default function PortfolioPage() {
                 Scroll
               </span>
               <motion.svg
-                animate={shouldReduceMotion ? {} : { y: [0, 8, 0] }}
+                animate={shouldReduceMotion ? {} : { y: [0, 6, 0] }}
                 transition={{
-                  duration: 2,
+                  duration: 2.6,
                   repeat: Infinity,
                   ease: "easeInOut",
                 }}
@@ -689,7 +689,7 @@ export default function PortfolioPage() {
                 {t.sections.works}
               </h2>
               <motion.div
-                className="h-[1px] w-full origin-left bg-white/10"
+                className="h-[1px] w-full origin-left bg-gradient-to-r from-transparent via-white/15 to-transparent"
                 initial={{ scaleX: 0 }}
                 whileInView={{ scaleX: 1 }}
                 viewport={{ once: true }}
@@ -723,7 +723,7 @@ export default function PortfolioPage() {
                       aria-label={`${t.workLinkLabel}: ${work.title}`}
                     >
                       <div className="mb-6 flex items-start justify-between gap-4">
-                        <span className="rounded-sm border border-[#6bb5ab]/30 px-2 py-1 text-xs font-mono text-[#6bb5ab]">
+                        <span className="rounded-sm border border-[#6bb5ab]/30 px-2 py-1 text-xs font-mono tabular-nums text-[#6bb5ab]">
                           {work.year}
                         </span>
                         <span className="max-w-[11rem] text-right text-[11px] font-mono uppercase tracking-[0.2em] text-slate-500">
@@ -735,7 +735,7 @@ export default function PortfolioPage() {
                         {work.title}
                       </h3>
 
-                      <p className="mb-8 flex-grow text-sm font-light leading-relaxed text-slate-300">
+                      <p className="mb-8 flex-grow text-pretty text-sm font-light leading-relaxed text-slate-300">
                         {work.blurb}
                       </p>
 
@@ -774,7 +774,7 @@ export default function PortfolioPage() {
                 {t.sections.about}
               </h2>
               <motion.div
-                className="h-[1px] w-full origin-left bg-white/10"
+                className="h-[1px] w-full origin-left bg-gradient-to-r from-transparent via-white/15 to-transparent"
                 initial={{ scaleX: 0 }}
                 whileInView={{ scaleX: 1 }}
                 viewport={{ once: true }}
@@ -789,7 +789,7 @@ export default function PortfolioPage() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.8 }}
               >
-                <h3 className="mb-6 font-display text-3xl font-normal tracking-tight text-white">
+                <h3 className="mb-6 text-balance font-display text-3xl font-normal tracking-tight text-white">
                   {t.about.heading}
                 </h3>
                 <div className="flex flex-col gap-6 text-base font-light leading-relaxed text-slate-300">
@@ -799,7 +799,7 @@ export default function PortfolioPage() {
                       <span className="mb-4 inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[10px] font-mono uppercase tracking-[0.22em] text-[#7a9ec5]">
                         {aboutStoryLabels[0]}
                       </span>
-                      <p lang={locale} className="text-left">
+                      <p lang={locale} className="text-left text-pretty">
                         {renderInlineEmphasis(t.about.bio[0])}
                       </p>
                     </div>
@@ -811,7 +811,7 @@ export default function PortfolioPage() {
                       <span className="mb-4 inline-flex items-center rounded-full border border-[#6bb5ab]/20 bg-[#6bb5ab]/8 px-3 py-1 text-[10px] font-mono uppercase tracking-[0.22em] text-[#6bb5ab]">
                         {aboutStoryLabels[1]}
                       </span>
-                      <p lang={locale} className="text-left">
+                      <p lang={locale} className="text-left text-pretty">
                         {renderInlineEmphasis(t.about.bio[1])}
                       </p>
                     </div>
@@ -828,7 +828,7 @@ export default function PortfolioPage() {
                   {t.about.stats.map((stat) => (
                     <GlowCard key={stat.label} disabled={shouldReduceMotion} className="rounded-sm border border-white/10 bg-white/5 backdrop-blur-sm">
                       <motion.div variants={fadeUp} className="relative z-[2] p-4 text-center">
-                        <span className="block font-mono text-2xl font-bold text-white">
+                        <span className="block font-mono text-2xl font-bold tabular-nums text-white">
                           {stat.value}
                         </span>
                         <span className="mt-1 block text-xs uppercase tracking-[0.18em] text-slate-400">
@@ -903,7 +903,7 @@ export default function PortfolioPage() {
                       }}
                     >
                       <div className="absolute left-[-4px] top-1.5 h-2 w-2 rounded-full bg-[#6bb5ab] shadow-[0_0_10px_rgba(66,120,114,0.8)]" />
-                      <span className="mb-1 block text-xs font-mono text-[#6bb5ab]">
+                      <span className="mb-1 block text-xs font-mono tabular-nums text-[#6bb5ab]">
                         {item.year}
                       </span>
                       <h4 className="text-lg font-semibold text-white">
@@ -912,7 +912,7 @@ export default function PortfolioPage() {
                       <span className="mb-3 block text-sm font-medium text-slate-300">
                         {item.company}
                       </span>
-                      <p className="text-sm font-light text-slate-500">
+                      <p className="text-pretty text-sm font-light text-slate-500">
                         {item.desc}
                       </p>
                     </motion.div>
@@ -935,7 +935,7 @@ export default function PortfolioPage() {
             >
               <motion.h2
                 variants={fadeScale}
-                className="mb-6 font-accent text-4xl font-medium tracking-tight text-white md:text-6xl"
+                className="mb-6 text-balance font-accent text-4xl font-medium tracking-tight text-white md:text-6xl"
               >
                 {t.contact.heading}
               </motion.h2>
@@ -967,7 +967,7 @@ export default function PortfolioPage() {
                 variants={fadeUp}
                 className="mt-32 flex w-full flex-col items-center justify-between gap-8 text-xs font-mono text-slate-400 md:flex-row"
               >
-                <p>
+                <p className="tabular-nums">
                   &copy; {new Date().getFullYear()} Ramon Roca Pinilla.{" "}
                   {t.contact.footer}
                 </p>

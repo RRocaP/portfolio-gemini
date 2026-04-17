@@ -138,12 +138,12 @@ const displayFrag = /* glsl */ `
   void main() {
     float v = texture2D(uTexture, vUv).g;
 
-    // Color palette: map V concentration to bioluminescent glow
-    vec3 c0 = vec3(0.0, 0.0, 0.0);        // #000000 — deep black base
-    vec3 c1 = vec3(0.02, 0.02, 0.06);     // #050510 — barely-there violet hint
-    vec3 c2 = vec3(0.24, 0.09, 0.37);     // #3d1760 — violet mid (7B2FBE range)
-    vec3 c3 = vec3(0.48, 0.18, 0.74);     // #7B2FBE — violet glow
-    vec3 c4 = vec3(0.0, 1.0, 0.82);       // #00FFD1 — teal/cyan peak
+    // Color palette: aligned with UI accents — deep ink → steel blue → teal
+    vec3 c0 = vec3(0.0,  0.0,  0.0);      // #000000 — deep black
+    vec3 c1 = vec3(0.02, 0.03, 0.05);     // near-black with blue bias
+    vec3 c2 = vec3(0.05, 0.09, 0.16);     // #0d1721 — site surface
+    vec3 c3 = vec3(0.28, 0.38, 0.55);     // #47618c — accent-blue-2
+    vec3 c4 = vec3(0.42, 0.71, 0.67);     // #6bb5ab — accent-teal peak
 
     vec3 color = c0;
     color = mix(color, c1, smoothstep(0.0, 0.3, v));
@@ -158,7 +158,7 @@ const displayFrag = /* glsl */ `
     color *= mix(0.3, 1.0, vig);
 
     // Subtle scanlines (instrument panel aesthetic)
-    float scanline = 0.98 + 0.02 * sin(vUv.y * uResolution.y * 1.5);
+    float scanline = 0.985 + 0.015 * sin(vUv.y * uResolution.y * 1.5);
     color *= scanline;
 
     gl_FragColor = vec4(color, 1.0);
@@ -426,9 +426,9 @@ export default function WebGLBackground({
         <Scene nx={nx} ny={ny} prefersReducedMotion={prefersReducedMotion} />
         <EffectComposer>
           <Bloom
-            luminanceThreshold={0.6}
-            intensity={0.25}
-            luminanceSmoothing={0.5}
+            luminanceThreshold={0.7}
+            intensity={0.18}
+            luminanceSmoothing={0.55}
             mipmapBlur
           />
         </EffectComposer>

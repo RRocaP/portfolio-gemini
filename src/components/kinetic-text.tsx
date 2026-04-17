@@ -41,9 +41,9 @@ function KineticChar({
   const rawY = useMotionValue(0);
   const rawScale = useMotionValue(1);
 
-  const rotate = useSpring(rawRotate, { damping: 25, stiffness: 200 });
-  const y = useSpring(rawY, { damping: 25, stiffness: 200 });
-  const scale = useSpring(rawScale, { damping: 25, stiffness: 200 });
+  const rotate = useSpring(rawRotate, { damping: 28, stiffness: 200 });
+  const y = useSpring(rawY, { damping: 28, stiffness: 200 });
+  const scale = useSpring(rawScale, { damping: 28, stiffness: 200 });
 
   useEffect(() => {
     const update = () => {

@@ -1314,13 +1314,8 @@ export default function PortfolioPage() {
                       &copy; {new Date().getFullYear()} Ramon Roca Pinilla.{" "}
                       {t.contact.footer}
                     </p>
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center">
                       <LanguageSwitcher locale={locale} />
-                      <ProfileLinks
-                        className="flex flex-wrap items-center justify-center gap-3"
-                        linkClassName="h-11 w-11"
-                        iconClassName="h-5 w-5"
-                      />
                     </div>
                   </motion.div>
                 </div>

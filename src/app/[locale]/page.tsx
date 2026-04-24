@@ -24,7 +24,6 @@ import {
   VolumeX,
   X,
 } from "lucide-react";
-import * as Tooltip from "@radix-ui/react-tooltip";
 import dynamic from "next/dynamic";
 import { useCursorGlow } from "@/hooks/use-cursor-glow";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -351,7 +350,7 @@ function ImmersiveBackground({
 
       <button
         onClick={toggleMute}
-        className="fixed bottom-4 left-4 z-50 min-h-[44px] min-w-[44px] rounded-full border border-white/10 bg-white/5 p-3 text-white/50 backdrop-blur-md transition-all duration-300 hover:bg-white/10 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:bottom-8 sm:left-8"
+        className="fixed bottom-4 right-4 z-50 min-h-[44px] min-w-[44px] rounded-full border border-white/10 bg-white/5 p-3 text-white/50 backdrop-blur-md transition-all duration-300 hover:bg-white/10 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:bottom-8 sm:left-8 sm:right-auto"
         aria-label={isMuted ? t.audio.unmute : t.audio.mute}
       >
         {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
@@ -410,6 +409,25 @@ export default function PortfolioPage() {
     { label: t.nav.about, href: "#about" },
     { label: t.nav.contact, href: "#contact" },
   ];
+  const featuredWorks = [1, 2].map((id) => t.works.find((work) => work.id === id)!);
+  const supportingWorks = [3, 4, 5, 6].map(
+    (id) => t.works.find((work) => work.id === id)!,
+  );
+  const competencyMatrix = t.about.competencies.map((competency, index) => ({
+    competency,
+    description: t.about.competencyDescriptions[index],
+    Icon: competencyIcons[index],
+  }));
+  const workBackdrops = [
+    "radial-gradient(circle at top right, rgba(122, 158, 197, 0.34), transparent 42%), linear-gradient(135deg, rgba(6, 10, 17, 0.98) 0%, rgba(12, 24, 40, 0.92) 48%, rgba(6, 10, 17, 0.98) 100%)",
+    "radial-gradient(circle at 18% 14%, rgba(107, 181, 171, 0.3), transparent 38%), linear-gradient(160deg, rgba(5, 10, 14, 0.96) 0%, rgba(10, 24, 26, 0.9) 52%, rgba(5, 9, 13, 0.98) 100%)",
+    "radial-gradient(circle at 80% 24%, rgba(126, 142, 214, 0.28), transparent 40%), linear-gradient(160deg, rgba(8, 11, 20, 0.96) 0%, rgba(19, 22, 42, 0.9) 50%, rgba(8, 11, 20, 0.98) 100%)",
+    "radial-gradient(circle at 15% 10%, rgba(217, 166, 107, 0.22), transparent 40%), linear-gradient(150deg, rgba(12, 10, 8, 0.98) 0%, rgba(32, 19, 10, 0.86) 52%, rgba(11, 9, 8, 0.98) 100%)",
+    "radial-gradient(circle at 82% 18%, rgba(88, 176, 183, 0.24), transparent 42%), linear-gradient(150deg, rgba(5, 11, 13, 0.98) 0%, rgba(8, 30, 31, 0.88) 54%, rgba(5, 11, 13, 0.98) 100%)",
+    "radial-gradient(circle at 20% 18%, rgba(173, 140, 224, 0.24), transparent 40%), linear-gradient(150deg, rgba(8, 8, 16, 0.98) 0%, rgba(20, 14, 32, 0.88) 50%, rgba(8, 8, 16, 0.98) 100%)",
+  ];
+  const getWorkBackdrop = (id: number) =>
+    workBackdrops[(id - 1) % workBackdrops.length];
 
   const fadeUp = {
     hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 30 },
@@ -470,53 +488,63 @@ export default function PortfolioPage() {
           Skip to main content
         </a>
 
-        <header className={`fixed left-0 right-0 top-0 z-50 flex items-center justify-between p-4 transition-all duration-500 sm:p-6 md:p-10 ${scrolled ? "backdrop-blur-lg bg-black/50 border-b border-white/5" : ""}`}>
-          <Link
-            href={`/${locale}`}
-            className="text-xl font-bold tracking-tighter text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+        <header className="fixed inset-x-0 top-0 z-50 px-4 py-4 sm:px-6 md:px-10">
+          <div
+            className={`mx-auto flex max-w-7xl items-center justify-between rounded-full border px-4 py-3 transition-all duration-500 sm:px-5 ${
+              scrolled
+                ? "border-white/10 bg-black/55 shadow-[0_18px_60px_rgba(0,0,0,0.22)] backdrop-blur-xl"
+                : "border-white/0 bg-transparent"
+            }`}
           >
-            <motion.span
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 1 }}
+            <Link
+              href={`/${locale}`}
+              className="text-[0.95rem] font-semibold tracking-[0.22em] text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:text-base"
             >
-              RAMON ROCA PINILLA
-            </motion.span>
-          </Link>
-
-          <nav className="hidden items-center gap-6 md:flex">
-            {navItems.map((item, i) => (
-              <MagneticLink
-                key={item.href}
-                href={item.href}
-                disabled={shouldReduceMotion}
-                className="px-1 py-2 text-sm font-medium tracking-wide text-slate-300 transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+              <motion.span
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 1 }}
               >
-                <motion.span
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2 + i * 0.1 }}
-                >
-                  {item.label}
-                </motion.span>
-              </MagneticLink>
-            ))}
-            <ProfileLinks
-              className="flex items-center gap-3"
-              linkClassName="h-9 w-9 border-white/0 bg-transparent text-slate-300 hover:border-white/20 hover:bg-white/10"
-            />
-            <LanguageSwitcher locale={locale} />
-          </nav>
+                RAMON ROCA PINILLA
+              </motion.span>
+            </Link>
 
-          <button
-            className="min-h-[44px] min-w-[44px] p-2 text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white md:hidden"
-            onClick={() => setMobileMenuOpen((open) => !open)}
-            aria-label={
-              mobileMenuOpen ? t.mobileMenu.close : t.mobileMenu.open
-            }
-          >
-            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
+            <nav className="hidden items-center gap-5 md:flex">
+              {navItems.map((item, i) => (
+                <MagneticLink
+                  key={item.href}
+                  href={item.href}
+                  disabled={shouldReduceMotion}
+                  className="px-1 py-2 text-sm font-medium tracking-wide text-slate-300 transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                >
+                  <motion.span
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2 + i * 0.1 }}
+                  >
+                    {item.label}
+                  </motion.span>
+                </MagneticLink>
+              ))}
+              <div className="h-6 w-px bg-white/10" />
+              <ProfileLinks
+                className="flex items-center gap-2"
+                linkClassName="h-9 w-9 border-white/0 bg-transparent text-slate-300 hover:border-white/20 hover:bg-white/10"
+              />
+              <div className="h-6 w-px bg-white/10" />
+              <LanguageSwitcher locale={locale} />
+            </nav>
+
+            <button
+              className="min-h-[44px] min-w-[44px] rounded-full border border-white/10 bg-white/5 p-2 text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white md:hidden"
+              onClick={() => setMobileMenuOpen((open) => !open)}
+              aria-label={
+                mobileMenuOpen ? t.mobileMenu.close : t.mobileMenu.open
+              }
+            >
+              {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+            </button>
+          </div>
         </header>
 
         <AnimatePresence>
@@ -526,7 +554,7 @@ export default function PortfolioPage() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 z-40 flex flex-col items-center justify-center gap-8 bg-black/95 backdrop-blur-lg"
+              className="fixed inset-0 z-40 flex flex-col items-center justify-center gap-8 bg-[#03070d]/95 backdrop-blur-xl"
             >
               {navItems.map((item) => (
                 <a
@@ -546,256 +574,545 @@ export default function PortfolioPage() {
           )}
         </AnimatePresence>
 
-        <main>
+        <main className="relative overflow-hidden">
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 -z-10"
+          >
+            <div className="absolute left-[-12rem] top-24 h-[28rem] w-[28rem] rounded-full bg-[#7a9ec5]/14 blur-3xl" />
+            <div className="absolute right-[-10rem] top-[28rem] h-[24rem] w-[24rem] rounded-full bg-[#6bb5ab]/12 blur-3xl" />
+            <div className="absolute bottom-[18rem] left-1/2 h-[32rem] w-[32rem] -translate-x-1/2 rounded-full bg-[#4e5fb8]/10 blur-3xl" />
+            <div className="absolute inset-x-0 top-[36rem] h-[90rem] bg-[linear-gradient(to_bottom,rgba(255,255,255,0.04)_1px,transparent_1px),linear-gradient(to_right,rgba(255,255,255,0.04)_1px,transparent_1px)] bg-[size:88px_88px] opacity-[0.12] [mask-image:linear-gradient(to_bottom,transparent,black_20%,black_78%,transparent)]" />
+          </div>
+
           <section
             ref={heroRef}
             id="top"
-            className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden"
+            className="relative overflow-hidden px-6 pb-20 pt-28 md:px-12 md:pb-24 md:pt-36"
           >
-            <motion.div
-              className="relative z-10 mx-auto flex w-full max-w-7xl flex-col items-start px-6 md:px-12"
-              style={shouldReduceMotion ? {} : { opacity: heroOpacity, y: heroY }}
-            >
-              <motion.div
-                initial="hidden"
-                animate="visible"
-                variants={staggerContainer}
-                className="max-w-4xl"
-              >
-                <motion.p
-                  variants={fadeUp}
-                  className="mb-5 max-w-3xl text-[11px] font-mono uppercase tracking-[0.28em] text-[#7a9ec5] md:text-xs"
+            <div className="mx-auto max-w-7xl">
+              <div className="grid gap-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(340px,0.9fr)] lg:items-end">
+                <motion.div
+                  className="relative z-10"
+                  style={shouldReduceMotion ? {} : { opacity: heroOpacity, y: heroY }}
                 >
-                  {t.hero.eyebrow}
-                </motion.p>
-
-                <motion.h1
-                  variants={fadeUp}
-                  className="mb-6 max-w-4xl text-balance font-display text-[clamp(3.5rem,8vw,7rem)] font-medium leading-[0.95] tracking-tighter text-slate-100 drop-shadow-lg"
-                >
-                  <KineticText text={t.hero.title} />
-                </motion.h1>
-
-                <motion.p
-                  variants={fadeUp}
-                  className="mb-4 max-w-3xl text-pretty text-lg font-light leading-relaxed tracking-wide text-slate-300 md:text-xl"
-                >
-                  {t.hero.subtitle}
-                </motion.p>
-
-                <motion.p
-                  variants={fadeUp}
-                  className="mb-6 text-sm font-medium uppercase tracking-[0.22em] text-[#6bb5ab] md:text-base"
-                >
-                  {t.hero.supportingLine}
-                </motion.p>
-
-                <motion.ul
-                  variants={fadeUp}
-                  className="mb-6 flex flex-wrap gap-3"
-                >
-                  {t.hero.proof.map((item) => (
-                    <li
-                      key={item}
-                      className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs font-mono uppercase tracking-[0.18em] text-slate-200 backdrop-blur-sm"
+                  <motion.div
+                    initial="hidden"
+                    animate="visible"
+                    variants={staggerContainer}
+                    className="max-w-5xl"
+                  >
+                    <motion.div
+                      variants={fadeUp}
+                      className="mb-7 flex max-w-4xl items-center gap-4"
                     >
-                      {item}
-                    </li>
-                  ))}
-                </motion.ul>
+                      <span className="text-[11px] font-mono uppercase tracking-[0.28em] text-[#7a9ec5] md:text-xs">
+                        {t.hero.eyebrow}
+                      </span>
+                      <div className="hidden h-px flex-1 bg-gradient-to-r from-white/20 via-white/5 to-transparent md:block" />
+                    </motion.div>
 
-                <motion.div variants={fadeUp}>
-                  <ProfileLinks
-                    className="mb-10 flex items-center gap-3"
-                    iconClassName="h-4.5 w-4.5"
-                  />
+                    <motion.h1
+                      variants={fadeUp}
+                      className="max-w-5xl text-balance font-display text-[clamp(3.5rem,8vw,7.5rem)] font-medium leading-[0.92] tracking-[-0.05em] text-slate-100 drop-shadow-[0_18px_80px_rgba(0,0,0,0.5)]"
+                    >
+                      <KineticText text={t.hero.title} />
+                    </motion.h1>
+
+                    <motion.p
+                      variants={fadeUp}
+                      className="mt-7 max-w-3xl text-pretty text-lg font-light leading-relaxed tracking-[0.01em] text-slate-300 md:text-xl"
+                    >
+                      {t.hero.subtitle}
+                    </motion.p>
+
+                    <motion.p
+                      variants={fadeUp}
+                      className="mt-5 text-sm font-medium uppercase tracking-[0.24em] text-[#6bb5ab] md:text-base"
+                    >
+                      {t.hero.supportingLine}
+                    </motion.p>
+
+                    <motion.ul
+                      variants={fadeUp}
+                      className="mt-8 grid max-w-2xl gap-3 sm:grid-cols-2"
+                    >
+                      {t.hero.proof.map((item) => (
+                        <li
+                          key={item}
+                          className="rounded-2xl border border-white/10 bg-white/[0.05] px-4 py-3 text-xs font-mono uppercase tracking-[0.18em] text-slate-200 backdrop-blur-sm"
+                        >
+                          {item}
+                        </li>
+                      ))}
+                    </motion.ul>
+
+                    <motion.div
+                      variants={fadeUp}
+                      className="mt-10 flex flex-col gap-5 lg:flex-row lg:flex-wrap lg:items-center"
+                    >
+                      <div className="flex w-full flex-col gap-4 min-[480px]:w-auto min-[480px]:flex-row min-[480px]:flex-wrap">
+                        <MagneticLink
+                          href="#works"
+                          disabled={shouldReduceMotion}
+                          className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-8 py-4 font-semibold text-black transition-all duration-300 hover:bg-slate-200 hover:shadow-[0_0_25px_rgba(255,255,255,0.3)] motion-safe:hover:scale-[1.03] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                        >
+                          {t.hero.ctaPrimary}
+                          <svg
+                            className="h-4 w-4"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M17 8l4 4m0 0l-4 4m4-4H3"
+                            />
+                          </svg>
+                        </MagneticLink>
+                        <MagneticLink
+                          href="#about"
+                          disabled={shouldReduceMotion}
+                          className="inline-flex items-center justify-center rounded-full border border-white/20 px-8 py-4 text-center font-semibold text-white transition-all duration-300 hover:border-white/40 hover:bg-white/5 hover:shadow-[0_0_20px_rgba(255,255,255,0.08)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                        >
+                          {t.hero.ctaSecondary}
+                        </MagneticLink>
+                      </div>
+
+                      <div className="hidden h-10 w-px bg-white/10 lg:block" />
+
+                      <ProfileLinks
+                        className="flex items-center gap-3"
+                        iconClassName="h-[1.125rem] w-[1.125rem]"
+                      />
+                    </motion.div>
+                  </motion.div>
                 </motion.div>
 
                 <motion.div
-                  variants={fadeUp}
-                  className="flex w-full flex-col gap-4 min-[480px]:w-auto min-[480px]:flex-row min-[480px]:flex-wrap"
+                  initial={{ opacity: 0, x: shouldReduceMotion ? 0 : 24 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.2, duration: 0.8, ease: "easeOut" }}
+                  className="relative z-10"
                 >
-                  <MagneticLink
-                    href="#works"
+                  <RefractionGlowCard
                     disabled={shouldReduceMotion}
-                    className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-8 py-4 font-semibold text-black transition-all duration-300 hover:bg-slate-200 hover:shadow-[0_0_25px_rgba(255,255,255,0.3)] motion-safe:hover:scale-[1.03] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                    className="rounded-[2rem]"
                   >
-                    {t.hero.ctaPrimary}
-                    <svg
-                      className="h-4 w-4"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M17 8l4 4m0 0l-4 4m4-4H3"
-                      />
-                    </svg>
-                  </MagneticLink>
-                  <MagneticLink
-                    href="#about"
-                    disabled={shouldReduceMotion}
-                    className="inline-flex items-center justify-center rounded-full border border-white/20 px-8 py-4 text-center font-semibold text-white transition-all duration-300 hover:bg-white/5 hover:border-white/40 hover:shadow-[0_0_20px_rgba(255,255,255,0.08)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-                  >
-                    {t.hero.ctaSecondary}
-                  </MagneticLink>
-                </motion.div>
-              </motion.div>
-            </motion.div>
+                    <div className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03))] p-6 shadow-[0_28px_120px_rgba(0,0,0,0.24)] backdrop-blur-xl md:p-8">
+                      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(122,158,197,0.22),transparent_38%),radial-gradient(circle_at_bottom_left,rgba(107,181,171,0.16),transparent_42%)]" />
+                      <div className="relative z-[2]">
+                        <span className="inline-flex rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-[10px] font-mono uppercase tracking-[0.22em] text-[#6bb5ab]">
+                          {t.timeline[0].year}
+                        </span>
+                        <p className="mt-6 text-[11px] font-mono uppercase tracking-[0.28em] text-[#7a9ec5]">
+                          {t.timeline[0].company}
+                        </p>
+                        <h2 className="mt-3 max-w-sm text-balance font-display text-3xl leading-tight tracking-tight text-white">
+                          {t.timeline[0].role}
+                        </h2>
+                        <p className="mt-4 text-pretty text-sm leading-relaxed text-slate-300">
+                          {t.timeline[0].desc}
+                        </p>
 
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 2, duration: 1 }}
-              className="absolute bottom-8 left-1/2 flex -translate-x-1/2 flex-col items-center gap-2"
-            >
-              <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-slate-500">
-                Scroll
-              </span>
-              <motion.svg
-                animate={shouldReduceMotion ? {} : { y: [0, 6, 0] }}
-                transition={{
-                  duration: 2.6,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
-                className="h-5 w-5 text-slate-500"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
+                        <div className="mt-8 grid grid-cols-2 gap-3">
+                          {t.about.stats.map((stat) => (
+                            <div
+                              key={stat.label}
+                              className="rounded-2xl border border-white/10 bg-black/20 px-4 py-4"
+                            >
+                              <span className="block font-mono text-2xl font-semibold tabular-nums text-white">
+                                {stat.value}
+                              </span>
+                              <span className="mt-1 block text-[11px] uppercase tracking-[0.18em] text-slate-400">
+                                {stat.label}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </RefractionGlowCard>
+
+                  <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
+                    <GlowCard
+                      disabled={shouldReduceMotion}
+                      className="rounded-[1.6rem] border border-white/10 bg-white/[0.04] backdrop-blur-lg"
+                    >
+                      <div className="relative z-[2] h-full rounded-[1.6rem] p-5">
+                        <p className="text-[10px] font-mono uppercase tracking-[0.22em] text-[#7a9ec5]">
+                          {t.about.competenciesTitle}
+                        </p>
+                        <div className="mt-4 space-y-3">
+                          {competencyMatrix.slice(0, 4).map(({ competency, Icon }) => (
+                            <div
+                              key={competency}
+                              className="flex items-center gap-3 rounded-2xl border border-white/8 bg-black/20 px-3 py-3"
+                            >
+                              <span className="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-white/[0.05] text-[#7a9ec5]">
+                                <Icon className="h-[1.125rem] w-[1.125rem]" />
+                              </span>
+                              <span className="text-sm text-slate-200">{competency}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </GlowCard>
+
+                    <GlowCard
+                      disabled={shouldReduceMotion}
+                      className="rounded-[1.6rem] border border-white/10 bg-white/[0.04] backdrop-blur-lg"
+                    >
+                      <div className="relative z-[2] h-full rounded-[1.6rem] p-5">
+                        <div className="space-y-4">
+                          {t.timeline.slice(1).map((item) => (
+                            <div
+                              key={`${item.year}-${item.role}`}
+                              className="rounded-2xl border border-white/8 bg-black/20 px-4 py-4"
+                            >
+                              <span className="text-[11px] font-mono uppercase tracking-[0.2em] text-[#6bb5ab]">
+                                {item.year}
+                              </span>
+                              <h3 className="mt-2 text-base font-semibold text-white">
+                                {item.role}
+                              </h3>
+                              <p className="mt-1 text-sm text-slate-400">
+                                {item.company}
+                              </p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </GlowCard>
+                  </div>
+                </motion.div>
+              </div>
+
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 1.1, duration: 1 }}
+                className="mt-14 flex items-center gap-4"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={1.5}
-                  d="M19 9l-7 7-7-7"
-                />
-              </motion.svg>
-            </motion.div>
+                <div className="h-px flex-1 bg-gradient-to-r from-transparent via-white/15 to-white/2" />
+                <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-[0.3em] text-slate-500">
+                  <span>Scroll</span>
+                  <motion.svg
+                    animate={shouldReduceMotion ? {} : { y: [0, 6, 0] }}
+                    transition={{
+                      duration: 2.6,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                    className="h-5 w-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={1.5}
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </motion.svg>
+                </div>
+              </motion.div>
+            </div>
           </section>
 
-          <section id="works" className="mx-auto max-w-7xl px-6 py-32 md:px-12">
+          <section
+            id="works"
+            className="mx-auto max-w-7xl scroll-mt-28 px-6 py-24 md:scroll-mt-32 md:px-12 md:py-32"
+          >
             <motion.div
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true, margin: "-100px" }}
               variants={fadeUp}
-              className="mb-16"
+              className="mb-16 grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(320px,0.68fr)] lg:items-end"
             >
-              <h2 className="mb-4 text-sm font-bold uppercase tracking-widest text-[#7a9ec5]">
-                {t.sections.works}
-              </h2>
-              <motion.div
-                className="h-[1px] w-full origin-left bg-gradient-to-r from-transparent via-white/15 to-transparent"
-                initial={{ scaleX: 0 }}
-                whileInView={{ scaleX: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 1.2, ease: "easeOut" }}
-              />
+              <div>
+                <div className="mb-5 flex items-center gap-4">
+                  <h2 className="text-sm font-bold uppercase tracking-widest text-[#7a9ec5]">
+                    {t.sections.works}
+                  </h2>
+                  <motion.div
+                    className="h-[1px] flex-1 origin-left bg-gradient-to-r from-white/25 via-white/10 to-transparent"
+                    initial={{ scaleX: 0 }}
+                    whileInView={{ scaleX: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 1.2, ease: "easeOut" }}
+                  />
+                </div>
+                <h3 className="max-w-4xl text-balance font-display text-4xl font-medium tracking-tight text-white md:text-5xl">
+                  {t.hero.supportingLine}
+                </h3>
+              </div>
+              <p className="max-w-xl text-pretty text-sm leading-relaxed text-slate-400 md:text-base">
+                {t.meta.description}
+              </p>
             </motion.div>
 
-            <div className="grid grid-cols-1 auto-rows-[minmax(300px,_1fr)] gap-6 md:grid-cols-6 lg:grid-cols-12">
-              {[1, 3, 4, 2, 5, 6].map((id, i) => {
-                const work = t.works.find((w) => w.id === id)!;
-                // Create an asymmetrical layout pattern for 6 items
-                const bentoSpan =
-                  i === 0 ? "md:col-span-6 lg:col-span-8" :    // Big feature
-                    i === 1 ? "md:col-span-6 lg:col-span-4" :    // Side feature
-                      i === 2 ? "md:col-span-4 lg:col-span-4" :    // Standard
-                        i === 3 ? "md:col-span-4 lg:col-span-4" :    // Standard
-                          i === 4 ? "md:col-span-4 lg:col-span-4" :    // Standard
-                            "md:col-span-6 lg:col-span-12";              // Full width bottom
+            <div className="grid gap-6 lg:grid-cols-[minmax(0,1.2fr)_minmax(320px,0.8fr)]">
+              {featuredWorks[0] && (
+                <RefractionGlowCard
+                  disabled={shouldReduceMotion}
+                  className="rounded-[2rem]"
+                >
+                  <motion.a
+                    href={featuredWorks[0].href}
+                    target="_blank"
+                    rel="noreferrer"
+                    initial={{ opacity: 0, scale: shouldReduceMotion ? 1 : 0.97 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true, margin: "-50px" }}
+                    transition={{ duration: 0.7 }}
+                    className="group relative z-[2] flex h-full min-h-[420px] flex-col overflow-hidden rounded-[2rem] border border-white/10 p-8 shadow-[0_28px_120px_rgba(0,0,0,0.22)] transition-all duration-500 hover:border-[#7a9ec5]/30 hover:shadow-[0_40px_120px_rgba(0,0,0,0.35)] motion-safe:hover:-translate-y-1 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white md:p-10"
+                    style={{ backgroundImage: getWorkBackdrop(featuredWorks[0].id) }}
+                    aria-label={`${t.workLinkLabel}: ${featuredWorks[0].title}`}
+                  >
+                    <span className="pointer-events-none absolute right-6 top-2 font-display text-[6rem] leading-none text-white/[0.07] md:text-[7rem]">
+                      01
+                    </span>
+                    <div className="mb-8 flex items-start justify-between gap-4">
+                      <span className="rounded-full border border-[#6bb5ab]/30 bg-black/15 px-3 py-1 text-[11px] font-mono uppercase tracking-[0.18em] text-[#6bb5ab]">
+                        {featuredWorks[0].year}
+                      </span>
+                      <span className="max-w-[11rem] text-right text-[11px] font-mono uppercase tracking-[0.2em] text-slate-400">
+                        {featuredWorks[0].venue}
+                      </span>
+                    </div>
 
-                return (
-                  <RefractionGlowCard key={work.id} disabled={shouldReduceMotion} className={`rounded-sm ${bentoSpan}`}>
+                    <h3 className="max-w-2xl text-balance font-display text-4xl font-medium leading-[1.02] tracking-tight text-white transition-colors duration-300 group-hover:text-[#d6e6fa] md:text-5xl">
+                      {featuredWorks[0].title}
+                    </h3>
+
+                    <p className="mt-6 max-w-2xl text-pretty text-base font-light leading-relaxed text-slate-300 md:text-lg">
+                      {featuredWorks[0].blurb}
+                    </p>
+
+                    <div className="mt-auto flex flex-col gap-5 pt-10">
+                      <div className="flex flex-wrap gap-2">
+                        {featuredWorks[0].tags.map((tag) => (
+                          <span
+                            key={tag}
+                            className="rounded-full border border-white/12 bg-white/[0.06] px-3 py-1.5 text-[11px] uppercase tracking-[0.18em] text-slate-200"
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                      <span className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#7a9ec5]">
+                        {t.workLinkLabel}
+                        <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                      </span>
+                    </div>
+                  </motion.a>
+                </RefractionGlowCard>
+              )}
+
+              <div className="grid gap-6">
+                {featuredWorks[1] && (
+                  <RefractionGlowCard
+                    disabled={shouldReduceMotion}
+                    className="rounded-[2rem]"
+                  >
                     <motion.a
-                      href={work.href}
+                      href={featuredWorks[1].href}
                       target="_blank"
                       rel="noreferrer"
                       initial={{ opacity: 0, scale: shouldReduceMotion ? 1 : 0.97 }}
                       whileInView={{ opacity: 1, scale: 1 }}
                       viewport={{ once: true, margin: "-50px" }}
-                      transition={{ duration: 0.6, delay: i * 0.1 }}
-                      className="group relative z-[2] flex h-full cursor-pointer flex-col rounded-sm border border-white/5 bg-white/5 p-8 transition-all duration-500 hover:bg-white/10 hover:border-[#7a9ec5]/30 hover:shadow-[0_0_30px_-5px_rgba(122,158,197,0.15)] motion-safe:hover:scale-[1.02] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-                      aria-label={`${t.workLinkLabel}: ${work.title}`}
+                      transition={{ duration: 0.7, delay: 0.1 }}
+                      className="group relative z-[2] flex min-h-[250px] flex-col overflow-hidden rounded-[2rem] border border-white/10 p-7 shadow-[0_24px_100px_rgba(0,0,0,0.22)] transition-all duration-500 hover:border-[#6bb5ab]/28 hover:shadow-[0_30px_110px_rgba(0,0,0,0.32)] motion-safe:hover:-translate-y-1 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white md:p-8"
+                      style={{ backgroundImage: getWorkBackdrop(featuredWorks[1].id) }}
+                      aria-label={`${t.workLinkLabel}: ${featuredWorks[1].title}`}
                     >
-                      <div className="mb-6 flex items-start justify-between gap-4">
-                        <span className="rounded-sm border border-[#6bb5ab]/30 px-2 py-1 text-xs font-mono tabular-nums text-[#6bb5ab]">
-                          {work.year}
+                      <span className="pointer-events-none absolute right-6 top-4 font-display text-[4.75rem] leading-none text-white/[0.07]">
+                        02
+                      </span>
+                      <div className="flex items-start justify-between gap-4">
+                        <span className="rounded-full border border-[#6bb5ab]/30 bg-black/15 px-3 py-1 text-[11px] font-mono uppercase tracking-[0.18em] text-[#6bb5ab]">
+                          {featuredWorks[1].year}
                         </span>
-                        <span className="max-w-[11rem] text-right text-[11px] font-mono uppercase tracking-[0.2em] text-slate-500">
-                          {work.venue}
+                        <span className="max-w-[9rem] text-right text-[11px] font-mono uppercase tracking-[0.18em] text-slate-400">
+                          {featuredWorks[1].venue}
                         </span>
                       </div>
 
-                      <h3 className={`mb-4 font-semibold leading-snug tracking-tight text-[#e9ecf1] transition-colors duration-300 group-hover:text-[#c4d6ee] ${bentoSpan.includes("lg:col-span-8") || bentoSpan.includes("lg:col-span-12") ? "text-3xl" : "text-xl"}`}>
-                        {work.title}
+                      <h3 className="mt-6 max-w-md text-balance text-2xl font-semibold leading-tight tracking-tight text-white transition-colors duration-300 group-hover:text-[#d8f0ea] md:text-3xl">
+                        {featuredWorks[1].title}
                       </h3>
-
-                      <p className="mb-8 flex-grow text-pretty text-sm font-light leading-relaxed text-slate-300">
-                        {work.blurb}
+                      <p className="mt-4 text-pretty text-sm font-light leading-relaxed text-slate-300">
+                        {featuredWorks[1].blurb}
                       </p>
 
-                      <div className="mt-auto flex items-end justify-between gap-4">
+                      <div className="mt-auto flex items-end justify-between gap-4 pt-8">
                         <div className="flex flex-wrap gap-2">
-                          {work.tags.map((tag) => (
+                          {featuredWorks[1].tags.map((tag) => (
                             <span
                               key={tag}
-                              className="rounded-sm border border-white/10 bg-white/[0.06] px-2 py-1 text-[11px] tracking-wider text-slate-300"
+                              className="rounded-full border border-white/12 bg-white/[0.06] px-3 py-1 text-[10px] uppercase tracking-[0.18em] text-slate-200"
                             >
                               {tag}
                             </span>
                           ))}
                         </div>
                         <span className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-[0.18em] text-[#7a9ec5]">
-                          {t.workLinkLabel}
-                          <ArrowUpRight className="h-4 w-4" />
+                          <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                         </span>
                       </div>
                     </motion.a>
                   </RefractionGlowCard>
-                );
-              })}
+                )}
+
+                <GlowCard
+                  disabled={shouldReduceMotion}
+                  className="rounded-[2rem] border border-white/10 bg-white/[0.04] backdrop-blur-xl"
+                >
+                  <div className="relative z-[2] overflow-hidden rounded-[2rem] p-7 md:p-8">
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(122,158,197,0.14),transparent_36%),radial-gradient(circle_at_bottom_right,rgba(107,181,171,0.1),transparent_40%)]" />
+                    <div className="relative z-[2]">
+                      <p className="text-[11px] font-mono uppercase tracking-[0.24em] text-[#7a9ec5]">
+                        {t.hero.supportingLine}
+                      </p>
+                      <h3 className="mt-5 max-w-sm text-balance font-display text-3xl leading-tight tracking-tight text-white">
+                        {t.meta.description}
+                      </h3>
+
+                      <ul className="mt-8 grid gap-3 sm:grid-cols-2">
+                        {t.hero.proof.map((item) => (
+                          <li
+                            key={item}
+                            className="rounded-2xl border border-white/10 bg-black/20 px-3 py-3 text-[11px] font-mono uppercase tracking-[0.18em] text-slate-200"
+                          >
+                            {item}
+                          </li>
+                        ))}
+                      </ul>
+
+                      <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                        <ProfileLinks
+                          className="flex items-center gap-3"
+                          iconClassName="h-[1.125rem] w-[1.125rem]"
+                        />
+                        <MagneticLink
+                          href="#contact"
+                          disabled={shouldReduceMotion}
+                          className="inline-flex items-center gap-2 rounded-full border border-white/15 px-5 py-3 text-sm font-semibold text-white transition hover:border-white/30 hover:bg-white/[0.06] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                        >
+                          {t.nav.contact}
+                          <ArrowUpRight className="h-4 w-4" />
+                        </MagneticLink>
+                      </div>
+                    </div>
+                  </div>
+                </GlowCard>
+              </div>
+            </div>
+
+            <div className="mt-6 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+              {supportingWorks.map((work, index) => (
+                <RefractionGlowCard
+                  key={work.id}
+                  disabled={shouldReduceMotion}
+                  className="rounded-[1.6rem]"
+                >
+                  <motion.a
+                    href={work.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 16 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-30px" }}
+                    transition={{ duration: 0.55, delay: index * 0.08 }}
+                    className="group relative z-[2] flex h-full min-h-[280px] flex-col overflow-hidden rounded-[1.6rem] border border-white/10 p-6 shadow-[0_20px_70px_rgba(0,0,0,0.18)] transition-all duration-500 hover:border-white/20 hover:shadow-[0_26px_90px_rgba(0,0,0,0.28)] motion-safe:hover:-translate-y-1 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                    style={{ backgroundImage: getWorkBackdrop(work.id) }}
+                    aria-label={`${t.workLinkLabel}: ${work.title}`}
+                  >
+                    <span className="pointer-events-none absolute right-5 top-2 font-display text-[3.5rem] leading-none text-white/[0.07]">
+                      {`0${index + 3}`}
+                    </span>
+                    <div className="flex items-center justify-between gap-4">
+                      <span className="rounded-full border border-white/12 bg-black/20 px-2.5 py-1 text-[10px] font-mono uppercase tracking-[0.18em] text-[#6bb5ab]">
+                        {work.year}
+                      </span>
+                      <span className="text-[10px] font-mono uppercase tracking-[0.18em] text-slate-500">
+                        {work.venue}
+                      </span>
+                    </div>
+
+                    <h3 className="mt-6 text-balance text-xl font-semibold leading-snug tracking-tight text-white transition-colors duration-300 group-hover:text-[#d8e6f8]">
+                      {work.title}
+                    </h3>
+                    <p className="mt-4 flex-grow text-pretty text-sm font-light leading-relaxed text-slate-300">
+                      {work.blurb}
+                    </p>
+
+                    <div className="mt-6 flex flex-wrap gap-2">
+                      {work.tags.map((tag) => (
+                        <span
+                          key={tag}
+                          className="rounded-full border border-white/10 bg-white/[0.06] px-2.5 py-1 text-[10px] uppercase tracking-[0.16em] text-slate-300"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  </motion.a>
+                </RefractionGlowCard>
+              ))}
             </div>
           </section>
 
-          <section id="about" className="mx-auto max-w-7xl px-6 py-32 md:px-12">
+          <section
+            id="about"
+            className="mx-auto max-w-7xl scroll-mt-28 px-6 py-32 md:scroll-mt-32 md:px-12"
+          >
             <motion.div
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true, margin: "-100px" }}
               variants={fadeUp}
-              className="mb-16"
+              className="mb-16 grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(320px,0.68fr)] lg:items-end"
             >
-              <h2 className="mb-4 text-sm font-bold uppercase tracking-widest text-[#7a9ec5]">
-                {t.sections.about}
-              </h2>
-              <motion.div
-                className="h-[1px] w-full origin-left bg-gradient-to-r from-transparent via-white/15 to-transparent"
-                initial={{ scaleX: 0 }}
-                whileInView={{ scaleX: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 1.2, ease: "easeOut" }}
-              />
+              <div>
+                <div className="mb-5 flex items-center gap-4">
+                  <h2 className="text-sm font-bold uppercase tracking-widest text-[#7a9ec5]">
+                    {t.sections.about}
+                  </h2>
+                  <motion.div
+                    className="h-[1px] flex-1 origin-left bg-gradient-to-r from-white/25 via-white/10 to-transparent"
+                    initial={{ scaleX: 0 }}
+                    whileInView={{ scaleX: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 1.2, ease: "easeOut" }}
+                  />
+                </div>
+                <h3 className="max-w-4xl text-balance font-display text-4xl font-medium tracking-tight text-white md:text-5xl">
+                  {t.about.heading}
+                </h3>
+              </div>
+              <p className="max-w-xl text-pretty text-sm leading-relaxed text-slate-400 md:text-base">
+                {t.contact.subtitle}
+              </p>
             </motion.div>
 
-            <div className="grid grid-cols-1 gap-16 lg:grid-cols-2">
+            <div className="grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,1.05fr)_minmax(320px,0.95fr)]">
               <motion.div
                 initial={{ opacity: 0, x: -30 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.8 }}
               >
-                <h3 className="mb-6 text-balance font-display text-3xl font-normal tracking-tight text-white">
-                  {t.about.heading}
-                </h3>
                 <div className="flex flex-col gap-6 text-base font-light leading-relaxed text-slate-300">
-                  <RefractionGlowCard disabled={shouldReduceMotion} className="relative mr-0 rounded-[1.75rem] md:mr-16">
-                    <div className="absolute -inset-3 rounded-[2rem] bg-[radial-gradient(circle_at_top_left,rgba(122,158,197,0.16),transparent_72%)]" />
-                    <div className="relative z-[2] rounded-[1.75rem] border border-white/10 bg-black/15 p-6 shadow-[0_24px_80px_rgba(0,0,0,0.18)] backdrop-blur-sm md:p-8">
+                  <RefractionGlowCard disabled={shouldReduceMotion} className="relative mr-0 rounded-[2rem] md:mr-18">
+                    <div className="absolute -inset-3 rounded-[2.2rem] bg-[radial-gradient(circle_at_top_left,rgba(122,158,197,0.16),transparent_72%)]" />
+                    <div className="relative z-[2] rounded-[2rem] border border-white/10 bg-black/15 p-6 shadow-[0_24px_80px_rgba(0,0,0,0.18)] backdrop-blur-sm md:p-8">
                       <span className="mb-4 inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[10px] font-mono uppercase tracking-[0.22em] text-[#7a9ec5]">
                         {aboutStoryLabels[0]}
                       </span>
@@ -805,9 +1122,9 @@ export default function PortfolioPage() {
                     </div>
                   </RefractionGlowCard>
 
-                  <RefractionGlowCard disabled={shouldReduceMotion} className="relative ml-0 rounded-[1.75rem] md:ml-20">
-                    <div className="absolute -inset-3 rounded-[2rem] bg-[radial-gradient(circle_at_bottom_right,rgba(107,181,171,0.18),transparent_72%)]" />
-                    <div className="relative z-[2] rounded-[1.75rem] border border-[#7a9ec5]/20 bg-[#0d1721]/65 p-6 shadow-[0_24px_80px_rgba(0,0,0,0.22)] backdrop-blur-md md:p-8">
+                  <RefractionGlowCard disabled={shouldReduceMotion} className="relative ml-0 rounded-[2rem] md:ml-20">
+                    <div className="absolute -inset-3 rounded-[2.2rem] bg-[radial-gradient(circle_at_bottom_right,rgba(107,181,171,0.18),transparent_72%)]" />
+                    <div className="relative z-[2] rounded-[2rem] border border-[#7a9ec5]/20 bg-[#0d1721]/65 p-6 shadow-[0_24px_80px_rgba(0,0,0,0.22)] backdrop-blur-md md:p-8">
                       <span className="mb-4 inline-flex items-center rounded-full border border-[#6bb5ab]/20 bg-[#6bb5ab]/8 px-3 py-1 text-[10px] font-mono uppercase tracking-[0.22em] text-[#6bb5ab]">
                         {aboutStoryLabels[1]}
                       </span>
@@ -817,67 +1134,6 @@ export default function PortfolioPage() {
                     </div>
                   </RefractionGlowCard>
                 </div>
-
-                <motion.div
-                  initial="hidden"
-                  whileInView="visible"
-                  viewport={{ once: true, margin: "-50px" }}
-                  variants={staggerContainer}
-                  className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-4"
-                >
-                  {t.about.stats.map((stat) => (
-                    <GlowCard key={stat.label} disabled={shouldReduceMotion} className="rounded-sm border border-white/10 bg-white/5 backdrop-blur-sm">
-                      <motion.div variants={fadeUp} className="relative z-[2] p-4 text-center">
-                        <span className="block font-mono text-2xl font-bold tabular-nums text-white">
-                          {stat.value}
-                        </span>
-                        <span className="mt-1 block text-xs uppercase tracking-[0.18em] text-slate-400">
-                          {stat.label}
-                        </span>
-                      </motion.div>
-                    </GlowCard>
-                  ))}
-                </motion.div>
-
-                <Tooltip.Provider delayDuration={300}>
-                  <GlowCard disabled={shouldReduceMotion} className="mt-8 rounded-sm border border-white/10 bg-white/5 backdrop-blur-sm">
-                    <div className="relative z-[2] p-6">
-                      <h4 className="mb-4 text-sm font-bold uppercase tracking-widest text-white">
-                        {t.about.competenciesTitle}
-                      </h4>
-                      <ul className="grid grid-cols-2 gap-y-3 text-sm text-slate-300">
-                        {t.about.competencies.map((c, ci) => {
-                          const Icon = competencyIcons[ci];
-                          const description = t.about.competencyDescriptions[ci];
-                          return (
-                            <li key={c}>
-                              <Tooltip.Root>
-                                <Tooltip.Trigger asChild>
-                                  <button type="button" className="flex items-center gap-2 text-left">
-                                    {Icon ? <Icon className="h-4 w-4 shrink-0 text-[#7a9ec5]" /> : <span className="h-1.5 w-1.5 rounded-full bg-[#47618c]" />}
-                                    {c}
-                                  </button>
-                                </Tooltip.Trigger>
-                                {description && (
-                                  <Tooltip.Portal>
-                                    <Tooltip.Content
-                                      side="top"
-                                      sideOffset={6}
-                                      className="z-50 max-w-xs rounded-md border border-white/10 bg-[#1a1a1e] px-3 py-2 text-xs text-slate-200 shadow-lg animate-in fade-in-0 zoom-in-95"
-                                    >
-                                      {description}
-                                      <Tooltip.Arrow className="fill-[#1a1a1e]" />
-                                    </Tooltip.Content>
-                                  </Tooltip.Portal>
-                                )}
-                              </Tooltip.Root>
-                            </li>
-                          );
-                        })}
-                      </ul>
-                    </div>
-                  </GlowCard>
-                </Tooltip.Provider>
               </motion.div>
 
               <motion.div
@@ -885,99 +1141,191 @@ export default function PortfolioPage() {
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.8 }}
-                className="relative"
+                className="relative lg:sticky lg:top-28"
               >
-                <div className="absolute bottom-2 left-0 top-2 w-px bg-white/10" />
-                <div className="space-y-12">
-                  {t.timeline.map((item, i) => (
-                    <motion.div
-                      key={i}
-                      className="relative pl-8"
-                      initial={{ opacity: 0, x: shouldReduceMotion ? 0 : -20 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      viewport={{ once: true }}
-                      transition={{
-                        duration: 0.6,
-                        delay: i * 0.1,
-                        ease: "easeOut",
-                      }}
-                    >
-                      <div className="absolute left-[-4px] top-1.5 h-2 w-2 rounded-full bg-[#6bb5ab] shadow-[0_0_10px_rgba(66,120,114,0.8)]" />
-                      <span className="mb-1 block text-xs font-mono tabular-nums text-[#6bb5ab]">
-                        {item.year}
-                      </span>
-                      <h4 className="text-lg font-semibold text-white">
-                        {item.role}
+                <GlowCard
+                  disabled={shouldReduceMotion}
+                  className="rounded-[2rem] border border-white/10 bg-white/[0.04] backdrop-blur-xl"
+                >
+                  <div className="relative z-[2] overflow-hidden rounded-[2rem] p-6 md:p-8">
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(122,158,197,0.14),transparent_40%),radial-gradient(circle_at_bottom_right,rgba(107,181,171,0.1),transparent_38%)]" />
+                    <div className="relative z-[2]">
+                      <h4 className="text-sm font-bold uppercase tracking-widest text-white">
+                        {t.about.competenciesTitle}
                       </h4>
-                      <span className="mb-3 block text-sm font-medium text-slate-300">
-                        {item.company}
-                      </span>
-                      <p className="text-pretty text-sm font-light text-slate-500">
-                        {item.desc}
-                      </p>
-                    </motion.div>
-                  ))}
-                </div>
+                      <div className="mt-6 grid gap-4 sm:grid-cols-2">
+                        {competencyMatrix.map(({ competency, description, Icon }) => (
+                          <div
+                            key={competency}
+                            className="rounded-[1.4rem] border border-white/10 bg-black/20 p-4"
+                          >
+                            <div className="flex items-center gap-3">
+                              <span className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-white/[0.05] text-[#7a9ec5]">
+                                <Icon className="h-[1.125rem] w-[1.125rem]" />
+                              </span>
+                              <h5 className="text-sm font-semibold text-white">
+                                {competency}
+                              </h5>
+                            </div>
+                            <p className="mt-3 text-sm leading-relaxed text-slate-400">
+                              {description}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </GlowCard>
+
+                <GlowCard
+                  disabled={shouldReduceMotion}
+                  className="mt-6 rounded-[2rem] border border-white/10 bg-white/[0.04] backdrop-blur-xl"
+                >
+                  <div className="relative z-[2] overflow-hidden rounded-[2rem] p-6 md:p-8">
+                    <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.02))]" />
+                    <div className="relative z-[2]">
+                      <div className="mb-6 flex items-center gap-4">
+                        <div className="h-px flex-1 bg-gradient-to-r from-white/20 to-transparent" />
+                        <span className="text-[11px] font-mono uppercase tracking-[0.24em] text-[#7a9ec5]">
+                          {t.nav.about}
+                        </span>
+                      </div>
+
+                      <div className="relative space-y-4 before:absolute before:bottom-6 before:left-[1.05rem] before:top-5 before:w-px before:bg-white/10">
+                        {t.timeline.map((item, i) => (
+                          <motion.div
+                            key={i}
+                            className="relative pl-10"
+                            initial={{ opacity: 0, x: shouldReduceMotion ? 0 : -20 }}
+                            whileInView={{ opacity: 1, x: 0 }}
+                            viewport={{ once: true }}
+                            transition={{
+                              duration: 0.6,
+                              delay: i * 0.08,
+                              ease: "easeOut",
+                            }}
+                          >
+                            <div className="absolute left-0 top-5 h-3 w-3 rounded-full bg-[#6bb5ab] shadow-[0_0_14px_rgba(66,120,114,0.9)]" />
+                            <div className="rounded-[1.4rem] border border-white/10 bg-black/20 p-4">
+                              <span className="text-[11px] font-mono uppercase tracking-[0.2em] text-[#6bb5ab]">
+                                {item.year}
+                              </span>
+                              <h4 className="mt-2 text-lg font-semibold text-white">
+                                {item.role}
+                              </h4>
+                              <span className="mt-1 block text-sm font-medium text-slate-300">
+                                {item.company}
+                              </span>
+                              <p className="mt-3 text-pretty text-sm font-light leading-relaxed text-slate-400">
+                                {item.desc}
+                              </p>
+                            </div>
+                          </motion.div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </GlowCard>
               </motion.div>
             </div>
           </section>
 
           <section
             id="contact"
-            className="mx-auto max-w-7xl border-t border-white/5 px-6 py-32 md:px-12"
+            className="mx-auto max-w-7xl scroll-mt-28 px-6 pb-24 pt-4 md:scroll-mt-32 md:px-12 md:pb-32"
           >
-            <motion.div
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              variants={staggerContainer}
-              className="flex flex-col items-center text-center"
+            <RefractionGlowCard
+              disabled={shouldReduceMotion}
+              className="rounded-[2.4rem]"
             >
-              <motion.h2
-                variants={fadeScale}
-                className="mb-6 text-balance font-accent text-4xl font-medium tracking-tight text-white md:text-6xl"
-              >
-                {t.contact.heading}
-              </motion.h2>
-              <motion.p
-                variants={fadeUp}
-                className="mb-8 max-w-xl font-light text-slate-400"
-              >
-                {t.contact.subtitle}
-              </motion.p>
-
-              <motion.div variants={fadeUp}>
-                <ProfileLinks
-                  className="mb-8 flex flex-wrap items-center justify-center gap-3"
-                  iconClassName="h-4.5 w-4.5"
-                />
-              </motion.div>
-
-              <motion.div variants={fadeUp}>
-                <MagneticLink
-                  href={`mailto:${t.contact.emailLabel}`}
-                  disabled={shouldReduceMotion}
-                  className="border-b-2 border-[#7a9ec5] pb-1 text-xl font-semibold transition-colors hover:text-[#e9ecf1] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white md:text-2xl"
-                >
-                  {t.contact.emailLabel}
-                </MagneticLink>
-              </motion.div>
-
               <motion.div
-                variants={fadeUp}
-                className="mt-32 flex w-full flex-col items-center justify-between gap-8 text-xs font-mono text-slate-400 md:flex-row"
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                variants={staggerContainer}
+                className="relative overflow-hidden rounded-[2.4rem] border border-white/10 bg-[linear-gradient(140deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03))] px-6 py-8 shadow-[0_35px_140px_rgba(0,0,0,0.28)] backdrop-blur-xl md:px-10 md:py-10"
               >
-                <p className="tabular-nums">
-                  &copy; {new Date().getFullYear()} Ramon Roca Pinilla.{" "}
-                  {t.contact.footer}
-                </p>
-                <ProfileLinks
-                  className="flex flex-wrap items-center justify-center gap-3"
-                  linkClassName="h-11 w-11"
-                  iconClassName="h-5 w-5"
-                />
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(122,158,197,0.18),transparent_32%),radial-gradient(circle_at_bottom_right,rgba(107,181,171,0.16),transparent_36%)]" />
+                <div className="relative z-[2]">
+                  <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
+                    <div>
+                      <motion.div
+                        variants={fadeUp}
+                        className="mb-6 flex items-center gap-4"
+                      >
+                        <span className="text-[11px] font-mono uppercase tracking-[0.28em] text-[#7a9ec5]">
+                          {t.nav.contact}
+                        </span>
+                        <div className="h-px flex-1 bg-gradient-to-r from-white/25 via-white/10 to-transparent" />
+                      </motion.div>
+
+                      <motion.h2
+                        variants={fadeScale}
+                        className="max-w-4xl text-balance font-accent text-4xl font-medium tracking-tight text-white md:text-6xl"
+                      >
+                        {t.contact.heading}
+                      </motion.h2>
+                      <motion.p
+                        variants={fadeUp}
+                        className="mt-6 max-w-2xl text-pretty font-light leading-relaxed text-slate-300"
+                      >
+                        {t.contact.subtitle}
+                      </motion.p>
+                    </div>
+
+                    <motion.div
+                      variants={fadeUp}
+                      className="flex flex-col items-start gap-4 lg:items-end"
+                    >
+                      <MagneticLink
+                        href={`mailto:${t.contact.emailLabel}`}
+                        disabled={shouldReduceMotion}
+                        className="inline-flex items-center gap-3 rounded-full border border-white/15 bg-white/[0.04] px-6 py-4 text-base font-semibold text-white transition-colors hover:border-white/30 hover:bg-white/[0.08] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white md:text-xl"
+                      >
+                        {t.contact.emailLabel}
+                        <ArrowUpRight className="h-[1.125rem] w-[1.125rem]" />
+                      </MagneticLink>
+                      <ProfileLinks
+                        className="flex flex-wrap items-center gap-3"
+                        iconClassName="h-[1.125rem] w-[1.125rem]"
+                      />
+                    </motion.div>
+                  </div>
+
+                  <motion.div
+                    variants={fadeUp}
+                    className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-4"
+                  >
+                    {t.hero.proof.map((item) => (
+                      <div
+                        key={item}
+                        className="rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-[11px] font-mono uppercase tracking-[0.18em] text-slate-200"
+                      >
+                        {item}
+                      </div>
+                    ))}
+                  </motion.div>
+
+                  <motion.div
+                    variants={fadeUp}
+                    className="mt-10 flex flex-col items-start justify-between gap-6 border-t border-white/10 pt-6 text-xs font-mono text-slate-400 md:flex-row md:items-center"
+                  >
+                    <p className="tabular-nums">
+                      &copy; {new Date().getFullYear()} Ramon Roca Pinilla.{" "}
+                      {t.contact.footer}
+                    </p>
+                    <div className="flex items-center gap-4">
+                      <LanguageSwitcher locale={locale} />
+                      <ProfileLinks
+                        className="flex flex-wrap items-center justify-center gap-3"
+                        linkClassName="h-11 w-11"
+                        iconClassName="h-5 w-5"
+                      />
+                    </div>
+                  </motion.div>
+                </div>
               </motion.div>
-            </motion.div>
+            </RefractionGlowCard>
           </section>
         </main>
       </div>

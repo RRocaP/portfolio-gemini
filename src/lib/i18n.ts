@@ -43,7 +43,6 @@ export interface Translation {
   };
   sections: {
     works: string;
-    worksSubhead: string;
     about: string;
     aboutSubhead: string;
   };
@@ -65,7 +64,8 @@ export interface Translation {
     footer: string;
   };
   audio: { mute: string; unmute: string };
-  mobileMenu: { open: string; close: string };
+  mobileMenu: { open: string; close: string; title: string };
+  skipLink: string;
 }
 
 const en: Translation = {
@@ -94,7 +94,6 @@ const en: Translation = {
   },
   sections: {
     works: "01. Selected Work",
-    worksSubhead: "Six papers, three labs, one through-line.",
     about: "02. The Story",
     aboutSubhead:
       "Three countries, three labs, one obsession: turning sequence into therapy.",
@@ -225,7 +224,8 @@ const en: Translation = {
     mute: "Mute immersive soundscape",
     unmute: "Unmute immersive soundscape",
   },
-  mobileMenu: { open: "Open menu", close: "Close menu" },
+  mobileMenu: { open: "Open menu", close: "Close menu", title: "Site navigation" },
+  skipLink: "Skip to main content",
 };
 
 const es: Translation = {
@@ -255,7 +255,6 @@ const es: Translation = {
   },
   sections: {
     works: "01. Trabajos seleccionados",
-    worksSubhead: "Seis artículos, tres laboratorios, un mismo hilo.",
     about: "02. La historia",
     aboutSubhead:
       "Tres países, tres laboratorios, una obsesión: convertir la secuencia en terapia.",
@@ -386,7 +385,8 @@ const es: Translation = {
     mute: "Silenciar paisaje sonoro",
     unmute: "Activar paisaje sonoro",
   },
-  mobileMenu: { open: "Abrir menú", close: "Cerrar menú" },
+  mobileMenu: { open: "Abrir menú", close: "Cerrar menú", title: "Navegación" },
+  skipLink: "Saltar al contenido",
 };
 
 const ca: Translation = {
@@ -416,7 +416,6 @@ const ca: Translation = {
   },
   sections: {
     works: "01. Treballs seleccionats",
-    worksSubhead: "Sis articles, tres laboratoris, un mateix fil.",
     about: "02. La història",
     aboutSubhead:
       "Tres països, tres laboratoris, una obsessió: convertir la seqüència en teràpia.",
@@ -547,7 +546,8 @@ const ca: Translation = {
     mute: "Silenciar paisatge sonor",
     unmute: "Activar paisatge sonor",
   },
-  mobileMenu: { open: "Obrir menú", close: "Tancar menú" },
+  mobileMenu: { open: "Obrir menú", close: "Tancar menú", title: "Navegació" },
+  skipLink: "Salta al contingut",
 };
 
 export const translations: Record<Locale, Translation> = { en, es, ca };

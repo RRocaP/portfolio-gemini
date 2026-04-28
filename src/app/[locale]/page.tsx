@@ -573,7 +573,7 @@ export default function PortfolioPage() {
           href="#works"
           className="sr-only focus:not-sr-only focus:fixed focus:left-1/2 focus:top-4 focus:z-[60] focus:-translate-x-1/2 focus:rounded-full focus:bg-white focus:px-6 focus:py-3 focus:text-sm focus:font-semibold focus:text-black"
         >
-          Skip to main content
+          {t.skipLink}
         </a>
 
         <header className="fixed inset-x-0 top-0 z-50 px-4 py-4 sm:px-6 md:px-10">
@@ -652,7 +652,7 @@ export default function PortfolioPage() {
               className="fixed inset-0 z-40 flex flex-col items-center justify-center gap-8 bg-[#03070d]/95 backdrop-blur-xl"
             >
               <h2 id="mobile-menu-title" className="sr-only">
-                {t.mobileMenu.open}
+                {t.mobileMenu.title}
               </h2>
               {navItems.map((item) => (
                 <a
@@ -952,9 +952,6 @@ export default function PortfolioPage() {
                     transition={{ duration: 1.2, ease: "easeOut" }}
                   />
                 </div>
-                <h3 className="max-w-4xl text-balance font-display text-4xl font-medium tracking-tight text-white md:text-5xl">
-                  {t.sections.worksSubhead}
-                </h3>
               </div>
               <p className="max-w-xl text-pretty text-sm leading-relaxed text-slate-300 md:text-base">
                 {t.meta.description}

@@ -225,7 +225,7 @@ function ProfileLinks({
           key={label}
           href={href}
           target="_blank"
-          rel="noreferrer"
+          rel="noopener noreferrer"
           aria-label={label}
           title={label}
           className={`inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-slate-300 transition-all hover:border-white/25 hover:bg-white/10 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white ${linkClassName ?? ""}`}
@@ -391,9 +391,11 @@ function LanguageSwitcher({ locale }: { locale: Locale }) {
           {i > 0 && <span className="select-none text-xs text-slate-600">|</span>}
           <Link
             href={`/${l}`}
+            aria-current={l === locale ? "page" : undefined}
+            lang={l}
             className={`rounded px-3 py-2 text-xs font-mono uppercase transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white ${l === locale
               ? "bg-white/15 text-white"
-              : "text-slate-400 hover:bg-white/5 hover:text-white"
+              : "text-slate-300 hover:bg-white/5 hover:text-white"
               }`}
           >
             {l}
@@ -923,6 +925,7 @@ export default function PortfolioPage() {
 
           <section
             id="works"
+            aria-labelledby="works-heading"
             className="mx-auto max-w-7xl scroll-mt-28 px-6 py-24 md:scroll-mt-32 md:px-12 md:py-32"
           >
             <motion.div
@@ -934,7 +937,7 @@ export default function PortfolioPage() {
             >
               <div>
                 <div className="mb-5 flex items-center gap-4">
-                  <h2 className="text-sm font-bold uppercase tracking-widest text-[#7a9ec5]">
+                  <h2 id="works-heading" className="text-sm font-bold uppercase tracking-widest text-[#7a9ec5]">
                     {t.sections.works}
                   </h2>
                   <motion.div
@@ -960,7 +963,7 @@ export default function PortfolioPage() {
                   <motion.a
                     href={featuredWorks[0].href}
                     target="_blank"
-                    rel="noreferrer"
+                    rel="noopener noreferrer"
                     initial={{ opacity: 0, scale: shouldReduceMotion ? 1 : 0.97 }}
                     whileInView={{ opacity: 1, scale: 1 }}
                     viewport={{ once: true, margin: "-50px" }}
@@ -1018,7 +1021,7 @@ export default function PortfolioPage() {
                     <motion.a
                       href={featuredWorks[1].href}
                       target="_blank"
-                      rel="noreferrer"
+                      rel="noopener noreferrer"
                       initial={{ opacity: 0, scale: shouldReduceMotion ? 1 : 0.97 }}
                       whileInView={{ opacity: 1, scale: 1 }}
                       viewport={{ once: true, margin: "-50px" }}
@@ -1077,7 +1080,7 @@ export default function PortfolioPage() {
                   <motion.a
                     href={work.href}
                     target="_blank"
-                    rel="noreferrer"
+                    rel="noopener noreferrer"
                     initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 16 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true, margin: "-30px" }}
@@ -1123,6 +1126,7 @@ export default function PortfolioPage() {
 
           <section
             id="about"
+            aria-labelledby="about-heading"
             className="mx-auto max-w-7xl scroll-mt-28 px-6 py-32 md:scroll-mt-32 md:px-12"
           >
             <motion.div
@@ -1134,7 +1138,7 @@ export default function PortfolioPage() {
             >
               <div>
                 <div className="mb-5 flex items-center gap-4">
-                  <h2 className="text-sm font-bold uppercase tracking-widest text-[#7a9ec5]">
+                  <h2 id="about-heading" className="text-sm font-bold uppercase tracking-widest text-[#7a9ec5]">
                     {t.sections.about}
                   </h2>
                   <motion.div
@@ -1284,6 +1288,7 @@ export default function PortfolioPage() {
 
           <section
             id="contact"
+            aria-labelledby="contact-heading"
             className="mx-auto max-w-7xl scroll-mt-28 px-6 pb-24 pt-4 md:scroll-mt-32 md:px-12 md:pb-32"
           >
             <RefractionGlowCard
@@ -1312,6 +1317,7 @@ export default function PortfolioPage() {
                       </motion.div>
 
                       <motion.h2
+                        id="contact-heading"
                         variants={fadeScale}
                         className="max-w-4xl text-balance font-accent text-4xl font-medium tracking-tight text-white md:text-6xl"
                       >

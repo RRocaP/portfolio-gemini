@@ -15,7 +15,6 @@ import {
   Brain,
   Code2,
   Dna,
-  FlaskConical,
   GraduationCap,
   Menu,
   Microscope,
@@ -62,6 +61,28 @@ function getLoopTime(time: number, duration: number) {
   if (!Number.isFinite(duration) || duration <= 0) return 0;
   const normalized = ((time % duration) + duration) % duration;
   return Math.min(normalized, Math.max(duration - 0.01, 0));
+}
+
+function IcosahedronIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      {...props}
+    >
+      <path d="M12 2.5 L20.5 7.5 L20.5 16.5 L12 21.5 L3.5 16.5 L3.5 7.5 Z" />
+      <path d="M12 7 L16.5 14.5 L7.5 14.5 Z" />
+      <path d="M12 2.5 L12 7" />
+      <path d="M20.5 7.5 L16.5 14.5" />
+      <path d="M3.5 7.5 L7.5 14.5" />
+      <path d="M12 21.5 L12 14.5" opacity="0.55" />
+    </svg>
+  );
 }
 
 function OrcidIcon(props: React.SVGProps<SVGSVGElement>) {
@@ -123,7 +144,7 @@ function renderInlineEmphasis(text: string) {
   );
 }
 
-const competencyIcons = [Brain, FlaskConical, Code2, Shield, Microscope, Dna];
+const competencyIcons = [Brain, IcosahedronIcon, Code2, Shield, Microscope, Dna];
 
 function GlowCard({
   children,

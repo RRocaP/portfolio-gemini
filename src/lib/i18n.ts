@@ -63,7 +63,7 @@ export interface Translation {
     emailLabel: string;
     footer: string;
   };
-  audio: { mute: string; unmute: string };
+  audio: { play: string; pause: string };
   mobileMenu: { open: string; close: string; title: string };
   skipLink: string;
 }
@@ -221,8 +221,8 @@ const en: Translation = {
     footer: "All rights reserved.",
   },
   audio: {
-    mute: "Mute immersive soundscape",
-    unmute: "Unmute immersive soundscape",
+    play: "Play ambient soundscape",
+    pause: "Pause ambient soundscape",
   },
   mobileMenu: { open: "Open menu", close: "Close menu", title: "Site navigation" },
   skipLink: "Skip to main content",
@@ -382,8 +382,8 @@ const es: Translation = {
     footer: "Todos los derechos reservados.",
   },
   audio: {
-    mute: "Silenciar paisaje sonoro",
-    unmute: "Activar paisaje sonoro",
+    play: "Reproducir paisaje sonoro",
+    pause: "Pausar paisaje sonoro",
   },
   mobileMenu: { open: "Abrir menú", close: "Cerrar menú", title: "Navegación" },
   skipLink: "Saltar al contenido",
@@ -543,8 +543,8 @@ const ca: Translation = {
     footer: "Tots els drets reservats.",
   },
   audio: {
-    mute: "Silenciar paisatge sonor",
-    unmute: "Activar paisatge sonor",
+    play: "Reproduir paisatge sonor",
+    pause: "Pausar paisatge sonor",
   },
   mobileMenu: { open: "Obrir menú", close: "Tancar menú", title: "Navegació" },
   skipLink: "Salta al contingut",

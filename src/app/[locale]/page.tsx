@@ -250,14 +250,14 @@ function useReducedMotionSafe(): boolean {
 // Immersive Video Background
 // ---------------------------------------------------------------------------
 function ImmersiveBackground({
-  isMuted,
-  toggleMute,
+  isPaused,
+  togglePaused,
   shouldReduceMotion,
   isMobile,
   t,
 }: {
-  isMuted: boolean;
-  toggleMute: () => void;
+  isPaused: boolean;
+  togglePaused: () => void;
   shouldReduceMotion: boolean;
   isMobile: boolean;
   t: Translation;
@@ -266,7 +266,6 @@ function ImmersiveBackground({
   const fadeFrameRef = useRef<number | null>(null);
   const mountedAtRef = useRef<number | null>(null);
 
-  // Smooth fade-in on first play
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
@@ -297,43 +296,44 @@ function ImmersiveBackground({
       fadeFrameRef.current = requestAnimationFrame(step);
     };
 
-    const startPlayback = (shouldFade: boolean) => {
-      audio.muted = isMuted;
+    if (isPaused) {
+      stopFade();
+      audio.pause();
+      return () => {
+        stopFade();
+      };
+    }
 
+    const startPlayback = () => {
       if (!audio.paused) {
-        if (!isMuted && shouldFade) {
-          fadeIn();
-        }
+        fadeIn();
         return;
       }
-
-      const elapsedSeconds = (performance.now() - (mountedAtRef.current ?? performance.now())) / 1000;
+      const elapsedSeconds =
+        (performance.now() - (mountedAtRef.current ?? performance.now())) / 1000;
       const duration =
         Number.isFinite(audio.duration) && audio.duration > 0
           ? audio.duration
           : backgroundAudioDurationFallback;
 
       audio.currentTime = getLoopTime(elapsedSeconds, duration);
-      audio.play().then(() => {
-        if (!isMuted && shouldFade) {
-          fadeIn();
-        }
-      }).catch(() => { });
+      audio
+        .play()
+        .then(() => fadeIn())
+        .catch(() => {});
     };
 
-    startPlayback(!isMuted);
+    startPlayback();
 
     const interactionListener = () => {
-      startPlayback(!isMuted);
+      startPlayback();
       document.removeEventListener("click", interactionListener);
       document.removeEventListener("scroll", interactionListener);
       document.removeEventListener("keydown", interactionListener);
     };
 
     const metadataListener = () => {
-      if (audio.paused) {
-        startPlayback(false);
-      }
+      if (audio.paused) startPlayback();
     };
 
     document.addEventListener("click", interactionListener);
@@ -348,14 +348,7 @@ function ImmersiveBackground({
       document.removeEventListener("keydown", interactionListener);
       audio.removeEventListener("loadedmetadata", metadataListener);
     };
-  }, [isMuted]);
-
-  useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio) return;
-
-    audio.muted = isMuted;
-  }, [isMuted]);
+  }, [isPaused]);
 
   return (
     <>
@@ -365,16 +358,17 @@ function ImmersiveBackground({
         <WebGLBackground prefersReducedMotion={shouldReduceMotion} />
       )}
 
-      <audio ref={audioRef} loop className="hidden" muted={isMuted} preload="auto">
+      <audio ref={audioRef} loop className="hidden" preload="auto">
         <source src={backgroundAudioUrl} type="audio/mpeg" />
       </audio>
 
       <button
-        onClick={toggleMute}
+        onClick={togglePaused}
         className="fixed bottom-4 right-4 z-50 min-h-[44px] min-w-[44px] rounded-full border border-white/10 bg-white/5 p-3 text-white/50 backdrop-blur-md transition-all duration-300 hover:bg-white/10 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:bottom-8 sm:left-8 sm:right-auto"
-        aria-label={isMuted ? t.audio.unmute : t.audio.mute}
+        aria-label={isPaused ? t.audio.play : t.audio.pause}
+        aria-pressed={isPaused}
       >
-        {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
+        {isPaused ? <VolumeX size={20} /> : <Volume2 size={20} />}
       </button>
     </>
   );
@@ -424,7 +418,7 @@ export default function PortfolioPage() {
   const heroOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
   const heroY = useTransform(scrollYProgress, [0, 0.5], [0, -60]);
 
-  const [isMuted, setIsMuted] = useState(false);
+  const [isPaused, setIsPaused] = useState(() => shouldReduceMotion);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const menuRef = useRef<HTMLElement>(null);
@@ -503,7 +497,7 @@ export default function PortfolioPage() {
     [shouldReduceMotion],
   );
 
-  const toggleMute = () => setIsMuted((prev) => !prev);
+  const togglePaused = () => setIsPaused((prev) => !prev);
 
   useEffect(() => {
     if (!mobileMenuOpen) return;
@@ -563,8 +557,8 @@ export default function PortfolioPage() {
   return (
     <>
       <ImmersiveBackground
-        isMuted={isMuted}
-        toggleMute={toggleMute}
+        isPaused={isPaused}
+        togglePaused={togglePaused}
         shouldReduceMotion={shouldReduceMotion}
         isMobile={isMobile}
         t={t}
@@ -679,8 +673,8 @@ export default function PortfolioPage() {
             aria-hidden="true"
             className="pointer-events-none absolute inset-0 -z-10"
           >
-            <div className="absolute left-[-12rem] top-24 h-[28rem] w-[28rem] rounded-full bg-[#7a9ec5]/14 blur-3xl" />
-            <div className="absolute right-[-10rem] top-[28rem] h-[24rem] w-[24rem] rounded-full bg-[#6bb5ab]/12 blur-3xl" />
+            <div className="absolute left-[-12rem] top-24 h-[28rem] w-[28rem] rounded-full bg-[#a4c5e6]/14 blur-3xl" />
+            <div className="absolute right-[-10rem] top-[28rem] h-[24rem] w-[24rem] rounded-full bg-[#8fd0c4]/12 blur-3xl" />
             <div className="absolute bottom-[18rem] left-1/2 h-[32rem] w-[32rem] -translate-x-1/2 rounded-full bg-[#4e5fb8]/10 blur-3xl" />
             <div className="absolute inset-x-0 top-[36rem] h-[90rem] bg-[linear-gradient(to_bottom,rgba(255,255,255,0.04)_1px,transparent_1px),linear-gradient(to_right,rgba(255,255,255,0.04)_1px,transparent_1px)] bg-[size:88px_88px] opacity-[0.12] [mask-image:linear-gradient(to_bottom,transparent,black_20%,black_78%,transparent)]" />
           </div>
@@ -706,7 +700,7 @@ export default function PortfolioPage() {
                       variants={fadeUp}
                       className="mb-7 flex max-w-4xl items-center gap-4"
                     >
-                      <span className="text-[11px] font-mono uppercase tracking-[0.28em] text-[#7a9ec5] md:text-xs">
+                      <span className="text-[11px] font-mono uppercase tracking-[0.28em] text-[#a4c5e6] md:text-xs">
                         {t.hero.eyebrow}
                       </span>
                       <div className="hidden h-px flex-1 bg-gradient-to-r from-white/20 via-white/5 to-transparent md:block" />
@@ -728,14 +722,14 @@ export default function PortfolioPage() {
 
                     <motion.p
                       variants={fadeUp}
-                      className="mt-4 max-w-2xl font-display text-base italic tracking-wide text-[#7a9ec5] md:text-lg"
+                      className="mt-4 max-w-2xl font-display text-base italic tracking-wide text-[#a4c5e6] md:text-lg"
                     >
                       {t.hero.northStar}
                     </motion.p>
 
                     <motion.p
                       variants={fadeUp}
-                      className="mt-5 text-sm font-medium uppercase tracking-[0.24em] text-[#6bb5ab] md:text-base"
+                      className="mt-5 text-sm font-medium uppercase tracking-[0.24em] text-[#8fd0c4] md:text-base"
                     >
                       {t.hero.supportingLine}
                     </motion.p>
@@ -804,10 +798,10 @@ export default function PortfolioPage() {
                     <div className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03))] p-6 shadow-[0_28px_120px_rgba(0,0,0,0.24)] backdrop-blur-xl md:p-8">
                       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(122,158,197,0.22),transparent_38%),radial-gradient(circle_at_bottom_left,rgba(107,181,171,0.16),transparent_42%)]" />
                       <div className="relative z-[2]">
-                        <span className="inline-flex rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-[10px] font-mono uppercase tracking-[0.22em] text-[#6bb5ab]">
+                        <span className="inline-flex rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-[10px] font-mono uppercase tracking-[0.22em] text-[#8fd0c4]">
                           {t.timeline[0].year}
                         </span>
-                        <p className="mt-6 text-[11px] font-mono uppercase tracking-[0.28em] text-[#7a9ec5]">
+                        <p className="mt-6 text-[11px] font-mono uppercase tracking-[0.28em] text-[#a4c5e6]">
                           {t.timeline[0].company}
                         </p>
                         <h2 className="mt-3 max-w-sm text-balance font-display text-3xl leading-tight tracking-tight text-white">
@@ -842,7 +836,7 @@ export default function PortfolioPage() {
                       className="rounded-[1.6rem] border border-white/10 bg-white/[0.04] backdrop-blur-lg"
                     >
                       <div className="relative z-[2] h-full rounded-[1.6rem] p-5">
-                        <p className="text-[10px] font-mono uppercase tracking-[0.22em] text-[#7a9ec5]">
+                        <p className="text-[10px] font-mono uppercase tracking-[0.22em] text-[#a4c5e6]">
                           {t.about.competenciesTitle}
                         </p>
                         <div className="mt-4 space-y-3">
@@ -851,7 +845,7 @@ export default function PortfolioPage() {
                               key={competency}
                               className="flex items-center gap-3 rounded-2xl border border-white/8 bg-black/20 px-3 py-3"
                             >
-                              <span className="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-white/[0.05] text-[#7a9ec5]">
+                              <span className="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-white/[0.05] text-[#a4c5e6]">
                                 <Icon className="h-[1.125rem] w-[1.125rem]" />
                               </span>
                               <span className="text-sm text-slate-200">{competency}</span>
@@ -872,7 +866,7 @@ export default function PortfolioPage() {
                               key={`${item.year}-${item.role}`}
                               className="rounded-2xl border border-white/8 bg-black/20 px-4 py-4"
                             >
-                              <span className="text-[11px] font-mono uppercase tracking-[0.2em] text-[#6bb5ab]">
+                              <span className="text-[11px] font-mono uppercase tracking-[0.2em] text-[#8fd0c4]">
                                 {item.year}
                               </span>
                               <h3 className="mt-2 text-base font-semibold text-white">
@@ -937,7 +931,7 @@ export default function PortfolioPage() {
             >
               <div>
                 <div className="mb-5 flex items-center gap-4">
-                  <h2 id="works-heading" className="text-sm font-bold uppercase tracking-widest text-[#7a9ec5]">
+                  <h2 id="works-heading" className="text-sm font-bold uppercase tracking-widest text-[#a4c5e6]">
                     {t.sections.works}
                   </h2>
                   <motion.div
@@ -968,7 +962,7 @@ export default function PortfolioPage() {
                     whileInView={{ opacity: 1, scale: 1 }}
                     viewport={{ once: true, margin: "-50px" }}
                     transition={{ duration: 0.7 }}
-                    className="group relative z-[2] flex h-full min-h-[420px] flex-col overflow-hidden rounded-[2rem] border border-white/10 p-8 shadow-[0_28px_120px_rgba(0,0,0,0.22)] transition-all duration-500 hover:border-[#7a9ec5]/30 hover:shadow-[0_40px_120px_rgba(0,0,0,0.35)] motion-safe:hover:-translate-y-1 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white md:p-10"
+                    className="group relative z-[2] flex h-full min-h-[420px] flex-col overflow-hidden rounded-[2rem] border border-white/10 p-8 shadow-[0_28px_120px_rgba(0,0,0,0.22)] transition-all duration-500 hover:border-[#a4c5e6]/30 hover:shadow-[0_40px_120px_rgba(0,0,0,0.35)] motion-safe:hover:-translate-y-1 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white md:p-10"
                     style={{ backgroundImage: getWorkBackdrop(featuredWorks[0].id) }}
                     aria-label={`${t.workLinkLabel}: ${featuredWorks[0].title}`}
                   >
@@ -976,7 +970,7 @@ export default function PortfolioPage() {
                       01
                     </span>
                     <div className="mb-8 flex items-start justify-between gap-4">
-                      <span className="rounded-full border border-[#6bb5ab]/30 bg-black/15 px-3 py-1 text-[11px] font-mono uppercase tracking-[0.18em] text-[#6bb5ab]">
+                      <span className="rounded-full border border-[#8fd0c4]/30 bg-black/15 px-3 py-1 text-[11px] font-mono uppercase tracking-[0.18em] text-[#8fd0c4]">
                         {featuredWorks[0].year}
                       </span>
                       <span className="max-w-[11rem] text-right text-[11px] font-mono uppercase tracking-[0.2em] text-slate-300">
@@ -1003,7 +997,7 @@ export default function PortfolioPage() {
                           </span>
                         ))}
                       </div>
-                      <span className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#7a9ec5]">
+                      <span className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#a4c5e6]">
                         {t.workLinkLabel}
                         <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                       </span>
@@ -1026,7 +1020,7 @@ export default function PortfolioPage() {
                       whileInView={{ opacity: 1, scale: 1 }}
                       viewport={{ once: true, margin: "-50px" }}
                       transition={{ duration: 0.7, delay: 0.1 }}
-                      className="group relative z-[2] flex min-h-[250px] flex-col overflow-hidden rounded-[2rem] border border-white/10 p-7 shadow-[0_24px_100px_rgba(0,0,0,0.22)] transition-all duration-500 hover:border-[#6bb5ab]/28 hover:shadow-[0_30px_110px_rgba(0,0,0,0.32)] motion-safe:hover:-translate-y-1 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white md:p-8"
+                      className="group relative z-[2] flex min-h-[250px] flex-col overflow-hidden rounded-[2rem] border border-white/10 p-7 shadow-[0_24px_100px_rgba(0,0,0,0.22)] transition-all duration-500 hover:border-[#8fd0c4]/28 hover:shadow-[0_30px_110px_rgba(0,0,0,0.32)] motion-safe:hover:-translate-y-1 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white md:p-8"
                       style={{ backgroundImage: getWorkBackdrop(featuredWorks[1].id) }}
                       aria-label={`${t.workLinkLabel}: ${featuredWorks[1].title}`}
                     >
@@ -1034,7 +1028,7 @@ export default function PortfolioPage() {
                         02
                       </span>
                       <div className="flex items-start justify-between gap-4">
-                        <span className="rounded-full border border-[#6bb5ab]/30 bg-black/15 px-3 py-1 text-[11px] font-mono uppercase tracking-[0.18em] text-[#6bb5ab]">
+                        <span className="rounded-full border border-[#8fd0c4]/30 bg-black/15 px-3 py-1 text-[11px] font-mono uppercase tracking-[0.18em] text-[#8fd0c4]">
                           {featuredWorks[1].year}
                         </span>
                         <span className="max-w-[9rem] text-right text-[11px] font-mono uppercase tracking-[0.18em] text-slate-300">
@@ -1060,7 +1054,7 @@ export default function PortfolioPage() {
                             </span>
                           ))}
                         </div>
-                        <span className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-[0.18em] text-[#7a9ec5]">
+                        <span className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-[0.18em] text-[#a4c5e6]">
                           <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                         </span>
                       </div>
@@ -1093,7 +1087,7 @@ export default function PortfolioPage() {
                       {`0${index + 3}`}
                     </span>
                     <div className="flex items-center justify-between gap-4">
-                      <span className="rounded-full border border-white/12 bg-black/20 px-2.5 py-1 text-[10px] font-mono uppercase tracking-[0.18em] text-[#6bb5ab]">
+                      <span className="rounded-full border border-white/12 bg-black/20 px-2.5 py-1 text-[10px] font-mono uppercase tracking-[0.18em] text-[#8fd0c4]">
                         {work.year}
                       </span>
                       <span className="text-[10px] font-mono uppercase tracking-[0.18em] text-slate-400">
@@ -1138,7 +1132,7 @@ export default function PortfolioPage() {
             >
               <div>
                 <div className="mb-5 flex items-center gap-4">
-                  <h2 id="about-heading" className="text-sm font-bold uppercase tracking-widest text-[#7a9ec5]">
+                  <h2 id="about-heading" className="text-sm font-bold uppercase tracking-widest text-[#a4c5e6]">
                     {t.sections.about}
                   </h2>
                   <motion.div
@@ -1169,7 +1163,7 @@ export default function PortfolioPage() {
                   <RefractionGlowCard disabled={shouldReduceMotion} className="relative mr-0 rounded-[2rem] md:mr-18">
                     <div className="absolute -inset-3 rounded-[2.2rem] bg-[radial-gradient(circle_at_top_left,rgba(122,158,197,0.16),transparent_72%)]" />
                     <div className="relative z-[2] rounded-[2rem] border border-white/10 bg-black/15 p-6 shadow-[0_24px_80px_rgba(0,0,0,0.18)] backdrop-blur-sm md:p-8">
-                      <span className="mb-4 inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[10px] font-mono uppercase tracking-[0.22em] text-[#7a9ec5]">
+                      <span className="mb-4 inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[10px] font-mono uppercase tracking-[0.22em] text-[#a4c5e6]">
                         {aboutStoryLabels[0]}
                       </span>
                       <p lang={locale} className="text-left text-pretty">
@@ -1180,8 +1174,8 @@ export default function PortfolioPage() {
 
                   <RefractionGlowCard disabled={shouldReduceMotion} className="relative ml-0 rounded-[2rem] md:ml-20">
                     <div className="absolute -inset-3 rounded-[2.2rem] bg-[radial-gradient(circle_at_bottom_right,rgba(107,181,171,0.18),transparent_72%)]" />
-                    <div className="relative z-[2] rounded-[2rem] border border-[#7a9ec5]/20 bg-[#0d1721]/65 p-6 shadow-[0_24px_80px_rgba(0,0,0,0.22)] backdrop-blur-md md:p-8">
-                      <span className="mb-4 inline-flex items-center rounded-full border border-[#6bb5ab]/20 bg-[#6bb5ab]/8 px-3 py-1 text-[10px] font-mono uppercase tracking-[0.22em] text-[#6bb5ab]">
+                    <div className="relative z-[2] rounded-[2rem] border border-[#a4c5e6]/20 bg-[#0d1721]/65 p-6 shadow-[0_24px_80px_rgba(0,0,0,0.22)] backdrop-blur-md md:p-8">
+                      <span className="mb-4 inline-flex items-center rounded-full border border-[#8fd0c4]/20 bg-[#8fd0c4]/8 px-3 py-1 text-[10px] font-mono uppercase tracking-[0.22em] text-[#8fd0c4]">
                         {aboutStoryLabels[1]}
                       </span>
                       <p lang={locale} className="text-left text-pretty">
@@ -1216,7 +1210,7 @@ export default function PortfolioPage() {
                             className="rounded-[1.4rem] border border-white/10 bg-black/20 p-4"
                           >
                             <div className="flex items-center gap-3">
-                              <span className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-white/[0.05] text-[#7a9ec5]">
+                              <span className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-white/[0.05] text-[#a4c5e6]">
                                 <Icon className="h-[1.125rem] w-[1.125rem]" />
                               </span>
                               <h5 className="text-sm font-semibold text-white">
@@ -1242,7 +1236,7 @@ export default function PortfolioPage() {
                     <div className="relative z-[2]">
                       <div className="mb-6 flex items-center gap-4">
                         <div className="h-px flex-1 bg-gradient-to-r from-white/20 to-transparent" />
-                        <span className="text-[11px] font-mono uppercase tracking-[0.24em] text-[#7a9ec5]">
+                        <span className="text-[11px] font-mono uppercase tracking-[0.24em] text-[#a4c5e6]">
                           {t.nav.about}
                         </span>
                       </div>
@@ -1261,9 +1255,9 @@ export default function PortfolioPage() {
                               ease: "easeOut",
                             }}
                           >
-                            <div className="absolute left-0 top-5 h-3 w-3 rounded-full bg-[#6bb5ab] shadow-[0_0_14px_rgba(66,120,114,0.9)]" />
+                            <div className="absolute left-0 top-5 h-3 w-3 rounded-full bg-[#8fd0c4] shadow-[0_0_14px_rgba(66,120,114,0.9)]" />
                             <div className="rounded-[1.4rem] border border-white/10 bg-black/20 p-4">
-                              <span className="text-[11px] font-mono uppercase tracking-[0.2em] text-[#6bb5ab]">
+                              <span className="text-[11px] font-mono uppercase tracking-[0.2em] text-[#8fd0c4]">
                                 {item.year}
                               </span>
                               <h4 className="mt-2 text-lg font-semibold text-white">
@@ -1310,7 +1304,7 @@ export default function PortfolioPage() {
                         variants={fadeUp}
                         className="mb-6 flex items-center gap-4"
                       >
-                        <span className="text-[11px] font-mono uppercase tracking-[0.28em] text-[#7a9ec5]">
+                        <span className="text-[11px] font-mono uppercase tracking-[0.28em] text-[#a4c5e6]">
                           {t.nav.contact}
                         </span>
                         <div className="h-px flex-1 bg-gradient-to-r from-white/25 via-white/10 to-transparent" />

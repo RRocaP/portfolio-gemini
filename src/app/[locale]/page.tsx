@@ -738,19 +738,12 @@ export default function PortfolioPage() {
                       {t.hero.supportingLine}
                     </motion.p>
 
-                    <motion.ul
+                    <motion.p
                       variants={fadeUp}
-                      className="mt-8 grid max-w-2xl gap-3 sm:grid-cols-2"
+                      className="mt-8 max-w-2xl text-xs font-mono uppercase tracking-[0.18em] text-slate-300 tabular-nums"
                     >
-                      {t.hero.proof.map((item) => (
-                        <li
-                          key={item}
-                          className="rounded-2xl border border-white/10 bg-white/[0.05] px-4 py-3 text-xs font-mono uppercase tracking-[0.18em] text-slate-200 backdrop-blur-sm"
-                        >
-                          {item}
-                        </li>
-                      ))}
-                    </motion.ul>
+                      {t.hero.proof.join(" · ")}
+                    </motion.p>
 
                     <motion.div
                       variants={fadeUp}

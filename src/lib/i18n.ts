@@ -36,11 +36,17 @@ export interface Translation {
     title: string;
     subtitle: string;
     supportingLine: string;
+    northStar: string;
     ctaPrimary: string;
     ctaSecondary: string;
     proof: string[];
   };
-  sections: { works: string; about: string };
+  sections: {
+    works: string;
+    worksSubhead: string;
+    about: string;
+    aboutSubhead: string;
+  };
   works: WorkItem[];
   workLinkLabel: string;
   timeline: TimelineItem[];
@@ -76,6 +82,7 @@ const en: Translation = {
     subtitle:
       "I design and validate proteins for antimicrobial discovery and gene therapy, translating sequence-level ideas into experimental proof.",
     supportingLine: "From protein language models to mouse models.",
+    northStar: "Until antibiotic resistance stops outrunning us.",
     ctaPrimary: "Selected Work",
     ctaSecondary: "The Story",
     proof: [
@@ -85,7 +92,13 @@ const en: Translation = {
       "2 patents",
     ],
   },
-  sections: { works: "01. Selected Work", about: "02. The Story" },
+  sections: {
+    works: "01. Selected Work",
+    worksSubhead: "Six papers, three labs, one through-line.",
+    about: "02. The Story",
+    aboutSubhead:
+      "Three countries, three labs, one obsession: turning sequence into therapy.",
+  },
   works: [
     {
       id: 1,
@@ -156,26 +169,26 @@ const en: Translation = {
       year: "2021 - 2026",
       role: "Research Officer",
       company: "Children's Medical Research Institute, Sydney",
-      desc: "Developed a computational platform for antimicrobial peptide discovery - from protein language model predictions to preclinical validation in mouse models. Also worked on AAV capsid engineering for gene therapy.",
+      desc: "We built a computational platform for antimicrobial peptide discovery — from protein language model predictions to preclinical validation in mouse models — and extended the same approach to AAV capsid engineering for gene therapy.",
     },
     {
       year: "2016 - 2020",
       role: "Pre-doctoral Researcher",
       company: "UAB & IRTA, Barcelona",
-      desc: "Designed antimicrobial proteins from scratch - cloning, recombinant production, functional assays. Two patents, four first-author papers, eight total.",
+      desc: "We designed antimicrobial proteins from scratch — cloning, recombinant production, functional assays. Two patents and four first-author papers, eight total.",
     },
     {
       year: "2015 - 2016",
       role: "Graduate Researcher",
       company: "University of California, Irvine",
-      desc: "Tracked estrogen receptor dynamics in living cells using single-molecule fluorescence microscopy and quantitative image analysis.",
+      desc: "We tracked estrogen receptor dynamics in living cells with single-molecule fluorescence microscopy and quantitative image analysis.",
     },
   ],
   about: {
     heading: "Finding the therapeutic signal in a sea of biological noise.",
     bio: [
-      "I studied Biotechnology at the Universitat Autonoma de Barcelona. Then I boarded a flight to sunny California to pursue a Master's in Biomedical Engineering at UC Irvine. The flight back led me into a PhD at the UAB, where I spent four years designing antimicrobial proteins, from design through recombinant production and functional assays. That stage produced two patents and four first-author papers.",
-      "The last flight took me to Sydney, to the CMRI, where I have built a platform to analyze millions of sequences and find hundreds, or thousands, of new antimicrobial peptides. Thanks to protein language models and recent advances in AI, we have been able to test those predictions both in the lab and in preclinical models. In parallel, I have also applied generative AI to protein engineering to design AAV capsids for gene therapy.",
+      "I trained in Biotechnology at UAB Barcelona, took a Master's in Biomedical Engineering at UC Irvine, then returned to UAB for a PhD where we designed antimicrobial proteins end-to-end — from sequence design through recombinant production and functional assays. That stage produced two patents and four first-author papers.",
+      "At CMRI Sydney we built a platform to analyse millions of sequences and surface hundreds — sometimes thousands — of new antimicrobial peptides. With protein language models and recent advances in AI, we tested those predictions in the lab and in preclinical models. In parallel we applied generative AI to protein engineering, designing AAV capsids for gene therapy.",
     ],
     stats: [
       { value: "20+", label: "Publications" },
@@ -229,6 +242,8 @@ const es: Translation = {
     subtitle:
       "Diseño y valido proteínas para descubrimiento antimicrobiano y terapia génica, traduciendo ideas a nivel de secuencia en evidencia experimental.",
     supportingLine: "De modelos de lenguaje de proteínas a modelos de ratón.",
+    northStar:
+      "Hasta que la resistencia a los antibióticos deje de ganarnos terreno.",
     ctaPrimary: "Trabajos",
     ctaSecondary: "La historia",
     proof: [
@@ -238,7 +253,13 @@ const es: Translation = {
       "2 patentes",
     ],
   },
-  sections: { works: "01. Trabajos seleccionados", about: "02. La historia" },
+  sections: {
+    works: "01. Trabajos seleccionados",
+    worksSubhead: "Seis artículos, tres laboratorios, un mismo hilo.",
+    about: "02. La historia",
+    aboutSubhead:
+      "Tres países, tres laboratorios, una obsesión: convertir la secuencia en terapia.",
+  },
   works: [
     {
       id: 1,
@@ -309,26 +330,26 @@ const es: Translation = {
       year: "2021 - 2026",
       role: "Investigador",
       company: "Children's Medical Research Institute, Sídney",
-      desc: "Desarrollé una plataforma computacional para el descubrimiento de péptidos antimicrobianos - de predicciones con modelos de lenguaje de proteínas a validación preclínica en modelos de ratón. También trabajé en ingeniería de cápsidas de AAV para terapia génica.",
+      desc: "Construimos una plataforma computacional para el descubrimiento de péptidos antimicrobianos —de predicciones con modelos de lenguaje de proteínas a validación preclínica en modelos de ratón— y extendimos el enfoque a la ingeniería de cápsides de AAV para terapia génica.",
     },
     {
       year: "2016 - 2020",
       role: "Investigador predoctoral",
       company: "UAB e IRTA, Barcelona",
-      desc: "Diseñé proteínas antimicrobianas desde cero - clonaje, producción recombinante, ensayos funcionales. Dos patentes, cuatro artículos como primer autor, ocho en total.",
+      desc: "Diseñamos proteínas antimicrobianas desde cero —clonaje, producción recombinante, ensayos funcionales—. Dos patentes y cuatro artículos como primer autor, ocho en total.",
     },
     {
       year: "2015 - 2016",
       role: "Investigador de posgrado",
       company: "University of California, Irvine",
-      desc: "Rastreé la dinámica del receptor de estrógenos en células vivas usando microscopía de fluorescencia de molécula única y análisis cuantitativo de imagen.",
+      desc: "Rastreamos la dinámica del receptor de estrógenos en células vivas con microscopía de fluorescencia de molécula única y análisis cuantitativo de imagen.",
     },
   ],
   about: {
     heading: "Encontrando la señal terapéutica en un mar de ruido biológico.",
     bio: [
-      "Estudié Biotecnología en la Universitat Autònoma de Barcelona. Después embarqué en un vuelo a la soleada California para hacer un máster en Ingeniería Biomédica en UC Irvine. El vuelo de vuelta me llevó a un doctorado en la UAB, donde dediqué cuatro años a diseñar proteínas antimicrobianas, desde el diseño hasta la producción recombinante y los ensayos funcionales. De esa etapa salieron dos patentes y cuatro artículos como primer autor.",
-      "El último vuelo me llevó a Sídney, al CMRI, donde he construido una plataforma para analizar millones de secuencias y encontrar cientos, o miles, de nuevos péptidos antimicrobianos. Gracias a los modelos de lenguaje de proteínas y los avances recientes en IA, hemos podido probar esas predicciones tanto en el laboratorio como en modelos preclínicos. En paralelo, he aplicado IA generativa a la ingeniería de proteínas para diseñar cápsides de AAV para terapia génica.",
+      "Me formé en Biotecnología en la UAB, hice un máster en Ingeniería Biomédica en UC Irvine y volví a la UAB para un doctorado en el que diseñamos proteínas antimicrobianas de principio a fin —del diseño de secuencia a la producción recombinante y los ensayos funcionales—. De esa etapa salieron dos patentes y cuatro artículos como primer autor.",
+      "En el CMRI de Sídney construimos una plataforma para analizar millones de secuencias y descubrir cientos —a veces miles— de nuevos péptidos antimicrobianos. Con modelos de lenguaje de proteínas y los últimos avances en IA, probamos esas predicciones tanto en el laboratorio como en modelos preclínicos. En paralelo, aplicamos IA generativa a la ingeniería de proteínas para diseñar cápsides de AAV para terapia génica.",
     ],
     stats: [
       { value: "20+", label: "Publicaciones" },
@@ -382,6 +403,8 @@ const ca: Translation = {
     subtitle:
       "Dissenyo i valido proteïnes per al descobriment antimicrobià i la teràpia gènica, traduint idees a nivell de seqüència en evidència experimental.",
     supportingLine: "De models de llenguatge de proteïnes a models de ratolí.",
+    northStar:
+      "Fins que la resistència als antibiòtics deixi de guanyar-nos terreny.",
     ctaPrimary: "Treballs",
     ctaSecondary: "La història",
     proof: [
@@ -391,7 +414,13 @@ const ca: Translation = {
       "2 patents",
     ],
   },
-  sections: { works: "01. Treballs seleccionats", about: "02. La història" },
+  sections: {
+    works: "01. Treballs seleccionats",
+    worksSubhead: "Sis articles, tres laboratoris, un mateix fil.",
+    about: "02. La història",
+    aboutSubhead:
+      "Tres països, tres laboratoris, una obsessió: convertir la seqüència en teràpia.",
+  },
   works: [
     {
       id: 1,
@@ -462,26 +491,26 @@ const ca: Translation = {
       year: "2021 - 2026",
       role: "Investigador",
       company: "Children's Medical Research Institute, Sydney",
-      desc: "Vaig desenvolupar una plataforma computacional per al descobriment de pèptids antimicrobians - de prediccions amb models de llenguatge de proteïnes a validació preclínica en models de ratolí. També vaig treballar en enginyeria de càpsides d'AAV per a teràpia gènica.",
+      desc: "Vam construir una plataforma computacional per al descobriment de pèptids antimicrobians —de prediccions amb models de llenguatge de proteïnes a la validació preclínica en models de ratolí— i vam estendre el mateix enfocament a l'enginyeria de càpsides d'AAV per a teràpia gènica.",
     },
     {
       year: "2016 - 2020",
       role: "Investigador predoctoral",
       company: "UAB i IRTA, Barcelona",
-      desc: "Vaig dissenyar proteïnes antimicrobianes des de zero - clonatge, producció recombinant, assajos funcionals. Dues patents, quatre articles com a primer autor, vuit en total.",
+      desc: "Vam dissenyar proteïnes antimicrobianes des de zero —clonatge, producció recombinant, assajos funcionals—. Dues patents i quatre articles com a primer autor, vuit en total.",
     },
     {
       year: "2015 - 2016",
       role: "Investigador de postgrau",
       company: "University of California, Irvine",
-      desc: "Vaig rastrejar la dinàmica del receptor d'estrògens en cèl·lules vives usant microscòpia de fluorescència de molècula única i anàlisi quantitativa d'imatge.",
+      desc: "Vam rastrejar la dinàmica del receptor d'estrògens en cèl·lules vives amb microscòpia de fluorescència de molècula única i anàlisi quantitativa d'imatge.",
     },
   ],
   about: {
     heading: "Trobant el senyal terapèutic en un mar de soroll biològic.",
     bio: [
-      "Vaig estudiar Biotecnologia a la Universitat Autònoma de Barcelona. Després vaig agafar un vol cap a la assolellada Califòrnia per fer un màster en Enginyeria Biomèdica a la UC Irvine. El vol de tornada em va portar a un doctorat a la UAB, on vaig dedicar quatre anys a dissenyar proteïnes antimicrobianes, des del disseny fins a la producció recombinant i els assajos funcionals. D'aquella etapa en van sortir dues patents i quatre articles com a primer autor.",
-      "L'últim vol em va portar a Sydney, al CMRI, on he muntat una plataforma per analitzar milions de seqüències i trobar centenars, o milers, de nous pèptids antimicrobians. Gràcies als models de llenguatge de proteïnes i els avenços recents en IA, hem pogut provar aquestes prediccions tant al laboratori com en models preclínics. En paral·lel, he aplicat IA generativa a l'enginyeria de proteïnes per dissenyar càpsides d'AAV per a teràpia gènica.",
+      "Em vaig formar en Biotecnologia a la UAB, vaig fer un màster d'Enginyeria Biomèdica a UC Irvine i vaig tornar a la UAB per a un doctorat en què vam dissenyar proteïnes antimicrobianes de cap a peus —del disseny de seqüència a la producció recombinant i els assajos funcionals—. D'aquella etapa van sortir dues patents i quatre articles com a primer autor.",
+      "Al CMRI de Sydney vam muntar una plataforma per analitzar milions de seqüències i descobrir centenars —a vegades milers— de nous pèptids antimicrobians. Amb models de llenguatge de proteïnes i els avenços recents en IA, vam provar aquestes prediccions tant al laboratori com en models preclínics. En paral·lel, vam aplicar IA generativa a l'enginyeria de proteïnes per dissenyar càpsides d'AAV per a teràpia gènica.",
     ],
     stats: [
       { value: "20+", label: "Publicacions" },

@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment, useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import {
   AnimatePresence,
   motion,
@@ -404,62 +404,129 @@ export default function PortfolioPage() {
   const [isMuted, setIsMuted] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const navItems = [
-    { label: t.nav.works, href: "#works" },
-    { label: t.nav.about, href: "#about" },
-    { label: t.nav.contact, href: "#contact" },
-  ];
-  const featuredWorks = [1, 2].map((id) => t.works.find((work) => work.id === id)!);
-  const supportingWorks = [3, 4, 5, 6].map(
-    (id) => t.works.find((work) => work.id === id)!,
+  const menuRef = useRef<HTMLElement>(null);
+  const toggleRef = useRef<HTMLButtonElement>(null);
+
+  const navItems = useMemo(
+    () => [
+      { label: t.nav.works, href: "#works" },
+      { label: t.nav.about, href: "#about" },
+      { label: t.nav.contact, href: "#contact" },
+    ],
+    [t.nav.works, t.nav.about, t.nav.contact],
   );
-  const competencyMatrix = t.about.competencies.map((competency, index) => ({
-    competency,
-    description: t.about.competencyDescriptions[index],
-    Icon: competencyIcons[index],
-  }));
-  const workBackdrops = [
-    "radial-gradient(circle at top right, rgba(122, 158, 197, 0.34), transparent 42%), linear-gradient(135deg, rgba(6, 10, 17, 0.98) 0%, rgba(12, 24, 40, 0.92) 48%, rgba(6, 10, 17, 0.98) 100%)",
-    "radial-gradient(circle at 18% 14%, rgba(107, 181, 171, 0.3), transparent 38%), linear-gradient(160deg, rgba(5, 10, 14, 0.96) 0%, rgba(10, 24, 26, 0.9) 52%, rgba(5, 9, 13, 0.98) 100%)",
-    "radial-gradient(circle at 80% 24%, rgba(126, 142, 214, 0.28), transparent 40%), linear-gradient(160deg, rgba(8, 11, 20, 0.96) 0%, rgba(19, 22, 42, 0.9) 50%, rgba(8, 11, 20, 0.98) 100%)",
-    "radial-gradient(circle at 15% 10%, rgba(217, 166, 107, 0.22), transparent 40%), linear-gradient(150deg, rgba(12, 10, 8, 0.98) 0%, rgba(32, 19, 10, 0.86) 52%, rgba(11, 9, 8, 0.98) 100%)",
-    "radial-gradient(circle at 82% 18%, rgba(88, 176, 183, 0.24), transparent 42%), linear-gradient(150deg, rgba(5, 11, 13, 0.98) 0%, rgba(8, 30, 31, 0.88) 54%, rgba(5, 11, 13, 0.98) 100%)",
-    "radial-gradient(circle at 20% 18%, rgba(173, 140, 224, 0.24), transparent 40%), linear-gradient(150deg, rgba(8, 8, 16, 0.98) 0%, rgba(20, 14, 32, 0.88) 50%, rgba(8, 8, 16, 0.98) 100%)",
-  ];
+
+  const featuredWorks = useMemo(
+    () => [1, 2].map((id) => t.works.find((work) => work.id === id)!),
+    [t.works],
+  );
+  const supportingWorks = useMemo(
+    () => [3, 4, 5, 6].map((id) => t.works.find((work) => work.id === id)!),
+    [t.works],
+  );
+  const competencyMatrix = useMemo(
+    () =>
+      t.about.competencies.map((competency, index) => ({
+        competency,
+        description: t.about.competencyDescriptions[index],
+        Icon: competencyIcons[index],
+      })),
+    [t.about.competencies, t.about.competencyDescriptions],
+  );
+
+  const workBackdrops = useMemo(
+    () => [
+      "radial-gradient(circle at top right, rgba(122, 158, 197, 0.34), transparent 42%), linear-gradient(135deg, rgba(6, 10, 17, 0.98) 0%, rgba(12, 24, 40, 0.92) 48%, rgba(6, 10, 17, 0.98) 100%)",
+      "radial-gradient(circle at 18% 14%, rgba(107, 181, 171, 0.3), transparent 38%), linear-gradient(160deg, rgba(5, 10, 14, 0.96) 0%, rgba(10, 24, 26, 0.9) 52%, rgba(5, 9, 13, 0.98) 100%)",
+      "radial-gradient(circle at 80% 24%, rgba(126, 142, 214, 0.28), transparent 40%), linear-gradient(160deg, rgba(8, 11, 20, 0.96) 0%, rgba(19, 22, 42, 0.9) 50%, rgba(8, 11, 20, 0.98) 100%)",
+      "radial-gradient(circle at 15% 10%, rgba(217, 166, 107, 0.22), transparent 40%), linear-gradient(150deg, rgba(12, 10, 8, 0.98) 0%, rgba(32, 19, 10, 0.86) 52%, rgba(11, 9, 8, 0.98) 100%)",
+      "radial-gradient(circle at 82% 18%, rgba(88, 176, 183, 0.24), transparent 42%), linear-gradient(150deg, rgba(5, 11, 13, 0.98) 0%, rgba(8, 30, 31, 0.88) 54%, rgba(5, 11, 13, 0.98) 100%)",
+      "radial-gradient(circle at 20% 18%, rgba(173, 140, 224, 0.24), transparent 40%), linear-gradient(150deg, rgba(8, 8, 16, 0.98) 0%, rgba(20, 14, 32, 0.88) 50%, rgba(8, 8, 16, 0.98) 100%)",
+    ],
+    [],
+  );
   const getWorkBackdrop = (id: number) =>
     workBackdrops[(id - 1) % workBackdrops.length];
 
-  const fadeUp = {
-    hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 30 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.8, ease: "easeOut" as const },
-    },
-  };
+  const fadeUp = useMemo(
+    () => ({
+      hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 30 },
+      visible: {
+        opacity: 1,
+        y: 0,
+        transition: { duration: 0.8, ease: "easeOut" as const },
+      },
+    }),
+    [shouldReduceMotion],
+  );
 
-  const staggerContainer = {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { staggerChildren: 0.15 } },
-  };
+  const staggerContainer = useMemo(
+    () => ({
+      hidden: { opacity: 0 },
+      visible: { opacity: 1, transition: { staggerChildren: 0.15 } },
+    }),
+    [],
+  );
 
-  const fadeScale = {
-    hidden: { opacity: 0, scale: shouldReduceMotion ? 1 : 0.95 },
-    visible: {
-      opacity: 1,
-      scale: 1,
-      transition: { duration: 0.8, ease: "easeOut" as const },
-    },
-  };
+  const fadeScale = useMemo(
+    () => ({
+      hidden: { opacity: 0, scale: shouldReduceMotion ? 1 : 0.95 },
+      visible: {
+        opacity: 1,
+        scale: 1,
+        transition: { duration: 0.8, ease: "easeOut" as const },
+      },
+    }),
+    [shouldReduceMotion],
+  );
 
   const toggleMute = () => setIsMuted((prev) => !prev);
 
   useEffect(() => {
     if (!mobileMenuOpen) return;
     const previousOverflow = document.body.style.overflow;
+    const previouslyFocused = document.activeElement as HTMLElement | null;
     document.body.style.overflow = "hidden";
+
+    const focusFirst = () => {
+      const first = menuRef.current?.querySelector<HTMLElement>(
+        'a, button, [tabindex]:not([tabindex="-1"])',
+      );
+      first?.focus();
+    };
+    const raf = requestAnimationFrame(focusFirst);
+
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        setMobileMenuOpen(false);
+        return;
+      }
+      if (e.key !== "Tab" || !menuRef.current) return;
+      const focusables = Array.from(
+        menuRef.current.querySelectorAll<HTMLElement>(
+          'a, button, [tabindex]:not([tabindex="-1"])',
+        ),
+      ).filter((el) => !el.hasAttribute("disabled"));
+      if (focusables.length === 0) return;
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      const active = document.activeElement as HTMLElement | null;
+      if (e.shiftKey && active === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && active === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+    document.addEventListener("keydown", handleKey);
+
     return () => {
+      cancelAnimationFrame(raf);
       document.body.style.overflow = previousOverflow;
+      document.removeEventListener("keydown", handleKey);
+      previouslyFocused?.focus?.();
     };
   }, [mobileMenuOpen]);
 
@@ -536,11 +603,14 @@ export default function PortfolioPage() {
             </nav>
 
             <button
+              ref={toggleRef}
               className="min-h-[44px] min-w-[44px] rounded-full border border-white/10 bg-white/5 p-2 text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white md:hidden"
               onClick={() => setMobileMenuOpen((open) => !open)}
               aria-label={
                 mobileMenuOpen ? t.mobileMenu.close : t.mobileMenu.open
               }
+              aria-expanded={mobileMenuOpen}
+              aria-controls="mobile-menu"
             >
               {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
             </button>
@@ -550,12 +620,19 @@ export default function PortfolioPage() {
         <AnimatePresence>
           {mobileMenuOpen && (
             <motion.nav
-              aria-label="Mobile navigation"
+              ref={menuRef}
+              id="mobile-menu"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="mobile-menu-title"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               className="fixed inset-0 z-40 flex flex-col items-center justify-center gap-8 bg-[#03070d]/95 backdrop-blur-xl"
             >
+              <h2 id="mobile-menu-title" className="sr-only">
+                {t.mobileMenu.open}
+              </h2>
               {navItems.map((item) => (
                 <a
                   key={item.href}
@@ -624,6 +701,13 @@ export default function PortfolioPage() {
                       className="mt-7 max-w-3xl text-pretty text-lg font-light leading-relaxed tracking-[0.01em] text-slate-300 md:text-xl"
                     >
                       {t.hero.subtitle}
+                    </motion.p>
+
+                    <motion.p
+                      variants={fadeUp}
+                      className="mt-4 max-w-2xl font-display text-base italic tracking-wide text-[#7a9ec5] md:text-lg"
+                    >
+                      {t.hero.northStar}
                     </motion.p>
 
                     <motion.p
@@ -726,7 +810,7 @@ export default function PortfolioPage() {
                               <span className="block font-mono text-2xl font-semibold tabular-nums text-white">
                                 {stat.value}
                               </span>
-                              <span className="mt-1 block text-[11px] uppercase tracking-[0.18em] text-slate-400">
+                              <span className="mt-1 block text-[11px] uppercase tracking-[0.18em] text-slate-300">
                                 {stat.label}
                               </span>
                             </div>
@@ -778,7 +862,7 @@ export default function PortfolioPage() {
                               <h3 className="mt-2 text-base font-semibold text-white">
                                 {item.role}
                               </h3>
-                              <p className="mt-1 text-sm text-slate-400">
+                              <p className="mt-1 text-sm text-slate-300">
                                 {item.company}
                               </p>
                             </div>
@@ -797,7 +881,7 @@ export default function PortfolioPage() {
                 className="mt-14 flex items-center gap-4"
               >
                 <div className="h-px flex-1 bg-gradient-to-r from-transparent via-white/15 to-white/2" />
-                <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-[0.3em] text-slate-500">
+                <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-[0.3em] text-slate-400">
                   <span>Scroll</span>
                   <motion.svg
                     animate={shouldReduceMotion ? {} : { y: [0, 6, 0] }}
@@ -848,10 +932,10 @@ export default function PortfolioPage() {
                   />
                 </div>
                 <h3 className="max-w-4xl text-balance font-display text-4xl font-medium tracking-tight text-white md:text-5xl">
-                  {t.hero.supportingLine}
+                  {t.sections.worksSubhead}
                 </h3>
               </div>
-              <p className="max-w-xl text-pretty text-sm leading-relaxed text-slate-400 md:text-base">
+              <p className="max-w-xl text-pretty text-sm leading-relaxed text-slate-300 md:text-base">
                 {t.meta.description}
               </p>
             </motion.div>
@@ -881,7 +965,7 @@ export default function PortfolioPage() {
                       <span className="rounded-full border border-[#6bb5ab]/30 bg-black/15 px-3 py-1 text-[11px] font-mono uppercase tracking-[0.18em] text-[#6bb5ab]">
                         {featuredWorks[0].year}
                       </span>
-                      <span className="max-w-[11rem] text-right text-[11px] font-mono uppercase tracking-[0.2em] text-slate-400">
+                      <span className="max-w-[11rem] text-right text-[11px] font-mono uppercase tracking-[0.2em] text-slate-300">
                         {featuredWorks[0].venue}
                       </span>
                     </div>
@@ -939,7 +1023,7 @@ export default function PortfolioPage() {
                         <span className="rounded-full border border-[#6bb5ab]/30 bg-black/15 px-3 py-1 text-[11px] font-mono uppercase tracking-[0.18em] text-[#6bb5ab]">
                           {featuredWorks[1].year}
                         </span>
-                        <span className="max-w-[9rem] text-right text-[11px] font-mono uppercase tracking-[0.18em] text-slate-400">
+                        <span className="max-w-[9rem] text-right text-[11px] font-mono uppercase tracking-[0.18em] text-slate-300">
                           {featuredWorks[1].venue}
                         </span>
                       </div>
@@ -969,49 +1053,6 @@ export default function PortfolioPage() {
                     </motion.a>
                   </RefractionGlowCard>
                 )}
-
-                <GlowCard
-                  disabled={shouldReduceMotion}
-                  className="rounded-[2rem] border border-white/10 bg-white/[0.04] backdrop-blur-xl"
-                >
-                  <div className="relative z-[2] overflow-hidden rounded-[2rem] p-7 md:p-8">
-                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(122,158,197,0.14),transparent_36%),radial-gradient(circle_at_bottom_right,rgba(107,181,171,0.1),transparent_40%)]" />
-                    <div className="relative z-[2]">
-                      <p className="text-[11px] font-mono uppercase tracking-[0.24em] text-[#7a9ec5]">
-                        {t.hero.supportingLine}
-                      </p>
-                      <h3 className="mt-5 max-w-sm text-balance font-display text-3xl leading-tight tracking-tight text-white">
-                        {t.meta.description}
-                      </h3>
-
-                      <ul className="mt-8 grid gap-3 sm:grid-cols-2">
-                        {t.hero.proof.map((item) => (
-                          <li
-                            key={item}
-                            className="rounded-2xl border border-white/10 bg-black/20 px-3 py-3 text-[11px] font-mono uppercase tracking-[0.18em] text-slate-200"
-                          >
-                            {item}
-                          </li>
-                        ))}
-                      </ul>
-
-                      <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                        <ProfileLinks
-                          className="flex items-center gap-3"
-                          iconClassName="h-[1.125rem] w-[1.125rem]"
-                        />
-                        <MagneticLink
-                          href="#contact"
-                          disabled={shouldReduceMotion}
-                          className="inline-flex items-center gap-2 rounded-full border border-white/15 px-5 py-3 text-sm font-semibold text-white transition hover:border-white/30 hover:bg-white/[0.06] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-                        >
-                          {t.nav.contact}
-                          <ArrowUpRight className="h-4 w-4" />
-                        </MagneticLink>
-                      </div>
-                    </div>
-                  </div>
-                </GlowCard>
               </div>
             </div>
 
@@ -1041,7 +1082,7 @@ export default function PortfolioPage() {
                       <span className="rounded-full border border-white/12 bg-black/20 px-2.5 py-1 text-[10px] font-mono uppercase tracking-[0.18em] text-[#6bb5ab]">
                         {work.year}
                       </span>
-                      <span className="text-[10px] font-mono uppercase tracking-[0.18em] text-slate-500">
+                      <span className="text-[10px] font-mono uppercase tracking-[0.18em] text-slate-400">
                         {work.venue}
                       </span>
                     </div>
@@ -1097,8 +1138,8 @@ export default function PortfolioPage() {
                   {t.about.heading}
                 </h3>
               </div>
-              <p className="max-w-xl text-pretty text-sm leading-relaxed text-slate-400 md:text-base">
-                {t.contact.subtitle}
+              <p className="max-w-xl text-pretty text-sm leading-relaxed text-slate-300 md:text-base">
+                {t.sections.aboutSubhead}
               </p>
             </motion.div>
 
@@ -1167,7 +1208,7 @@ export default function PortfolioPage() {
                                 {competency}
                               </h5>
                             </div>
-                            <p className="mt-3 text-sm leading-relaxed text-slate-400">
+                            <p className="mt-3 text-sm leading-relaxed text-slate-300">
                               {description}
                             </p>
                           </div>
@@ -1216,7 +1257,7 @@ export default function PortfolioPage() {
                               <span className="mt-1 block text-sm font-medium text-slate-300">
                                 {item.company}
                               </span>
-                              <p className="mt-3 text-pretty text-sm font-light leading-relaxed text-slate-400">
+                              <p className="mt-3 text-pretty text-sm font-light leading-relaxed text-slate-300">
                                 {item.desc}
                               </p>
                             </div>
@@ -1292,23 +1333,16 @@ export default function PortfolioPage() {
                     </motion.div>
                   </div>
 
-                  <motion.div
+                  <motion.p
                     variants={fadeUp}
-                    className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-4"
+                    className="mt-10 text-[11px] font-mono uppercase tracking-[0.18em] text-slate-300 tabular-nums"
                   >
-                    {t.hero.proof.map((item) => (
-                      <div
-                        key={item}
-                        className="rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-[11px] font-mono uppercase tracking-[0.18em] text-slate-200"
-                      >
-                        {item}
-                      </div>
-                    ))}
-                  </motion.div>
+                    {t.hero.proof.join(" · ")}
+                  </motion.p>
 
                   <motion.div
                     variants={fadeUp}
-                    className="mt-10 flex flex-col items-start justify-between gap-6 border-t border-white/10 pt-6 text-xs font-mono text-slate-400 md:flex-row md:items-center"
+                    className="mt-10 flex flex-col items-start justify-between gap-6 border-t border-white/10 pt-6 text-xs font-mono text-slate-300 md:flex-row md:items-center"
                   >
                     <p className="tabular-nums">
                       &copy; {new Date().getFullYear()} Ramon Roca Pinilla.{" "}

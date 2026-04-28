@@ -17,21 +17,25 @@ export const metadata: Metadata = {
 export default function RootPage() {
   const target = `${basePath}/en/`;
   return (
-    <>
-      <meta httpEquiv="refresh" content={`0; url=${target}`} />
-      <link rel="canonical" href={target} />
-      {locales.map((l) => (
-        <link
-          key={l}
-          rel="alternate"
-          hrefLang={l}
-          href={`${basePath}/${l}/`}
-        />
-      ))}
-      <link rel="alternate" hrefLang="x-default" href={`${basePath}/en/`} />
-      <p style={{ padding: "2rem", fontFamily: "system-ui, sans-serif" }}>
-        Redirecting to <a href={target}>{target}</a>…
-      </p>
-    </>
+    <html lang="en">
+      <head>
+        <meta httpEquiv="refresh" content={`0; url=${target}`} />
+        <link rel="canonical" href={target} />
+        {locales.map((l) => (
+          <link
+            key={l}
+            rel="alternate"
+            hrefLang={l}
+            href={`${basePath}/${l}/`}
+          />
+        ))}
+        <link rel="alternate" hrefLang="x-default" href={`${basePath}/en/`} />
+      </head>
+      <body>
+        <p style={{ padding: "2rem", fontFamily: "system-ui, sans-serif" }}>
+          Redirecting to <a href={target}>{target}</a>…
+        </p>
+      </body>
+    </html>
   );
 }

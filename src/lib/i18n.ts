@@ -66,6 +66,7 @@ export interface Translation {
   audio: { play: string; pause: string };
   mobileMenu: { open: string; close: string; title: string };
   skipLink: string;
+  scrollHint: string;
 }
 
 const en: Translation = {
@@ -226,6 +227,7 @@ const en: Translation = {
   },
   mobileMenu: { open: "Open menu", close: "Close menu", title: "Site navigation" },
   skipLink: "Skip to main content",
+  scrollHint: "Scroll",
 };
 
 const es: Translation = {
@@ -387,6 +389,7 @@ const es: Translation = {
   },
   mobileMenu: { open: "Abrir menú", close: "Cerrar menú", title: "Navegación" },
   skipLink: "Saltar al contenido",
+  scrollHint: "Desplaza",
 };
 
 const ca: Translation = {
@@ -548,6 +551,7 @@ const ca: Translation = {
   },
   mobileMenu: { open: "Obrir menú", close: "Tancar menú", title: "Navegació" },
   skipLink: "Salta al contingut",
+  scrollHint: "Desplaça",
 };
 
 export const translations: Record<Locale, Translation> = { en, es, ca };

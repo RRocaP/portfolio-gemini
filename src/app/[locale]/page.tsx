@@ -892,7 +892,7 @@ export default function PortfolioPage() {
               >
                 <div className="h-px flex-1 bg-gradient-to-r from-transparent via-white/15 to-white/2" />
                 <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-[0.3em] text-slate-400">
-                  <span>Scroll</span>
+                  <span>{t.scrollHint}</span>
                   <motion.svg
                     animate={shouldReduceMotion ? {} : { y: [0, 6, 0] }}
                     transition={{
@@ -966,7 +966,7 @@ export default function PortfolioPage() {
                     style={{ backgroundImage: getWorkBackdrop(featuredWorks[0].id) }}
                     aria-label={`${t.workLinkLabel}: ${featuredWorks[0].title}`}
                   >
-                    <span className="pointer-events-none absolute right-7 top-3 font-display text-[3.75rem] leading-none text-white/[0.05] md:text-[4.5rem]">
+                    <span className="pointer-events-none absolute right-7 top-3 font-display text-[3.75rem] leading-none text-white/[0.08] md:text-[4.5rem]">
                       01
                     </span>
                     <div className="mb-8 flex items-start justify-between gap-4">
@@ -1024,7 +1024,7 @@ export default function PortfolioPage() {
                       style={{ backgroundImage: getWorkBackdrop(featuredWorks[1].id) }}
                       aria-label={`${t.workLinkLabel}: ${featuredWorks[1].title}`}
                     >
-                      <span className="pointer-events-none absolute right-7 top-5 font-display text-[3.25rem] leading-none text-white/[0.05]">
+                      <span className="pointer-events-none absolute right-7 top-5 font-display text-[3.25rem] leading-none text-white/[0.08]">
                         02
                       </span>
                       <div className="flex items-start justify-between gap-4">
@@ -1083,7 +1083,7 @@ export default function PortfolioPage() {
                     style={{ backgroundImage: getWorkBackdrop(work.id) }}
                     aria-label={`${t.workLinkLabel}: ${work.title}`}
                   >
-                    <span className="pointer-events-none absolute right-5 top-3 font-display text-[2.5rem] leading-none text-white/[0.05]">
+                    <span className="pointer-events-none absolute right-5 top-3 font-display text-[2.5rem] leading-none text-white/[0.08]">
                       {`0${index + 3}`}
                     </span>
                     <div className="flex items-center justify-between gap-4">

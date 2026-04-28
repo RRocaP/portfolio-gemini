@@ -969,7 +969,7 @@ export default function PortfolioPage() {
                     style={{ backgroundImage: getWorkBackdrop(featuredWorks[0].id) }}
                     aria-label={`${t.workLinkLabel}: ${featuredWorks[0].title}`}
                   >
-                    <span className="pointer-events-none absolute right-6 top-2 font-display text-[6rem] leading-none text-white/[0.07] md:text-[7rem]">
+                    <span className="pointer-events-none absolute right-7 top-3 font-display text-[3.75rem] leading-none text-white/[0.05] md:text-[4.5rem]">
                       01
                     </span>
                     <div className="mb-8 flex items-start justify-between gap-4">
@@ -1027,7 +1027,7 @@ export default function PortfolioPage() {
                       style={{ backgroundImage: getWorkBackdrop(featuredWorks[1].id) }}
                       aria-label={`${t.workLinkLabel}: ${featuredWorks[1].title}`}
                     >
-                      <span className="pointer-events-none absolute right-6 top-4 font-display text-[4.75rem] leading-none text-white/[0.07]">
+                      <span className="pointer-events-none absolute right-7 top-5 font-display text-[3.25rem] leading-none text-white/[0.05]">
                         02
                       </span>
                       <div className="flex items-start justify-between gap-4">
@@ -1086,7 +1086,7 @@ export default function PortfolioPage() {
                     style={{ backgroundImage: getWorkBackdrop(work.id) }}
                     aria-label={`${t.workLinkLabel}: ${work.title}`}
                   >
-                    <span className="pointer-events-none absolute right-5 top-2 font-display text-[3.5rem] leading-none text-white/[0.07]">
+                    <span className="pointer-events-none absolute right-5 top-3 font-display text-[2.5rem] leading-none text-white/[0.05]">
                       {`0${index + 3}`}
                     </span>
                     <div className="flex items-center justify-between gap-4">

@@ -8,7 +8,6 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-display: var(--font-instrument);
-  --font-accent: var(--font-space-grotesk);
   --font-sans: var(--font-jakarta);
   --font-mono: var(--font-jetbrains);
   --color-sidebar-ring: var(--sidebar-ring);

@@ -194,7 +194,7 @@ function LanguageSwitcher({
   const inactive =
     tone === "light"
       ? "text-white/72 hover:text-white"
-      : "text-[#58605d] hover:text-[#151719]";
+      : "text-[#69736f] hover:text-[#151719]";
   const active =
     tone === "light"
       ? "border-white/35 bg-white/12 text-white"
@@ -231,7 +231,7 @@ function ProfileLinks({
   const linkClass =
     tone === "light"
       ? "border-white/20 text-white/76 hover:border-white/45 hover:bg-white/10 hover:text-white focus-visible:outline-white"
-      : "border-[#151719]/15 text-[#38413e] hover:border-[#151719]/35 hover:bg-white hover:text-[#151719] focus-visible:outline-[#151719]";
+      : "border-[#151719]/15 text-[#3f4a46] hover:border-[#151719]/35 hover:bg-white hover:text-[#151719] focus-visible:outline-[#151719]";
 
   return (
     <div className={`flex items-center gap-2 ${className}`}>
@@ -256,16 +256,26 @@ function ProfileLinks({
 function SectionKicker({
   children,
   dark = false,
+  index,
 }: {
   children: React.ReactNode;
   dark?: boolean;
+  index?: string;
 }) {
   return (
     <p
-      className={`font-mono text-[0.7rem] uppercase tracking-[0.18em] ${
+      className={`font-mono text-[0.65rem] uppercase tracking-[0.22em] ${
         dark ? "text-[#9fc8c0]" : "text-[#356b68]"
       }`}
     >
+      {index && (
+        <span aria-hidden="true" className="mr-3 opacity-55">
+          {index}
+        </span>
+      )}
+      <span aria-hidden="true" className="mr-2 opacity-60">
+        —
+      </span>
       {children}
     </p>
   );
@@ -284,7 +294,6 @@ function Header({
   mobileMenuOpen: boolean;
   setMobileMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
-  const tone = scrolled || mobileMenuOpen ? "dark" : "light";
   const navItems = [
     { label: t.nav.works, href: "#works" },
     { label: t.nav.about, href: "#about" },
@@ -294,9 +303,9 @@ function Header({
   return (
     <header
       className={`fixed inset-x-0 top-0 z-50 border-b transition-colors duration-300 ${
-        tone === "light"
-          ? "border-white/10 bg-transparent text-white"
-          : "border-[#151719]/10 bg-[#f4f5f3]/95 text-[#151719] backdrop-blur-xl"
+        scrolled || mobileMenuOpen
+          ? "border-[#151719]/10 bg-[#f7f5f6]/92 text-[#151719] backdrop-blur-xl"
+          : "border-transparent bg-transparent text-[#151719]"
       }`}
     >
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-5 md:px-10">
@@ -312,25 +321,17 @@ function Header({
             <a
               key={item.href}
               href={item.href}
-              className={`text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current ${
-                tone === "light"
-                  ? "text-white/78 hover:text-white"
-                  : "text-[#4d5552] hover:text-[#151719]"
-              }`}
+              className="text-sm font-medium text-[#4f5a56] transition-colors hover:text-[#151719] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current"
             >
               {item.label}
             </a>
           ))}
-          <ProfileLinks tone={tone} />
-          <LanguageSwitcher locale={locale} tone={tone} />
+          <ProfileLinks tone="dark" />
+          <LanguageSwitcher locale={locale} tone="dark" />
         </nav>
 
         <button
-          className={`inline-flex h-10 w-10 items-center justify-center rounded-md border transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current md:hidden ${
-            tone === "light"
-              ? "border-white/20 text-white"
-              : "border-[#151719]/15 text-[#151719]"
-          }`}
+          className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-[#151719]/15 text-[#151719] transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current md:hidden"
           onClick={() => setMobileMenuOpen((open) => !open)}
           aria-label={mobileMenuOpen ? t.mobileMenu.close : t.mobileMenu.open}
           aria-expanded={mobileMenuOpen}
@@ -453,67 +454,47 @@ export default function PortfolioPage() {
       )}
 
       <main>
-        <section className="relative min-h-[92svh] overflow-hidden bg-[#0c0e0e] pt-20 text-white md:pt-24">
+        <section className="relative isolate min-h-[94svh] overflow-hidden bg-[#edf7ef] pt-16 text-[#151719] md:pt-20">
           <div
             aria-hidden="true"
             className="absolute inset-0"
             style={{
               background:
-                "radial-gradient(60% 50% at 22% 28%, rgba(53,107,104,0.22), transparent 65%), radial-gradient(50% 45% at 80% 75%, rgba(80,60,140,0.16), transparent 70%), linear-gradient(180deg, rgba(8,10,10,0.4), rgba(8,10,10,0.92))",
+                "radial-gradient(64% 56% at 18% 24%, rgba(255,255,255,0.74), transparent 68%), radial-gradient(48% 44% at 80% 60%, rgba(122,100,180,0.13), transparent 72%), linear-gradient(180deg, rgba(255,255,255,0.44), rgba(237,247,239,0))",
             }}
           />
 
-          <div className="relative z-10 mx-auto grid min-h-[calc(92svh-5rem)] max-w-7xl gap-9 px-5 pb-12 pt-7 md:px-10 md:pb-16 lg:grid-cols-[1.08fr_0.92fr] lg:items-center lg:gap-16 lg:pt-0">
+          <div className="relative z-10 mx-auto grid min-h-[calc(94svh-4rem)] max-w-7xl gap-6 px-5 pb-10 pt-6 md:min-h-[calc(94svh-5rem)] md:px-10 md:pb-14 lg:content-center lg:grid-cols-[0.95fr_1.05fr] lg:grid-rows-[auto_auto] lg:items-center lg:gap-x-12 lg:gap-y-7 lg:pt-0">
             <motion.div
-              initial="hidden"
-              animate="visible"
-              variants={fadeUp}
-              className="max-w-2xl"
+              initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1.0, ease: [0.16, 1, 0.3, 1] }}
+              className="relative z-10 max-w-2xl"
             >
-              <SectionKicker dark>{copy.profile}</SectionKicker>
-              <h1 className="mt-5 text-balance text-[clamp(2.85rem,5.9vw,5.25rem)] font-semibold leading-[0.94] tracking-[-0.025em]">
+              <SectionKicker>{copy.profile}</SectionKicker>
+              <h1 className="mt-5 text-balance text-[clamp(3.05rem,5.25vw,5.85rem)] font-medium leading-[0.92] tracking-[-0.03em]">
                 {t.hero.title}
               </h1>
-              <p className="mt-6 max-w-xl text-pretty text-lg leading-8 text-white/82 md:text-xl md:leading-9">
+              <p className="mt-5 max-w-xl text-pretty text-lg leading-8 text-[#4f5a56] md:text-xl md:leading-9">
                 {t.hero.subtitle}
               </p>
-
-              <ul className="mt-7 flex max-w-2xl flex-wrap gap-2">
-                {t.hero.proof.map((item) => (
-                  <li
-                    key={item}
-                    className="rounded-md border border-white/12 bg-white/[0.045] px-2.5 py-1.5 font-mono text-[0.68rem] uppercase tracking-[0.12em] text-white/72 backdrop-blur-sm"
-                  >
-                    {item}
-                  </li>
-                ))}
-              </ul>
-
-              <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-                <a
-                  href="#works"
-                  className="inline-flex items-center justify-center gap-2 rounded-md bg-white px-5 py-3 text-sm font-semibold text-[#151719] transition-colors hover:bg-[#e5ece8] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-                >
-                  {t.hero.ctaPrimary}
-                  <ArrowUpRight className="h-4 w-4" />
-                </a>
-                <a
-                  href="#contact"
-                  className="inline-flex items-center justify-center gap-2 rounded-md border border-white/25 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-                >
-                  {t.hero.ctaSecondary}
-                  <Mail className="h-4 w-4" />
-                </a>
-              </div>
             </motion.div>
 
             <motion.figure
               initial={{ opacity: 0, scale: 0.985 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.2, duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-              className="relative m-0 w-full max-w-[540px] justify-self-center sm:max-w-[620px] lg:max-w-none lg:justify-self-end"
+              className="relative z-0 order-2 m-0 -mx-4 aspect-[1.38/1] w-[calc(100%+2rem)] justify-self-center sm:mx-0 sm:w-full lg:order-none lg:col-start-2 lg:row-span-2 lg:aspect-auto lg:min-h-[min(74svh,680px)] lg:max-w-none lg:justify-self-stretch lg:self-center"
             >
-              <div className="relative aspect-[848/720] w-full overflow-hidden rounded-sm border border-white/10 bg-[#0c0e0e] shadow-[0_28px_90px_-46px_rgba(255,255,255,0.45)]">
+              <div
+                className="absolute inset-[-8%_-7%_-10%_-7%] overflow-hidden lg:inset-[-9%_-12%_-8%_-2%]"
+                style={{
+                  maskImage:
+                    "radial-gradient(ellipse 78% 78% at 52% 51%, #000 55%, rgba(0,0,0,0.72) 70%, transparent 100%)",
+                  WebkitMaskImage:
+                    "radial-gradient(ellipse 78% 78% at 52% 51%, #000 55%, rgba(0,0,0,0.72) 70%, transparent 100%)",
+                }}
+              >
                 {shouldReduceMotion ? (
                   <Image
                     src={`${basePath}/video/protein-dynamics-poster.jpg`}
@@ -522,7 +503,7 @@ export default function PortfolioPage() {
                     fill
                     priority
                     sizes="(min-width: 1024px) 45vw, 560px"
-                    className="object-cover"
+                    className="object-cover object-center mix-blend-multiply"
                   />
                 ) : (
                   <video
@@ -532,7 +513,7 @@ export default function PortfolioPage() {
                     playsInline
                     preload="metadata"
                     poster={`${basePath}/video/protein-dynamics-poster.jpg`}
-                    className="h-full w-full object-cover"
+                    className="h-full w-full object-cover object-center opacity-[0.94] mix-blend-multiply saturate-[0.92] contrast-[1.04]"
                     aria-hidden="true"
                   >
                     <source
@@ -546,6 +527,41 @@ export default function PortfolioPage() {
                 {t.dynamics.caption}
               </figcaption>
             </motion.figure>
+
+            <motion.div
+              initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 18 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.12, duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
+              className="relative z-10 order-3 lg:order-none lg:col-start-1 lg:row-start-2"
+            >
+              <ul className="flex max-w-2xl flex-wrap gap-2">
+                {t.hero.proof.map((item) => (
+                  <li
+                    key={item}
+                    className="rounded-md border border-[#151719]/12 bg-white/50 px-2.5 py-1.5 font-mono text-[0.68rem] uppercase tracking-[0.12em] text-[#3f4a46] backdrop-blur-sm"
+                  >
+                    {item}
+                  </li>
+                ))}
+              </ul>
+
+              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                <a
+                  href="#works"
+                  className="inline-flex items-center justify-center gap-2 rounded-md bg-[#151719] px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#2a2f2c] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#151719]"
+                >
+                  {t.hero.ctaPrimary}
+                  <ArrowUpRight className="h-4 w-4" />
+                </a>
+                <a
+                  href="#contact"
+                  className="inline-flex items-center justify-center gap-2 rounded-md border border-[#151719]/25 bg-white/20 px-5 py-3 text-sm font-semibold text-[#151719] transition-colors hover:bg-white/55 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#151719]"
+                >
+                  {t.hero.ctaSecondary}
+                  <Mail className="h-4 w-4" />
+                </a>
+              </div>
+            </motion.div>
           </div>
         </section>
 
@@ -553,7 +569,7 @@ export default function PortfolioPage() {
           <div className="mx-auto grid max-w-7xl divide-y divide-[#cbd4d1] px-5 md:grid-cols-4 md:divide-x md:divide-y-0 md:px-10">
             {t.about.stats.map((stat) => (
               <div key={stat.label} className="py-6 md:px-7 md:py-7">
-                <p className="font-mono text-xs uppercase text-[#56615d]">
+                <p className="font-mono text-xs uppercase text-[#69736f]">
                   {stat.label}
                 </p>
                 <p className="mt-2 text-4xl font-semibold text-[#151719]">
@@ -572,11 +588,11 @@ export default function PortfolioPage() {
               viewport={{ once: true, margin: "-100px" }}
               variants={fadeUp}
             >
-              <SectionKicker>{copy.current}</SectionKicker>
-              <h2 className="mt-4 max-w-2xl text-balance text-4xl font-semibold leading-tight md:text-5xl">
+              <SectionKicker index="01">{copy.current}</SectionKicker>
+              <h2 className="mt-4 max-w-2xl text-balance text-[2.5rem] font-medium leading-[0.98] tracking-[-0.025em] md:text-[3.5rem]">
                 {t.timeline[0].role}
               </h2>
-              <p className="mt-3 text-lg font-medium text-[#3d4743]">
+              <p className="mt-3 text-lg font-medium text-[#3f4a46]">
                 {t.timeline[0].company}
               </p>
               <p className="mt-5 max-w-2xl text-pretty text-base leading-7 text-[#4f5a56]">
@@ -594,7 +610,7 @@ export default function PortfolioPage() {
               {competencyMatrix.slice(0, 4).map(({ competency, Icon }) => (
                 <div
                   key={competency}
-                  className="min-h-32 rounded-lg border border-[#d5dcda] bg-white p-6 shadow-[0_16px_40px_-32px_rgba(21,23,25,0.45)] transition-colors hover:border-[#b8c4c0]"
+                  className="min-h-32 rounded-lg border border-[#d5dcda] bg-white p-6 transition-colors hover:border-[#b8c4c0]"
                 >
                   <Icon className="h-5 w-5 text-[#356b68]" />
                   <p className="mt-6 max-w-[13rem] text-lg font-semibold leading-snug">
@@ -614,10 +630,10 @@ export default function PortfolioPage() {
           <div className="mx-auto max-w-7xl px-5 py-[4.5rem] md:px-10 md:py-24">
             <div className="mb-14 grid gap-6 lg:grid-cols-[0.9fr_1.1fr] lg:items-end">
               <div>
-                <SectionKicker>{copy.selectedResearch}</SectionKicker>
+                <SectionKicker index="02">{copy.selectedResearch}</SectionKicker>
                 <h2
                   id="works-heading"
-                  className="mt-4 max-w-3xl text-balance text-4xl font-semibold leading-tight md:text-5xl"
+                  className="mt-4 max-w-3xl text-balance text-[2.5rem] font-medium leading-[0.98] tracking-[-0.025em] md:text-[3.5rem]"
                 >
                   {t.sections.works}
                 </h2>
@@ -717,8 +733,8 @@ export default function PortfolioPage() {
 
         <section className="mx-auto max-w-7xl px-5 py-[4.5rem] md:px-10 md:py-24">
           <div className="mb-12 max-w-3xl">
-            <SectionKicker>{copy.researchFocus}</SectionKicker>
-            <h2 className="mt-4 text-balance text-4xl font-semibold leading-tight md:text-5xl">
+            <SectionKicker index="03">{copy.researchFocus}</SectionKicker>
+            <h2 className="mt-4 text-balance text-[2.5rem] font-medium leading-[0.98] tracking-[-0.025em] md:text-[3.5rem]">
               {t.about.heading}
             </h2>
           </div>
@@ -728,10 +744,10 @@ export default function PortfolioPage() {
             whileInView="visible"
             viewport={{ once: true, margin: "-80px" }}
             variants={fadeUp}
-            className="relative m-0 mb-12 overflow-hidden rounded-sm border border-[#d5dcda] bg-white shadow-[0_24px_70px_-52px_rgba(21,23,25,0.55)] md:mb-14"
+            className="relative m-0 mb-12 overflow-hidden md:mb-14"
           >
             <Image
-              src={`${basePath}/protein-fold.jpg`}
+              src={`${basePath}/protein-fold.webp`}
               alt=""
               aria-hidden="true"
               width={1536}
@@ -745,7 +761,7 @@ export default function PortfolioPage() {
             {competencyMatrix.map(({ competency, description, Icon }) => (
               <div
                 key={competency}
-                className="rounded-lg border border-[#d5dcda] bg-white p-6 shadow-[0_16px_40px_-32px_rgba(21,23,25,0.45)] transition-colors hover:border-[#b8c4c0]"
+                className="rounded-lg border border-[#d5dcda] bg-white p-6 transition-colors hover:border-[#b8c4c0]"
               >
                 <Icon className="h-5 w-5 text-[#356b68]" />
                 <h3 className="mt-5 text-lg font-semibold">{competency}</h3>
@@ -764,10 +780,10 @@ export default function PortfolioPage() {
         >
           <div className="mx-auto grid max-w-7xl gap-12 px-5 py-[4.5rem] md:px-10 md:py-24 lg:grid-cols-[0.82fr_1.18fr]">
             <div>
-              <SectionKicker>{copy.experience}</SectionKicker>
+              <SectionKicker index="04">{copy.experience}</SectionKicker>
               <h2
                 id="about-heading"
-                className="mt-4 text-balance text-4xl font-semibold leading-tight md:text-5xl"
+                className="mt-4 text-balance text-[2.5rem] font-medium leading-[0.98] tracking-[-0.025em] md:text-[3.5rem]"
               >
                 {t.sections.about}
               </h2>
@@ -816,7 +832,7 @@ export default function PortfolioPage() {
                 <SectionKicker dark>{copy.contactCta}</SectionKicker>
                 <h2
                   id="contact-heading"
-                  className="mt-5 max-w-4xl text-balance text-4xl font-semibold leading-tight md:text-6xl"
+                  className="mt-5 max-w-4xl text-balance text-[2.75rem] font-medium leading-[0.98] tracking-[-0.025em] md:text-[4rem]"
                 >
                   {t.contact.heading}
                 </h2>

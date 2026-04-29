@@ -63,6 +63,7 @@ export interface Translation {
     emailLabel: string;
     footer: string;
   };
+  dynamics: { caption: string };
   audio: { play: string; pause: string };
   mobileMenu: { open: string; close: string; title: string };
   skipLink: string;
@@ -75,17 +76,17 @@ const en: Translation = {
     description:
       "Protein engineering from computational design to preclinical validation, spanning antimicrobial discovery and gene therapy.",
   },
-  nav: { works: "Works", about: "The Story", contact: "Contact" },
+  nav: { works: "Research", about: "Experience", contact: "Contact" },
   hero: {
     eyebrow:
       "Biomedical Engineer | Protein Engineering | Antimicrobial Discovery | Gene Therapy",
-    title: "Dreaming up proteins in silico. Proving them in the lab.",
+    title: "Protein engineering from AI design to preclinical validation.",
     subtitle:
-      "I design and validate proteins for antimicrobial discovery and gene therapy, translating sequence-level ideas into experimental proof.",
-    supportingLine: "From protein language models to mouse models.",
-    northStar: "Until antibiotic resistance stops outrunning us.",
-    ctaPrimary: "Selected Work",
-    ctaSecondary: "The Story",
+      "Biomedical engineer combining computational protein design, wet-lab validation, and translational models across antimicrobial discovery and gene therapy.",
+    supportingLine: "Protein language models | AAV capsids | antimicrobial peptides | mouse models",
+    northStar: "Research Officer at Children's Medical Research Institute, Sydney.",
+    ctaPrimary: "View research",
+    ctaSecondary: "Contact",
     proof: [
       "Research Officer, CMRI Sydney",
       "20+ publications",
@@ -94,10 +95,10 @@ const en: Translation = {
     ],
   },
   sections: {
-    works: "01. Selected Work",
-    about: "02. The Story",
+    works: "Selected research",
+    about: "Experience and evidence",
     aboutSubhead:
-      "Three countries, three labs, one obsession: turning sequence into therapy.",
+      "Three countries, three labs, and a consistent focus on turning sequence-level ideas into experimental proof.",
   },
   works: [
     {
@@ -215,11 +216,14 @@ const en: Translation = {
     ],
   },
   contact: {
-    heading: "Code doesn't kill bacteria. But it tells me where to aim.",
+    heading: "Proteins built for the part after prediction.",
     subtitle:
-      "Bridging computation and biology. 20+ publications, 300+ citations, and 2 patents in antimicrobial drug discovery and protein engineering.",
+      "Open to roles and collaborations where computational design, molecular biology, and translational validation need to work together.",
     emailLabel: "ramon.rocap@gmail.com",
     footer: "All rights reserved.",
+  },
+  dynamics: {
+    caption: "Amino acid residues coalescing into a folded protein.",
   },
   audio: {
     play: "Play ambient soundscape",
@@ -236,18 +240,18 @@ const es: Translation = {
     description:
       "Ingeniería de proteínas desde el diseño computacional hasta la validación preclínica, entre el descubrimiento antimicrobiano y la terapia génica.",
   },
-  nav: { works: "Trabajos", about: "La Historia", contact: "Contacto" },
+  nav: { works: "Investigación", about: "Experiencia", contact: "Contacto" },
   hero: {
     eyebrow:
       "Ingeniería biomédica | Ingeniería de proteínas | Descubrimiento antimicrobiano | Terapia génica",
-    title: "Soñando proteínas in silico. Demostrándolas en el laboratorio.",
+    title: "Ingeniería de proteínas desde IA hasta validación preclínica.",
     subtitle:
-      "Diseño y valido proteínas para descubrimiento antimicrobiano y terapia génica, traduciendo ideas a nivel de secuencia en evidencia experimental.",
-    supportingLine: "De modelos de lenguaje de proteínas a modelos de ratón.",
+      "Ingeniero biomédico combinando diseño computacional de proteínas, validación experimental y modelos traslacionales en descubrimiento antimicrobiano y terapia génica.",
+    supportingLine: "Modelos de lenguaje de proteínas | cápsides AAV | péptidos antimicrobianos | modelos de ratón",
     northStar:
-      "Hasta que la resistencia a los antibióticos deje de ganarnos terreno.",
-    ctaPrimary: "Trabajos",
-    ctaSecondary: "La historia",
+      "Investigador en Children's Medical Research Institute, Sydney.",
+    ctaPrimary: "Ver investigación",
+    ctaSecondary: "Contacto",
     proof: [
       "Investigador, CMRI Sídney",
       "20+ publicaciones",
@@ -256,10 +260,10 @@ const es: Translation = {
     ],
   },
   sections: {
-    works: "01. Trabajos seleccionados",
-    about: "02. La historia",
+    works: "Investigación seleccionada",
+    about: "Experiencia y evidencia",
     aboutSubhead:
-      "Tres países, tres laboratorios, una obsesión: convertir la secuencia en terapia.",
+      "Tres países, tres laboratorios y un foco constante: convertir ideas a nivel de secuencia en evidencia experimental.",
   },
   works: [
     {
@@ -377,11 +381,14 @@ const es: Translation = {
     ],
   },
   contact: {
-    heading: "El código no mata bacterias. Pero me dice dónde apuntar.",
+    heading: "Proteínas hechas para lo que viene después de la predicción.",
     subtitle:
-      "Uniendo computación y biología. 20+ publicaciones, 300+ citas y 2 patentes en descubrimiento de fármacos antimicrobianos e ingeniería de proteínas.",
+      "Abierto a roles y colaboraciones donde el diseño computacional, la biología molecular y la validación traslacional tengan que trabajar juntos.",
     emailLabel: "ramon.rocap@gmail.com",
     footer: "Todos los derechos reservados.",
+  },
+  dynamics: {
+    caption: "Residuos de aminoácidos plegándose en una proteína.",
   },
   audio: {
     play: "Reproducir paisaje sonoro",
@@ -398,18 +405,18 @@ const ca: Translation = {
     description:
       "Enginyeria de proteïnes des del disseny computacional fins a la validació preclínica, entre el descobriment antimicrobià i la teràpia gènica.",
   },
-  nav: { works: "Treballs", about: "La Història", contact: "Contacte" },
+  nav: { works: "Recerca", about: "Experiència", contact: "Contacte" },
   hero: {
     eyebrow:
       "Enginyeria biomèdica | Enginyeria de proteïnes | Descobriment antimicrobià | Teràpia gènica",
-    title: "Somiant proteïnes in silico. Demostrant-les al laboratori.",
+    title: "Enginyeria de proteïnes des de la IA fins a la validació preclínica.",
     subtitle:
-      "Dissenyo i valido proteïnes per al descobriment antimicrobià i la teràpia gènica, traduint idees a nivell de seqüència en evidència experimental.",
-    supportingLine: "De models de llenguatge de proteïnes a models de ratolí.",
+      "Enginyer biomèdic combinant disseny computacional de proteïnes, validació experimental i models translacionals en descobriment antimicrobià i teràpia gènica.",
+    supportingLine: "Models de llenguatge de proteïnes | càpsides AAV | pèptids antimicrobians | models de ratolí",
     northStar:
-      "Fins que la resistència als antibiòtics deixi de guanyar-nos terreny.",
-    ctaPrimary: "Treballs",
-    ctaSecondary: "La història",
+      "Investigador al Children's Medical Research Institute, Sydney.",
+    ctaPrimary: "Veure recerca",
+    ctaSecondary: "Contacte",
     proof: [
       "Investigador, CMRI Sydney",
       "20+ publicacions",
@@ -418,10 +425,10 @@ const ca: Translation = {
     ],
   },
   sections: {
-    works: "01. Treballs seleccionats",
-    about: "02. La història",
+    works: "Recerca seleccionada",
+    about: "Experiència i evidència",
     aboutSubhead:
-      "Tres països, tres laboratoris, una obsessió: convertir la seqüència en teràpia.",
+      "Tres països, tres laboratoris i un focus constant: convertir idees a nivell de seqüència en evidència experimental.",
   },
   works: [
     {
@@ -539,11 +546,14 @@ const ca: Translation = {
     ],
   },
   contact: {
-    heading: "El codi no mata bacteris. Però em diu on apuntar.",
+    heading: "Proteïnes fetes per al que ve després de la predicció.",
     subtitle:
-      "Unint computació i biologia. 20+ publicacions, 300+ citacions i 2 patents en descobriment de fàrmacs antimicrobians i enginyeria de proteïnes.",
+      "Obert a rols i col·laboracions on el disseny computacional, la biologia molecular i la validació translacional hagin de treballar junts.",
     emailLabel: "ramon.rocap@gmail.com",
     footer: "Tots els drets reservats.",
+  },
+  dynamics: {
+    caption: "Residus d'aminoàcids plegant-se en una proteïna.",
   },
   audio: {
     play: "Reproduir paisatge sonor",

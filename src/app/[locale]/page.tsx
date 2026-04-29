@@ -304,7 +304,7 @@ function Header({
     <header
       className={`fixed inset-x-0 top-0 z-50 border-b transition-colors duration-300 ${
         scrolled || mobileMenuOpen
-          ? "border-[#151719]/10 bg-[#f7f5f6]/92 text-[#151719] backdrop-blur-xl"
+          ? "border-[#151719]/10 bg-[#f4f5f3]/92 text-[#151719] backdrop-blur-xl"
           : "border-transparent bg-transparent text-[#151719]"
       }`}
     >
@@ -464,7 +464,7 @@ export default function PortfolioPage() {
             }}
           />
 
-          <div className="relative z-10 mx-auto grid min-h-[calc(94svh-4rem)] max-w-7xl gap-6 px-5 pb-10 pt-6 md:min-h-[calc(94svh-5rem)] md:px-10 md:pb-14 lg:content-center lg:grid-cols-[0.95fr_1.05fr] lg:grid-rows-[auto_auto] lg:items-center lg:gap-x-12 lg:gap-y-7 lg:pt-0">
+          <div className="relative z-10 mx-auto grid min-h-[calc(94svh-4rem)] max-w-7xl gap-5 px-5 pb-9 pt-5 md:min-h-[calc(94svh-5rem)] md:gap-6 md:px-10 md:pb-14 lg:content-center lg:grid-cols-[0.95fr_1.05fr] lg:grid-rows-[auto_auto] lg:items-center lg:gap-x-12 lg:gap-y-7 lg:pt-0">
             <motion.div
               initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 24 }}
               animate={{ opacity: 1, y: 0 }}
@@ -472,10 +472,10 @@ export default function PortfolioPage() {
               className="relative z-10 max-w-2xl"
             >
               <SectionKicker>{copy.profile}</SectionKicker>
-              <h1 className="mt-5 text-balance text-[clamp(3.05rem,5.25vw,5.85rem)] font-medium leading-[0.92] tracking-[-0.03em]">
+              <h1 className="mt-5 text-balance text-[clamp(2.78rem,5.25vw,5.85rem)] font-medium leading-[0.93] tracking-[-0.03em] md:leading-[0.92]">
                 {t.hero.title}
               </h1>
-              <p className="mt-5 max-w-xl text-pretty text-lg leading-8 text-[#4f5a56] md:text-xl md:leading-9">
+              <p className="mt-5 max-w-xl text-pretty text-[1.05rem] leading-8 text-[#4f5a56] md:text-xl md:leading-9">
                 {t.hero.subtitle}
               </p>
             </motion.div>
@@ -484,7 +484,7 @@ export default function PortfolioPage() {
               initial={{ opacity: 0, scale: 0.985 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.2, duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-              className="relative z-0 order-2 m-0 -mx-4 aspect-[1.38/1] w-[calc(100%+2rem)] justify-self-center sm:mx-0 sm:w-full lg:order-none lg:col-start-2 lg:row-span-2 lg:aspect-auto lg:min-h-[min(74svh,680px)] lg:max-w-none lg:justify-self-stretch lg:self-center"
+              className="relative z-0 order-2 m-0 -mx-4 aspect-[1.62/1] w-[calc(100%+2rem)] justify-self-center sm:mx-0 sm:w-full md:aspect-[1.38/1] lg:order-none lg:col-start-2 lg:row-span-2 lg:aspect-auto lg:min-h-[min(74svh,680px)] lg:max-w-none lg:justify-self-stretch lg:self-center"
             >
               <div
                 className="absolute inset-[-8%_-7%_-10%_-7%] overflow-hidden lg:inset-[-9%_-12%_-8%_-2%]"
@@ -545,7 +545,7 @@ export default function PortfolioPage() {
                 ))}
               </ul>
 
-              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <div className="mt-7 flex flex-col gap-3 sm:flex-row md:mt-8">
                 <a
                   href="#works"
                   className="inline-flex items-center justify-center gap-2 rounded-md bg-[#151719] px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#2a2f2c] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#151719]"
@@ -610,7 +610,7 @@ export default function PortfolioPage() {
               {competencyMatrix.slice(0, 4).map(({ competency, Icon }) => (
                 <div
                   key={competency}
-                  className="min-h-32 rounded-lg border border-[#d5dcda] bg-white p-6 transition-colors hover:border-[#b8c4c0]"
+                  className="min-h-32 rounded-lg border border-[#d5dcda] bg-[#fbfcfa] p-6 shadow-[0_18px_55px_rgba(21,23,25,0.035)] transition-colors hover:border-[#b8c4c0] hover:bg-white"
                 >
                   <Icon className="h-5 w-5 text-[#356b68]" />
                   <p className="mt-6 max-w-[13rem] text-lg font-semibold leading-snug">
@@ -651,7 +651,7 @@ export default function PortfolioPage() {
                   whileInView="visible"
                   viewport={{ once: true, margin: "-80px" }}
                   variants={fadeUp}
-                  className="group grid gap-6 py-8 transition-colors hover:bg-[#f7f8f6] lg:grid-cols-[0.18fr_1fr_0.25fr] lg:px-4 lg:py-10"
+                  className="group grid gap-6 py-8 transition-colors hover:bg-[#f7f8f6] lg:grid-cols-[0.16fr_1fr_0.24fr] lg:px-5 lg:py-11"
                 >
                   <div>
                     <p className="inline-flex items-center gap-1.5 font-mono text-sm text-[#356b68]">
@@ -710,7 +710,7 @@ export default function PortfolioPage() {
                   href={work.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group flex min-h-[18rem] flex-col rounded-lg border border-[#d5dcda] bg-[#f4f5f3] p-5 transition-colors hover:border-[#151719]/35 hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#151719]"
+                  className="group flex min-h-[18rem] flex-col rounded-lg border border-[#d5dcda] bg-[#f8faf7] p-5 shadow-[0_18px_55px_rgba(21,23,25,0.035)] transition-colors hover:border-[#151719]/35 hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#151719]"
                 >
                   <p className="font-mono text-xs text-[#69736f]">
                     {work.year} / {work.venue}
@@ -761,7 +761,7 @@ export default function PortfolioPage() {
             {competencyMatrix.map(({ competency, description, Icon }) => (
               <div
                 key={competency}
-                className="rounded-lg border border-[#d5dcda] bg-white p-6 transition-colors hover:border-[#b8c4c0]"
+                className="rounded-lg border border-[#d5dcda] bg-[#fbfcfa] p-6 shadow-[0_18px_55px_rgba(21,23,25,0.035)] transition-colors hover:border-[#b8c4c0] hover:bg-white"
               >
                 <Icon className="h-5 w-5 text-[#356b68]" />
                 <h3 className="mt-5 text-lg font-semibold">{competency}</h3>

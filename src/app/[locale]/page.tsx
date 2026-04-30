@@ -487,6 +487,10 @@ export default function PortfolioPage() {
               className="relative z-0 order-2 m-0 -mx-4 aspect-[1.62/1] w-[calc(100%+2rem)] justify-self-center sm:mx-0 sm:w-full md:aspect-[1.38/1] lg:order-none lg:col-start-2 lg:row-span-2 lg:aspect-auto lg:min-h-[min(74svh,680px)] lg:max-w-none lg:justify-self-stretch lg:self-center"
             >
               <div
+                aria-hidden="true"
+                className="absolute inset-[-18%_-12%_-16%_-10%] bg-[radial-gradient(ellipse_at_54%_48%,rgba(151,134,190,0.12),rgba(151,205,190,0.08)_36%,rgba(237,247,239,0)_72%)] blur-2xl"
+              />
+              <div
                 className="absolute inset-[-8%_-7%_-10%_-7%] overflow-hidden lg:inset-[-9%_-12%_-8%_-2%]"
                 style={{
                   maskImage:
@@ -522,6 +526,10 @@ export default function PortfolioPage() {
                     />
                   </video>
                 )}
+                <div
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_50%_50%,rgba(237,247,239,0)_38%,rgba(237,247,239,0.18)_66%,rgba(237,247,239,0.72)_100%),linear-gradient(90deg,rgba(237,247,239,0.34),rgba(237,247,239,0)_22%,rgba(237,247,239,0)_70%,rgba(237,247,239,0.46))]"
+                />
               </div>
               <figcaption className="sr-only">
                 {t.dynamics.caption}

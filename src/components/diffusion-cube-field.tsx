@@ -66,7 +66,7 @@ function buildCluster(): CubeSpec[] {
         const jz = (hash(seed + 3) - 0.5) * jitter;
         cubes.push({
           position: [x + jx, y + jy, z + jz],
-          size: 0.48 + d * 0.22,
+          size: 0.62 + d * 0.28,
           tone: toneOrder[i++ % toneOrder.length],
           phase: hash(seed + 7),
         });
@@ -79,11 +79,11 @@ function buildCluster(): CubeSpec[] {
 
 function CrystalCube({
   spec,
-  attentionZ,
+  attentionX,
   reduceMotion,
 }: {
   spec: CubeSpec;
-  attentionZ: React.MutableRefObject<number>;
+  attentionX: React.MutableRefObject<number>;
   reduceMotion: boolean;
 }) {
   const meshRef = useRef<THREE.Mesh>(null);
@@ -114,11 +114,11 @@ function CrystalCube({
     }
 
     if (haloRef.current) {
-      const dist = Math.abs(spec.position[2] - attentionZ.current);
-      const litness = Math.exp(-dist * dist * 1.2);
+      const dist = Math.abs(spec.position[0] - attentionX.current);
+      const litness = Math.exp(-dist * dist * 0.9);
       const m = haloRef.current.material as THREE.MeshBasicMaterial;
-      m.opacity = 0.04 + litness * 0.55;
-      haloRef.current.scale.setScalar(1.0 + litness * 0.6);
+      m.opacity = 0.04 + litness * 0.62;
+      haloRef.current.scale.setScalar(1.0 + litness * 0.7);
     }
   });
 
@@ -152,43 +152,131 @@ function CrystalCube({
   );
 }
 
-function AttentionPlane({ attentionZ }: { attentionZ: React.MutableRefObject<number> }) {
+function AttentionPlane({ attentionX }: { attentionX: React.MutableRefObject<number> }) {
   const meshRef = useRef<THREE.Mesh>(null);
+  const lineRef = useRef<THREE.LineSegments>(null);
   useFrame(({ clock }) => {
-    const t = (clock.elapsedTime * 0.18) % 1;
-    const z = THREE.MathUtils.lerp(-2.4, 2.4, t);
-    attentionZ.current = z;
-    if (meshRef.current) meshRef.current.position.z = z;
+    const t = (clock.elapsedTime * 0.16) % 1;
+    const x = THREE.MathUtils.lerp(-3.4, 3.4, t);
+    attentionX.current = x;
+    if (meshRef.current) meshRef.current.position.x = x;
+    if (lineRef.current) lineRef.current.position.x = x;
+  });
+
+  // A vertical sweep plane that travels left-to-right ("denoise wave")
+  const lineGeo = useMemo(() => {
+    const positions = new Float32Array([0, -2.4, 0, 0, 2.4, 0]);
+    const g = new THREE.BufferGeometry();
+    g.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+    return g;
+  }, []);
+
+  return (
+    <>
+      <mesh ref={meshRef} rotation={[0, Math.PI / 2, 0]}>
+        <planeGeometry args={[4.8, 5.4]} />
+        <meshBasicMaterial
+          color={scenePalette.ivory}
+          transparent
+          opacity={0.10}
+          depthWrite={false}
+          blending={THREE.AdditiveBlending}
+          side={THREE.DoubleSide}
+        />
+      </mesh>
+      <lineSegments ref={lineRef}>
+        <primitive object={lineGeo} attach="geometry" />
+        <lineBasicMaterial
+          color={scenePalette.teal}
+          transparent
+          opacity={0.72}
+          blending={THREE.AdditiveBlending}
+          depthWrite={false}
+        />
+      </lineSegments>
+    </>
+  );
+}
+
+type NoiseParticle = {
+  position: [number, number, number];
+  size: number;
+  seed: number;
+};
+
+function buildLatentNoise(count = 120): NoiseParticle[] {
+  const out: NoiseParticle[] = [];
+  for (let i = 0; i < count; i++) {
+    const seed = i * 9173;
+    const x = -3.0 + hash(seed) * 1.8; // left third of the field
+    const y = (hash(seed + 1) - 0.5) * 3.4;
+    const z = (hash(seed + 2) - 0.5) * 2.2;
+    out.push({
+      position: [x, y, z],
+      size: 0.04 + hash(seed + 3) * 0.045,
+      seed: hash(seed + 4),
+    });
+  }
+  return out;
+}
+
+function LatentNoise({
+  attentionX,
+  reduceMotion,
+}: {
+  attentionX: React.MutableRefObject<number>;
+  reduceMotion: boolean;
+}) {
+  const particles = useMemo(() => buildLatentNoise(90), []);
+  const groupRef = useRef<THREE.Group>(null);
+
+  useFrame(({ clock }) => {
+    if (!groupRef.current) return;
+    const meshes = groupRef.current.children as THREE.Mesh[];
+    for (let i = 0; i < particles.length; i++) {
+      const p = particles[i];
+      const mesh = meshes[i];
+      if (!mesh) continue;
+      // Particle fades out as the attention wave passes its x coordinate
+      const consumed = THREE.MathUtils.clamp((attentionX.current - p.position[0]) / 1.5, 0, 1);
+      const baseOpacity = 0.55;
+      const visible = (1 - consumed) * baseOpacity;
+      const mat = mesh.material as THREE.MeshBasicMaterial;
+      mat.opacity = Math.max(0, visible);
+      if (!reduceMotion) {
+        const jitter = Math.sin(clock.elapsedTime * 1.8 + p.seed * 6.28) * 0.025;
+        mesh.position.y = p.position[1] + jitter;
+        mesh.position.z = p.position[2] + jitter * 0.6;
+      }
+    }
   });
 
   return (
-    <mesh ref={meshRef} rotation={[0, 0, 0]}>
-      <planeGeometry args={[7.4, 5.4]} />
-      <meshBasicMaterial
-        color={scenePalette.ivory}
-        transparent
-        opacity={0.05}
-        depthWrite={false}
-        blending={THREE.AdditiveBlending}
-        side={THREE.DoubleSide}
-      />
-    </mesh>
+    <group ref={groupRef}>
+      {particles.map((p, i) => (
+        <mesh key={i} position={p.position}>
+          <sphereGeometry args={[p.size, 8, 6]} />
+          <meshBasicMaterial color={scenePalette.ink} transparent opacity={0.55} depthWrite={false} />
+        </mesh>
+      ))}
+    </group>
   );
 }
 
 function Cluster({ reduceMotion }: { reduceMotion: boolean }) {
   const cubes = useMemo(() => buildCluster(), []);
-  const attentionZ = useRef(0);
+  const attentionX = useRef(-3.4);
 
   return (
     <>
-      {!reduceMotion && <AttentionPlane attentionZ={attentionZ} />}
-      <group scale={1.6}>
+      {!reduceMotion && <AttentionPlane attentionX={attentionX} />}
+      <LatentNoise attentionX={attentionX} reduceMotion={reduceMotion} />
+      <group scale={2.4} position={[0.6, 0, 0]}>
         {cubes.map((spec, i) => (
           <CrystalCube
             key={i}
             spec={spec}
-            attentionZ={attentionZ}
+            attentionX={attentionX}
             reduceMotion={reduceMotion}
           />
         ))}
@@ -215,14 +303,14 @@ export function DiffusionCubeField() {
   return (
     <figure
       aria-hidden="true"
-      className="relative m-0 mb-12 min-h-[31rem] overflow-hidden rounded-lg border border-[#151719] bg-[#eafeef] shadow-[0_28px_90px_rgba(21,23,25,0.06)] md:mb-14 md:min-h-[36rem]"
+      className="relative m-0 mb-12 min-h-[24rem] overflow-hidden rounded-lg border border-[#151719] bg-[#f5eee1] shadow-[0_28px_90px_rgba(21,23,25,0.06)] md:mb-14 md:min-h-[28rem]"
     >
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_72%_40%,rgba(184,232,241,0.45),rgba(234,254,239,0)_56%),radial-gradient(ellipse_at_24%_64%,rgba(184,205,229,0.32),rgba(234,254,239,0)_58%),linear-gradient(180deg,rgba(255,255,255,0.46),rgba(234,254,239,0.74))]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_74%_42%,rgba(240,168,155,0.20),rgba(245,238,225,0)_56%),radial-gradient(ellipse_at_22%_64%,rgba(218,41,28,0.06),rgba(245,238,225,0)_58%),linear-gradient(180deg,rgba(255,250,242,0.46),rgba(244,234,219,0.74))]" />
 
       <Canvas
         className="absolute inset-0"
         dpr={[1, 2]}
-        camera={{ position: [0, 0.2, 4.2], fov: 46 }}
+        camera={{ position: [0, 0.1, 5.2], fov: 38 }}
         gl={{ alpha: true, antialias: true, powerPreference: "high-performance" }}
       >
         <SceneLighting />
@@ -252,7 +340,7 @@ export function DiffusionCubeField() {
         </EffectComposer>
       </Canvas>
 
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_60%_50%,rgba(234,254,239,0)_42%,rgba(234,254,239,0.16)_72%,rgba(234,254,239,0.82)_100%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_60%_50%,rgba(245,238,225,0)_44%,rgba(245,238,225,0.18)_72%,rgba(245,238,225,0.82)_100%)]" />
 
       <figcaption className="sr-only">
         Machine-learning protein design visualized as a crystalline diffusion cluster — cubes refract the latent state as an attention wave passes through.

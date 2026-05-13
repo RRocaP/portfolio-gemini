@@ -2,17 +2,9 @@
 
 import { useMemo, useRef } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import {
-  ContactShadows,
-  Float,
-  MeshTransmissionMaterial,
-} from "@react-three/drei";
-import { Bloom, EffectComposer, N8AO, ToneMapping } from "@react-three/postprocessing";
-import { ToneMappingMode } from "postprocessing";
+import { Bloom, EffectComposer } from "@react-three/postprocessing";
 import { useReducedMotion } from "framer-motion";
 import * as THREE from "three";
-import { SceneLighting } from "./_scene/lighting";
-import { scenePalette } from "./_scene/palette";
 
 type Vec3 = [number, number, number];
 
@@ -21,6 +13,17 @@ type NodePoint = {
   radius: number;
   tone: "teal" | "coral" | "violet" | "pearl";
   delay: number;
+};
+
+const palette = {
+  tealDeep: "#315f5d",
+  tealMid: "#74d8cf",
+  tealLine: "#2a8f98",
+  pearl: "#dffbf2",
+  ivory: "#fff4de",
+  coral: "#f0a89b",
+  violet: "#8a83d8",
+  shadow: "#203735",
 };
 
 const backboneCurves: Vec3[][] = [
@@ -62,20 +65,20 @@ const backboneCurves: Vec3[][] = [
 ];
 
 const nodePoints: NodePoint[] = [
-  { position: [-1.9, -0.82, 0.12], radius: 0.10, tone: "teal", delay: 0 },
-  { position: [-1.58, 0.92, -0.05], radius: 0.08, tone: "violet", delay: 0.16 },
-  { position: [-0.58, 1.5, 0.34], radius: 0.11, tone: "coral", delay: 0.28 },
-  { position: [0.34, 1.18, -0.34], radius: 0.07, tone: "pearl", delay: 0.42 },
-  { position: [1.17, 1.58, 0.2], radius: 0.10, tone: "teal", delay: 0.56 },
-  { position: [1.78, 0.82, 0.46], radius: 0.075, tone: "pearl", delay: 0.7 },
-  { position: [1.48, -0.24, -0.18], radius: 0.115, tone: "violet", delay: 0.84 },
-  { position: [0.68, -0.72, 0.46], radius: 0.07, tone: "pearl", delay: 0.98 },
-  { position: [0.05, -1.4, -0.24], radius: 0.10, tone: "teal", delay: 1.12 },
-  { position: [-1.08, -1.24, 0.2], radius: 0.08, tone: "coral", delay: 1.26 },
-  { position: [-1.22, 0.04, -0.34], radius: 0.075, tone: "pearl", delay: 0.34 },
-  { position: [0.2, 0.28, 0.7], radius: 0.085, tone: "coral", delay: 0.68 },
-  { position: [0.9, 0.82, -0.26], radius: 0.065, tone: "pearl", delay: 0.9 },
-  { position: [-0.36, -0.86, -0.5], radius: 0.07, tone: "pearl", delay: 1.08 },
+  { position: [-1.9, -0.82, 0.12], radius: 0.086, tone: "teal", delay: 0 },
+  { position: [-1.58, 0.92, -0.05], radius: 0.065, tone: "violet", delay: 0.16 },
+  { position: [-0.58, 1.5, 0.34], radius: 0.096, tone: "coral", delay: 0.28 },
+  { position: [0.34, 1.18, -0.34], radius: 0.068, tone: "pearl", delay: 0.42 },
+  { position: [1.17, 1.58, 0.2], radius: 0.092, tone: "teal", delay: 0.56 },
+  { position: [1.78, 0.82, 0.46], radius: 0.07, tone: "pearl", delay: 0.7 },
+  { position: [1.48, -0.24, -0.18], radius: 0.104, tone: "violet", delay: 0.84 },
+  { position: [0.68, -0.72, 0.46], radius: 0.064, tone: "pearl", delay: 0.98 },
+  { position: [0.05, -1.4, -0.24], radius: 0.092, tone: "teal", delay: 1.12 },
+  { position: [-1.08, -1.24, 0.2], radius: 0.074, tone: "coral", delay: 1.26 },
+  { position: [-1.22, 0.04, -0.34], radius: 0.066, tone: "pearl", delay: 0.34 },
+  { position: [0.2, 0.28, 0.7], radius: 0.078, tone: "coral", delay: 0.68 },
+  { position: [0.9, 0.82, -0.26], radius: 0.058, tone: "pearl", delay: 0.9 },
+  { position: [-0.36, -0.86, -0.5], radius: 0.062, tone: "pearl", delay: 1.08 },
 ];
 
 const contactCurves: Vec3[][] = [
@@ -116,10 +119,10 @@ const contactCurves: Vec3[][] = [
   ],
 ];
 
-function makeCurve(points: Vec3[]) {
+function makeCurve(points: Vec3[], closed = false) {
   return new THREE.CatmullRomCurve3(
-    points.map((p) => new THREE.Vector3(...p)),
-    false,
+    points.map((point) => new THREE.Vector3(...point)),
+    closed,
     "catmullrom",
     0.46,
   );
@@ -141,54 +144,55 @@ function helixPoints({
   tilt?: number;
 }) {
   const points: Vec3[] = [];
-  const cos = Math.cos(tilt);
-  const sin = Math.sin(tilt);
-  for (let i = 0; i <= 92; i++) {
-    const t = i / 92;
-    const a = phase + t * turns * Math.PI * 2;
-    const x = Math.cos(a) * radius;
-    const y = (t - 0.5) * height;
-    const z = Math.sin(a) * radius;
-    points.push([center[0] + x * cos - y * sin, center[1] + x * sin + y * cos, center[2] + z]);
+  const cosTilt = Math.cos(tilt);
+  const sinTilt = Math.sin(tilt);
+
+  for (let index = 0; index <= 92; index += 1) {
+    const t = index / 92;
+    const angle = phase + t * turns * Math.PI * 2;
+    const localX = Math.cos(angle) * radius;
+    const localY = (t - 0.5) * height;
+    const localZ = Math.sin(angle) * radius;
+    points.push([
+      center[0] + localX * cosTilt - localY * sinTilt,
+      center[1] + localX * sinTilt + localY * cosTilt,
+      center[2] + localZ,
+    ]);
   }
+
   return points;
 }
 
-function GlassTube({
+function ProteinTube({
   points,
   radius,
   color,
-  attenuation = scenePalette.tealDeep,
-  thickness = 0.7,
-  ior = 1.35,
+  emissive = "#000000",
+  opacity = 1,
   tubularSegments = 140,
 }: {
   points: Vec3[];
   radius: number;
   color: string;
-  attenuation?: string;
-  thickness?: number;
-  ior?: number;
+  emissive?: string;
+  opacity?: number;
   tubularSegments?: number;
 }) {
   const curve = useMemo(() => makeCurve(points), [points]);
+
   return (
     <mesh>
       <tubeGeometry args={[curve, tubularSegments, radius, 18, false]} />
-      <MeshTransmissionMaterial
-        backside
-        backsideThickness={0.4}
-        thickness={thickness}
-        roughness={0.12}
-        chromaticAberration={0.03}
-        anisotropy={0.4}
-        distortion={0.18}
-        distortionScale={0.4}
-        temporalDistortion={0.06}
-        ior={ior}
+      <meshPhysicalMaterial
         color={color}
-        attenuationColor={attenuation}
-        attenuationDistance={1.4}
+        roughness={0.38}
+        metalness={0.02}
+        clearcoat={0.55}
+        clearcoatRoughness={0.42}
+        transparent={opacity < 1}
+        opacity={opacity}
+        emissive={emissive}
+        emissiveIntensity={0.08}
       />
     </mesh>
   );
@@ -217,15 +221,20 @@ function ContactTrace({
   return (
     <group>
       <mesh>
-        <tubeGeometry args={[curve, 80, 0.005, 8, false]} />
-        <meshBasicMaterial color={scenePalette.tealDeep} transparent opacity={0.32} depthWrite={false} />
+        <tubeGeometry args={[curve, 80, 0.006, 8, false]} />
+        <meshBasicMaterial
+          color={palette.tealLine}
+          transparent
+          opacity={0.34}
+          depthWrite={false}
+        />
       </mesh>
       <mesh ref={pulseRef}>
-        <sphereGeometry args={[0.032, 18, 12]} />
+        <sphereGeometry args={[0.034, 18, 12]} />
         <meshBasicMaterial
-          color={scenePalette.ivory}
+          color={palette.ivory}
           transparent
-          opacity={reduceMotion ? 0 : 0.95}
+          opacity={reduceMotion ? 0 : 0.9}
           depthWrite={false}
         />
       </mesh>
@@ -233,57 +242,66 @@ function ContactTrace({
   );
 }
 
-function ResidueNode({ node, reduceMotion }: { node: NodePoint; reduceMotion: boolean }) {
+function ResidueNode({
+  node,
+  reduceMotion,
+}: {
+  node: NodePoint;
+  reduceMotion: boolean;
+}) {
   const meshRef = useRef<THREE.Mesh>(null);
   const haloRef = useRef<THREE.Mesh>(null);
+  const materialRef = useRef<THREE.MeshPhysicalMaterial>(null);
   const color =
     node.tone === "coral"
-      ? scenePalette.coral
+      ? palette.coral
       : node.tone === "violet"
-        ? scenePalette.violet
+        ? palette.violet
         : node.tone === "teal"
-          ? scenePalette.teal
-          : scenePalette.pearl;
-  const attenuation =
-    node.tone === "coral"
-      ? scenePalette.coralDeep
-      : node.tone === "violet"
-        ? scenePalette.violetDeep
-        : node.tone === "teal"
-          ? scenePalette.tealDeep
-          : scenePalette.teal;
+          ? palette.tealMid
+          : palette.pearl;
 
   useFrame(({ clock }) => {
     if (reduceMotion) return;
-    const wave = (Math.sin(clock.elapsedTime * 1.9 + node.delay * 5.5) + 1) / 2;
-    if (meshRef.current) meshRef.current.scale.setScalar(1 + wave * 0.14);
+    const wave = (Math.sin(clock.elapsedTime * 2.1 + node.delay * 5.5) + 1) / 2;
+    if (meshRef.current) {
+      meshRef.current.scale.setScalar(1 + wave * 0.22);
+    }
     if (haloRef.current) {
-      haloRef.current.scale.setScalar(1.6 + wave * 1.0);
-      const m = haloRef.current.material as THREE.MeshBasicMaterial;
-      m.opacity = 0.04 + wave * 0.14;
+      haloRef.current.scale.setScalar(1.2 + wave * 1.15);
+      const material = haloRef.current.material as THREE.MeshBasicMaterial;
+      material.opacity = 0.08 + wave * 0.22;
+    }
+    if (materialRef.current) {
+      materialRef.current.emissiveIntensity = 0.18 + wave * 0.55;
     }
   });
 
   return (
     <group position={node.position}>
       <mesh ref={haloRef}>
-        <sphereGeometry args={[node.radius * 2.4, 22, 14]} />
-        <meshBasicMaterial color={color} transparent opacity={0.10} depthWrite={false} />
+        <sphereGeometry args={[node.radius * 2.2, 24, 16]} />
+        <meshBasicMaterial
+          color={node.tone === "violet" ? palette.violet : node.tone === "coral" ? palette.coral : palette.tealMid}
+          transparent
+          opacity={0.16}
+          depthWrite={false}
+        />
       </mesh>
       <mesh ref={meshRef}>
-        <sphereGeometry args={[node.radius, 36, 24]} />
-        <MeshTransmissionMaterial
-          backside
-          backsideThickness={node.radius * 1.8}
-          thickness={node.radius * 1.6}
-          roughness={0.05}
-          chromaticAberration={0.05}
-          anisotropy={0.2}
-          distortion={0.04}
-          ior={1.4}
+        <sphereGeometry args={[node.radius, 32, 20]} />
+        <meshPhysicalMaterial
+          ref={materialRef}
           color={color}
-          attenuationColor={attenuation}
-          attenuationDistance={0.6}
+          roughness={0.18}
+          metalness={0.02}
+          clearcoat={0.95}
+          clearcoatRoughness={0.14}
+          transmission={node.tone === "pearl" ? 0.35 : 0.12}
+          ior={1.35}
+          thickness={node.radius * 1.6}
+          emissive={color}
+          emissiveIntensity={0.32}
         />
       </mesh>
     </group>
@@ -294,33 +312,29 @@ function SheetBlock({
   position,
   rotation,
   color,
-  attenuation,
 }: {
   position: Vec3;
   rotation: Vec3;
   color: string;
-  attenuation: string;
 }) {
   return (
     <mesh position={position} rotation={rotation}>
-      <boxGeometry args={[0.74, 0.12, 0.04]} />
-      <MeshTransmissionMaterial
-        backside
-        backsideThickness={0.18}
-        thickness={0.22}
-        roughness={0.1}
-        chromaticAberration={0.04}
-        distortion={0.06}
-        ior={1.42}
+      <boxGeometry args={[0.72, 0.115, 0.034]} />
+      <meshPhysicalMaterial
         color={color}
-        attenuationColor={attenuation}
-        attenuationDistance={1.0}
+        roughness={0.36}
+        clearcoat={0.45}
+        transparent
+        opacity={0.78}
+        emissive={color}
+        emissiveIntensity={0.06}
       />
     </mesh>
   );
 }
 
-function ProteinAssembly({ reduceMotion }: { reduceMotion: boolean }) {
+function ProteinScene({ reduceMotion }: { reduceMotion: boolean }) {
+  const groupRef = useRef<THREE.Group>(null);
   const helixA = useMemo(
     () =>
       helixPoints({
@@ -345,93 +359,147 @@ function ProteinAssembly({ reduceMotion }: { reduceMotion: boolean }) {
     [],
   );
 
+  useFrame(({ clock, pointer }) => {
+    if (!groupRef.current) return;
+    const targetY = pointer.x * 0.16 + Math.sin(clock.elapsedTime * 0.18) * 0.08;
+    const targetX = -0.14 + pointer.y * -0.08;
+    groupRef.current.rotation.y = THREE.MathUtils.lerp(groupRef.current.rotation.y, targetY, 0.045);
+    groupRef.current.rotation.x = THREE.MathUtils.lerp(groupRef.current.rotation.x, targetX, 0.045);
+    if (!reduceMotion) {
+      groupRef.current.position.y = Math.sin(clock.elapsedTime * 0.42) * 0.035;
+    }
+  });
+
   return (
     <>
-      {contactCurves.map((points) => (
-        <ContactTrace
-          key={points.flat().join("-")}
-          points={points}
-          offset={Math.random()}
-          reduceMotion={reduceMotion}
+      <ambientLight intensity={1.25} />
+      <directionalLight position={[3.2, 4.6, 5.2]} intensity={2.35} color="#fff7ea" />
+      <pointLight position={[-3.4, -2.6, 2.2]} intensity={2.1} color="#74d8cf" />
+      <pointLight position={[2.8, 1.8, -1.4]} intensity={1.6} color="#8a83d8" />
+
+      <group ref={groupRef} scale={0.72} position={[0, -0.02, 0]}>
+        <mesh scale={[1.75, 1.4, 0.86]} rotation={[0.12, -0.2, 0.06]}>
+          <sphereGeometry args={[1.08, 64, 32]} />
+          <meshPhysicalMaterial
+            color="#bfeeea"
+            roughness={0.72}
+            transparent
+            opacity={0.1}
+            depthWrite={false}
+            emissive="#74d8cf"
+            emissiveIntensity={0.12}
+          />
+        </mesh>
+
+        {contactCurves.map((points, index) => (
+          <ContactTrace
+            key={points.flat().join("-")}
+            points={points}
+            offset={index * 0.13}
+            reduceMotion={reduceMotion}
+          />
+        ))}
+
+        <ProteinTube
+          points={backboneCurves[0]}
+          radius={0.076}
+          color={palette.tealMid}
+          emissive={palette.tealLine}
         />
-      ))}
+        <ProteinTube
+          points={backboneCurves[1]}
+          radius={0.055}
+          color={palette.ivory}
+          emissive={palette.tealMid}
+          opacity={0.92}
+        />
+        <ProteinTube
+          points={backboneCurves[2]}
+          radius={0.047}
+          color={palette.tealDeep}
+          emissive={palette.tealDeep}
+          opacity={0.76}
+        />
+        <ProteinTube
+          points={helixA}
+          radius={0.034}
+          color={palette.ivory}
+          emissive={palette.coral}
+          opacity={0.96}
+          tubularSegments={110}
+        />
+        <ProteinTube
+          points={helixB}
+          radius={0.032}
+          color={palette.tealMid}
+          emissive={palette.violet}
+          opacity={0.9}
+          tubularSegments={100}
+        />
 
-      <GlassTube
-        points={backboneCurves[0]}
-        radius={0.085}
-        color={scenePalette.teal}
-        attenuation={scenePalette.tealDeep}
-        thickness={0.8}
-      />
-      <GlassTube
-        points={backboneCurves[1]}
-        radius={0.06}
-        color={scenePalette.ivory}
-        attenuation={scenePalette.teal}
-        thickness={0.5}
-      />
-      <GlassTube
-        points={backboneCurves[2]}
-        radius={0.05}
-        color={scenePalette.pearl}
-        attenuation={scenePalette.tealDeep}
-        thickness={0.45}
-      />
-      <GlassTube
-        points={helixA}
-        radius={0.038}
-        color={scenePalette.ivory}
-        attenuation={scenePalette.coral}
-        thickness={0.32}
-        tubularSegments={110}
-      />
-      <GlassTube
-        points={helixB}
-        radius={0.034}
-        color={scenePalette.teal}
-        attenuation={scenePalette.violet}
-        thickness={0.28}
-        tubularSegments={100}
-      />
+        <SheetBlock
+          position={[0.86, -0.58, 0.22]}
+          rotation={[0.12, -0.5, -0.42]}
+          color={palette.ivory}
+        />
+        <SheetBlock
+          position={[0.44, -1.05, -0.16]}
+          rotation={[0.48, 0.32, 0.35]}
+          color={palette.tealMid}
+        />
+        <SheetBlock
+          position={[-1.28, -0.3, 0.36]}
+          rotation={[0.22, -0.8, -0.16]}
+          color={palette.coral}
+        />
 
-      <SheetBlock
-        position={[0.86, -0.58, 0.22]}
-        rotation={[0.12, -0.5, -0.42]}
-        color={scenePalette.ivory}
-        attenuation={scenePalette.teal}
-      />
-      <SheetBlock
-        position={[0.44, -1.05, -0.16]}
-        rotation={[0.48, 0.32, 0.35]}
-        color={scenePalette.teal}
-        attenuation={scenePalette.tealDeep}
-      />
-      <SheetBlock
-        position={[-1.28, -0.3, 0.36]}
-        rotation={[0.22, -0.8, -0.16]}
-        color={scenePalette.coral}
-        attenuation={scenePalette.coralDeep}
-      />
-
-      {nodePoints.map((node) => (
-        <ResidueNode key={node.position.join(",")} node={node} reduceMotion={reduceMotion} />
-      ))}
+        {nodePoints.map((node) => (
+          <ResidueNode
+            key={node.position.join(",")}
+            node={node}
+            reduceMotion={reduceMotion}
+          />
+        ))}
+      </group>
     </>
   );
 }
 
-function PointerOrbit({ reduceMotion, children }: { reduceMotion: boolean; children: React.ReactNode }) {
-  const groupRef = useRef<THREE.Group>(null);
-
-  useFrame(({ clock, pointer }) => {
-    if (!groupRef.current) return;
-    const ty = pointer.x * 0.18 + (reduceMotion ? 0 : Math.sin(clock.elapsedTime * 0.18) * 0.06);
-    const tx = -0.10 + pointer.y * -0.08;
-    groupRef.current.rotation.y = THREE.MathUtils.lerp(groupRef.current.rotation.y, ty, 0.045);
-    groupRef.current.rotation.x = THREE.MathUtils.lerp(groupRef.current.rotation.x, tx, 0.045);
-  });
-
-  return <group ref={groupRef}>{children}</group>;
+function FieldOverlay() {
+  return (
+    <svg
+      aria-hidden="true"
+      className="pointer-events-none absolute inset-0 h-full w-full"
+      viewBox="0 0 1120 860"
+      preserveAspectRatio="xMidYMid slice"
+    >
+      <defs>
+        <pattern id="proteinSceneGrid" width="54" height="54" patternUnits="userSpaceOnUse">
+          <path
+            d="M54 0H0V54"
+            fill="none"
+            stroke="rgba(21,23,25,0.082)"
+            strokeWidth="0.85"
+          />
+          <circle cx="0" cy="0" r="1.15" fill="rgba(21,23,25,0.12)" />
+        </pattern>
+        <radialGradient id="proteinSceneGlow" cx="58%" cy="50%" r="62%">
+          <stop offset="0%" stopColor="#ffffff" stopOpacity="0.34" />
+          <stop offset="50%" stopColor="#bdeff0" stopOpacity="0.16" />
+          <stop offset="100%" stopColor="#eafeef" stopOpacity="0" />
+        </radialGradient>
+      </defs>
+      <rect width="1120" height="860" fill="url(#proteinSceneGrid)" opacity="0.56" />
+      <rect width="1120" height="860" fill="url(#proteinSceneGlow)" />
+      <path
+        d="M88 710 C236 624 361 734 520 690 C694 642 789 724 1018 592"
+        fill="none"
+        stroke="rgba(21,23,25,0.13)"
+        strokeWidth="1.1"
+        strokeDasharray="4 12"
+      />
+    </svg>
+  );
 }
 
 export function AIProteinConstruct({ className = "" }: { className?: string }) {
@@ -442,43 +510,20 @@ export function AIProteinConstruct({ className = "" }: { className?: string }) {
       aria-hidden="true"
       className={`pointer-events-auto relative h-full min-h-[26rem] w-full overflow-hidden ${className}`}
     >
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_58%_50%,rgba(116,216,207,0.32),rgba(234,254,239,0)_60%),radial-gradient(ellipse_at_28%_25%,rgba(255,255,255,0.86),rgba(255,255,255,0)_56%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_58%_50%,rgba(116,216,207,0.3),rgba(234,254,239,0)_58%),radial-gradient(ellipse_at_28%_25%,rgba(255,255,255,0.82),rgba(255,255,255,0)_54%)]" />
+      <FieldOverlay />
       <Canvas
         className="absolute inset-0"
         dpr={[1, 2]}
-        camera={{ position: [0, 0.05, 6.6], fov: 34 }}
+        camera={{ position: [0, 0, 6.9], fov: 35 }}
         gl={{ alpha: true, antialias: true, powerPreference: "high-performance" }}
       >
-        <SceneLighting />
-
-        <Float
-          speed={shouldReduceMotion ? 0 : 0.55}
-          rotationIntensity={shouldReduceMotion ? 0 : 0.18}
-          floatIntensity={shouldReduceMotion ? 0 : 0.45}
-        >
-          <PointerOrbit reduceMotion={shouldReduceMotion}>
-            <group scale={0.74} position={[0, -0.02, 0]}>
-              <ProteinAssembly reduceMotion={shouldReduceMotion} />
-            </group>
-          </PointerOrbit>
-        </Float>
-
-        <ContactShadows
-          position={[0, -1.62, 0]}
-          opacity={0.28}
-          scale={6}
-          blur={2.4}
-          far={3.6}
-          color={scenePalette.ink}
-        />
-
-        <EffectComposer multisampling={0} enableNormalPass>
-          <N8AO aoRadius={0.4} intensity={2.2} aoSamples={16} denoiseSamples={4} />
-          <Bloom intensity={0.55} luminanceThreshold={0.34} luminanceSmoothing={0.42} mipmapBlur />
-          <ToneMapping mode={ToneMappingMode.ACES_FILMIC} />
+        <ProteinScene reduceMotion={shouldReduceMotion} />
+        <EffectComposer multisampling={0}>
+          <Bloom intensity={0.48} luminanceThreshold={0.36} luminanceSmoothing={0.42} mipmapBlur />
         </EffectComposer>
       </Canvas>
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_55%_52%,rgba(234,254,239,0)_44%,rgba(234,254,239,0.08)_70%,rgba(234,254,239,0.72)_100%),linear-gradient(90deg,rgba(234,254,239,0.5),rgba(234,254,239,0)_22%,rgba(234,254,239,0)_75%,rgba(234,254,239,0.32))]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_55%_52%,rgba(234,254,239,0)_43%,rgba(234,254,239,0.08)_70%,rgba(234,254,239,0.72)_100%),linear-gradient(90deg,rgba(234,254,239,0.52),rgba(234,254,239,0)_22%,rgba(234,254,239,0)_75%,rgba(234,254,239,0.36))]" />
     </div>
   );
 }

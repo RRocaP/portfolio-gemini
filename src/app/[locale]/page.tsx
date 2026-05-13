@@ -455,93 +455,73 @@ export default function PortfolioPage() {
       </AnimatePresence>
 
       <main>
-        <section className="relative isolate min-h-[94svh] overflow-hidden bg-[#eafeef] pt-16 text-[#151719] md:pt-20">
+        <section className="relative isolate min-h-[94svh] overflow-hidden bg-[#f5eee1] pt-16 text-[#151719] md:pt-20">
           <div
             aria-hidden="true"
             className="absolute inset-0"
             style={{
               background:
-                "radial-gradient(70% 64% at 80% 54%, rgba(184,232,241,0.7), rgba(234,254,239,0.12) 62%, transparent 78%), radial-gradient(54% 42% at 12% 18%, rgba(255,255,255,0.84), transparent 70%), linear-gradient(180deg, rgba(234,254,239,0.96), rgba(231,248,252,0.88))",
+                "radial-gradient(72% 66% at 78% 52%, rgba(240,168,155,0.18), rgba(245,238,225,0.10) 60%, transparent 78%), radial-gradient(54% 44% at 12% 22%, rgba(255,250,242,0.86), transparent 70%), linear-gradient(180deg, rgba(248,242,232,0.92), rgba(244,234,219,0.88))",
             }}
           />
 
-          <div className="relative z-10 mx-auto grid min-h-[calc(94svh-4rem)] max-w-[90rem] grid-rows-[auto_auto_auto] px-5 pb-12 pt-5 md:min-h-[calc(94svh-5rem)] md:px-10 md:pb-16 lg:content-center lg:grid-cols-[0.47fr_0.53fr] lg:grid-rows-[1fr_1fr] lg:pt-0">
+          <div className="relative z-10 mx-auto grid min-h-[calc(94svh-4rem)] max-w-[90rem] grid-cols-1 gap-10 px-5 pb-12 pt-5 md:min-h-[calc(94svh-5rem)] md:px-10 md:pb-16 lg:grid-cols-[0.40fr_0.60fr] lg:items-center lg:gap-10 lg:pt-0">
             <motion.div
               initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 24 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1.0, ease: [0.16, 1, 0.3, 1] }}
-              className="relative z-20 rounded-t-lg border border-[#151719] bg-[#effef3]/58 p-7 backdrop-blur-[2px] md:p-10 lg:min-h-[22rem] lg:rounded-br-none lg:rounded-tr-none lg:border-r-0 lg:p-12"
+              className="relative z-20 max-w-2xl"
             >
               <SectionKicker>{copy.profile}</SectionKicker>
-              <h1 className="mt-7 max-w-3xl text-balance text-[clamp(3.1rem,6.35vw,7.2rem)] font-light leading-[0.92] tracking-[-0.035em] md:leading-[0.9]">
+              <h1 className="mt-7 text-balance text-[clamp(3rem,6vw,6.6rem)] font-normal leading-[0.95] tracking-[-0.03em]">
                 {t.hero.title}
               </h1>
-            </motion.div>
-
-            <motion.figure
-              initial={{ opacity: 0, scale: 0.985 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.2, duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-              className="relative z-10 order-2 m-0 -mt-px min-h-[28rem] overflow-hidden rounded-b-lg border border-[#151719] bg-[#e7fbf7]/48 lg:order-none lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:-ml-px lg:mt-0 lg:min-h-[min(78svh,760px)] lg:rounded-l-none lg:rounded-r-lg"
-            >
-              <div
-                aria-hidden="true"
-                className="absolute inset-[-10%] bg-[radial-gradient(ellipse_at_58%_54%,rgba(71,190,221,0.22),rgba(134,213,201,0.12)_38%,rgba(234,254,239,0)_70%)] blur-2xl"
-              />
-              <div
-                aria-hidden="true"
-                className="absolute inset-0 overflow-hidden rounded-b-lg lg:rounded-l-none lg:rounded-r-lg"
-              >
-                <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.28),rgba(255,255,255,0)_42%),radial-gradient(ellipse_at_72%_58%,rgba(20,161,198,0.14),rgba(20,161,198,0)_52%)]" />
-                <div className="absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-[#eafeef]/72 to-transparent lg:hidden" />
-              </div>
-              <AIProteinConstruct className="absolute inset-0 z-10" />
-              <div
-                aria-hidden="true"
-                className="absolute bottom-8 right-8 hidden h-24 w-24 rounded-full border border-[#151719]/18 bg-white/12 backdrop-blur-sm lg:block"
-              />
-              <figcaption className="sr-only">
-                {t.dynamics.caption}
-              </figcaption>
-            </motion.figure>
-
-            <motion.div
-              initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 18 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.12, duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
-              className="relative z-20 order-3 -mt-px rounded-b-lg border border-[#151719] bg-[#f4fff7]/52 p-7 backdrop-blur-[2px] md:p-10 lg:order-none lg:col-start-1 lg:row-start-2 lg:min-h-[22rem] lg:rounded-bl-lg lg:rounded-br-none lg:rounded-tl-none lg:border-r-0 lg:p-12"
-            >
-              <p className="max-w-[31rem] text-pretty text-[1.02rem] leading-8 text-[#24312d] md:text-xl md:leading-9">
+              <p className="mt-8 max-w-[34rem] text-pretty text-[1.05rem] leading-[1.65] text-[#3a4541] md:text-[1.18rem] md:leading-[1.62]">
                 {t.hero.subtitle}
               </p>
-              <ul className="mt-7 flex max-w-2xl flex-wrap gap-2">
+              <ul className="mt-8 flex max-w-2xl flex-wrap gap-2">
                 {t.hero.proof.map((item) => (
                   <li
                     key={item}
-                    className="rounded-md border border-[#151719]/22 bg-[#effef3]/34 px-2.5 py-1.5 font-mono text-[0.68rem] uppercase tracking-[0.12em] text-[#24312d] backdrop-blur-sm"
+                    className="rounded-full border border-[#151719]/18 bg-white/40 px-3 py-1.5 font-mono text-[0.68rem] uppercase tracking-[0.12em] text-[#3a4541] backdrop-blur-sm"
                   >
                     {item}
                   </li>
                 ))}
               </ul>
-
-              <div className="mt-7 flex flex-col gap-3 sm:flex-row md:mt-8">
+              <div className="mt-9 flex flex-col gap-3 sm:flex-row">
                 <a
                   href="#works"
-                  className="inline-flex items-center justify-center gap-2 rounded-md bg-[#151719] px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#2a2f2c] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#151719]"
+                  className="inline-flex items-center justify-center gap-2 rounded-full bg-[#151719] px-6 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-[#2a2f2c] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#151719]"
                 >
                   {t.hero.ctaPrimary}
                   <ArrowUpRight className="h-4 w-4" />
                 </a>
                 <a
                   href="#contact"
-                  className="inline-flex items-center justify-center gap-2 rounded-md border border-[#151719]/25 bg-white/20 px-5 py-3 text-sm font-semibold text-[#151719] transition-colors hover:bg-white/55 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#151719]"
+                  className="inline-flex items-center justify-center gap-2 rounded-full border border-[#151719]/25 bg-white/30 px-6 py-3.5 text-sm font-semibold text-[#151719] transition-colors hover:bg-white/65 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#151719]"
                 >
                   {t.hero.ctaSecondary}
                   <Mail className="h-4 w-4" />
                 </a>
               </div>
             </motion.div>
+
+            <motion.figure
+              initial={{ opacity: 0, scale: 0.985 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2, duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+              className="relative z-10 m-0 aspect-[1.05/1] w-full min-h-[28rem] lg:aspect-auto lg:h-[min(78svh,720px)]"
+            >
+              <div
+                aria-hidden="true"
+                className="absolute inset-[-12%] bg-[radial-gradient(ellipse_at_56%_52%,rgba(240,168,155,0.22),rgba(218,41,28,0.06)_36%,rgba(245,238,225,0)_72%)] blur-3xl"
+              />
+              <AIProteinConstruct className="absolute inset-0 z-10" />
+              <figcaption className="sr-only">
+                {t.dynamics.caption}
+              </figcaption>
+            </motion.figure>
           </div>
         </section>
 

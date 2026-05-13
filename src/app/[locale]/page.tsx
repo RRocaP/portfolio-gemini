@@ -1,10 +1,9 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { motion, useReducedMotion } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import {
   ArrowUpRight,
   BadgeCheck,
@@ -25,8 +24,8 @@ import {
   type Locale,
   type Translation,
 } from "@/lib/i18n";
-
-const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
+import { AIProteinConstruct } from "@/components/ai-protein-construct";
+import { DiffusionCubeField } from "@/components/diffusion-cube-field";
 
 function OrcidIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
@@ -420,117 +419,87 @@ export default function PortfolioPage() {
         setMobileMenuOpen={setMobileMenuOpen}
       />
 
-      {mobileMenuOpen && (
-        <motion.nav
-          id="mobile-menu"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="mobile-menu-title"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="fixed inset-0 z-40 flex flex-col justify-center bg-[#f4f5f3] px-8 text-[#151719] md:hidden"
-        >
-          <h2 id="mobile-menu-title" className="sr-only">
-            {t.mobileMenu.title}
-          </h2>
-          <div className="space-y-6">
-            {navItems.map((item) => (
-              <a
-                key={item.href}
-                href={item.href}
-                onClick={() => setMobileMenuOpen(false)}
-                className="block text-[2.45rem] font-semibold leading-none tracking-[-0.02em] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#151719]"
-              >
-                {item.label}
-              </a>
-            ))}
-          </div>
-          <div className="mt-12 flex flex-wrap items-center gap-5">
-            <ProfileLinks />
-            <LanguageSwitcher locale={locale} />
-          </div>
-        </motion.nav>
-      )}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.nav
+            id="mobile-menu"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="mobile-menu-title"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-40 flex flex-col justify-center bg-[#f4f5f3] px-8 text-[#151719] md:hidden"
+          >
+            <h2 id="mobile-menu-title" className="sr-only">
+              {t.mobileMenu.title}
+            </h2>
+            <div className="space-y-6">
+              {navItems.map((item) => (
+                <a
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block text-[2.45rem] font-semibold leading-none tracking-[-0.02em] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#151719]"
+                >
+                  {item.label}
+                </a>
+              ))}
+            </div>
+            <div className="mt-12 flex flex-wrap items-center gap-5">
+              <ProfileLinks />
+              <LanguageSwitcher locale={locale} />
+            </div>
+          </motion.nav>
+        )}
+      </AnimatePresence>
 
       <main>
-        <section className="relative isolate min-h-[94svh] overflow-hidden bg-[#edf7ef] pt-16 text-[#151719] md:pt-20">
+        <section className="relative isolate min-h-[94svh] overflow-hidden bg-[#eafeef] pt-16 text-[#151719] md:pt-20">
           <div
             aria-hidden="true"
             className="absolute inset-0"
             style={{
               background:
-                "radial-gradient(64% 56% at 18% 24%, rgba(255,255,255,0.74), transparent 68%), radial-gradient(48% 44% at 80% 60%, rgba(122,100,180,0.13), transparent 72%), linear-gradient(180deg, rgba(255,255,255,0.44), rgba(237,247,239,0))",
+                "radial-gradient(70% 64% at 80% 54%, rgba(184,232,241,0.7), rgba(234,254,239,0.12) 62%, transparent 78%), radial-gradient(54% 42% at 12% 18%, rgba(255,255,255,0.84), transparent 70%), linear-gradient(180deg, rgba(234,254,239,0.96), rgba(231,248,252,0.88))",
             }}
           />
 
-          <div className="relative z-10 mx-auto grid min-h-[calc(94svh-4rem)] max-w-7xl gap-5 px-5 pb-9 pt-5 md:min-h-[calc(94svh-5rem)] md:gap-6 md:px-10 md:pb-14 lg:content-center lg:grid-cols-[0.95fr_1.05fr] lg:grid-rows-[auto_auto] lg:items-center lg:gap-x-12 lg:gap-y-7 lg:pt-0">
+          <div className="relative z-10 mx-auto grid min-h-[calc(94svh-4rem)] max-w-[90rem] grid-rows-[auto_auto_auto] px-5 pb-12 pt-5 md:min-h-[calc(94svh-5rem)] md:px-10 md:pb-16 lg:content-center lg:grid-cols-[0.47fr_0.53fr] lg:grid-rows-[1fr_1fr] lg:pt-0">
             <motion.div
               initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 24 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1.0, ease: [0.16, 1, 0.3, 1] }}
-              className="relative z-10 max-w-2xl"
+              className="relative z-20 rounded-t-lg border border-[#151719] bg-[#effef3]/58 p-7 backdrop-blur-[2px] md:p-10 lg:min-h-[22rem] lg:rounded-br-none lg:rounded-tr-none lg:border-r-0 lg:p-12"
             >
               <SectionKicker>{copy.profile}</SectionKicker>
-              <h1 className="mt-5 text-balance text-[clamp(2.78rem,5.25vw,5.85rem)] font-medium leading-[0.93] tracking-[-0.03em] md:leading-[0.92]">
+              <h1 className="mt-7 max-w-3xl text-balance text-[clamp(3.1rem,6.35vw,7.2rem)] font-light leading-[0.92] tracking-[-0.035em] md:leading-[0.9]">
                 {t.hero.title}
               </h1>
-              <p className="mt-5 max-w-xl text-pretty text-[1.05rem] leading-8 text-[#4f5a56] md:text-xl md:leading-9">
-                {t.hero.subtitle}
-              </p>
             </motion.div>
 
             <motion.figure
               initial={{ opacity: 0, scale: 0.985 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.2, duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-              className="relative z-0 order-2 m-0 -mx-4 aspect-[1.62/1] w-[calc(100%+2rem)] justify-self-center sm:mx-0 sm:w-full md:aspect-[1.38/1] lg:order-none lg:col-start-2 lg:row-span-2 lg:aspect-auto lg:min-h-[min(74svh,680px)] lg:max-w-none lg:justify-self-stretch lg:self-center"
+              className="relative z-10 order-2 m-0 -mt-px min-h-[28rem] overflow-hidden rounded-b-lg border border-[#151719] bg-[#e7fbf7]/48 lg:order-none lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:-ml-px lg:mt-0 lg:min-h-[min(78svh,760px)] lg:rounded-l-none lg:rounded-r-lg"
             >
               <div
                 aria-hidden="true"
-                className="absolute inset-[-18%_-12%_-16%_-10%] bg-[radial-gradient(ellipse_at_54%_48%,rgba(151,134,190,0.12),rgba(151,205,190,0.08)_36%,rgba(237,247,239,0)_72%)] blur-2xl"
+                className="absolute inset-[-10%] bg-[radial-gradient(ellipse_at_58%_54%,rgba(71,190,221,0.22),rgba(134,213,201,0.12)_38%,rgba(234,254,239,0)_70%)] blur-2xl"
               />
               <div
-                className="absolute inset-[-8%_-7%_-10%_-7%] overflow-hidden lg:inset-[-9%_-12%_-8%_-2%]"
-                style={{
-                  maskImage:
-                    "radial-gradient(ellipse 78% 78% at 52% 51%, #000 55%, rgba(0,0,0,0.72) 70%, transparent 100%)",
-                  WebkitMaskImage:
-                    "radial-gradient(ellipse 78% 78% at 52% 51%, #000 55%, rgba(0,0,0,0.72) 70%, transparent 100%)",
-                }}
+                aria-hidden="true"
+                className="absolute inset-0 overflow-hidden rounded-b-lg lg:rounded-l-none lg:rounded-r-lg"
               >
-                {shouldReduceMotion ? (
-                  <Image
-                    src={`${basePath}/video/protein-dynamics-poster.jpg`}
-                    alt=""
-                    aria-hidden="true"
-                    fill
-                    priority
-                    sizes="(min-width: 1024px) 45vw, 560px"
-                    className="object-cover object-center mix-blend-multiply"
-                  />
-                ) : (
-                  <video
-                    autoPlay
-                    muted
-                    loop
-                    playsInline
-                    preload="metadata"
-                    poster={`${basePath}/video/protein-dynamics-poster.jpg`}
-                    className="h-full w-full object-cover object-center opacity-[0.94] mix-blend-multiply saturate-[0.92] contrast-[1.04]"
-                    aria-hidden="true"
-                  >
-                    <source
-                      src={`${basePath}/video/protein-dynamics.mp4`}
-                      type="video/mp4"
-                    />
-                  </video>
-                )}
-                <div
-                  aria-hidden="true"
-                  className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_50%_50%,rgba(237,247,239,0)_38%,rgba(237,247,239,0.18)_66%,rgba(237,247,239,0.72)_100%),linear-gradient(90deg,rgba(237,247,239,0.34),rgba(237,247,239,0)_22%,rgba(237,247,239,0)_70%,rgba(237,247,239,0.46))]"
-                />
+                <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.28),rgba(255,255,255,0)_42%),radial-gradient(ellipse_at_72%_58%,rgba(20,161,198,0.14),rgba(20,161,198,0)_52%)]" />
+                <div className="absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-[#eafeef]/72 to-transparent lg:hidden" />
               </div>
+              <AIProteinConstruct className="absolute inset-0 z-10" />
+              <div
+                aria-hidden="true"
+                className="absolute bottom-8 right-8 hidden h-24 w-24 rounded-full border border-[#151719]/18 bg-white/12 backdrop-blur-sm lg:block"
+              />
               <figcaption className="sr-only">
                 {t.dynamics.caption}
               </figcaption>
@@ -540,13 +509,16 @@ export default function PortfolioPage() {
               initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 18 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.12, duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
-              className="relative z-10 order-3 lg:order-none lg:col-start-1 lg:row-start-2"
+              className="relative z-20 order-3 -mt-px rounded-b-lg border border-[#151719] bg-[#f4fff7]/52 p-7 backdrop-blur-[2px] md:p-10 lg:order-none lg:col-start-1 lg:row-start-2 lg:min-h-[22rem] lg:rounded-bl-lg lg:rounded-br-none lg:rounded-tl-none lg:border-r-0 lg:p-12"
             >
-              <ul className="flex max-w-2xl flex-wrap gap-2">
+              <p className="max-w-[31rem] text-pretty text-[1.02rem] leading-8 text-[#24312d] md:text-xl md:leading-9">
+                {t.hero.subtitle}
+              </p>
+              <ul className="mt-7 flex max-w-2xl flex-wrap gap-2">
                 {t.hero.proof.map((item) => (
                   <li
                     key={item}
-                    className="rounded-md border border-[#151719]/12 bg-white/50 px-2.5 py-1.5 font-mono text-[0.68rem] uppercase tracking-[0.12em] text-[#3f4a46] backdrop-blur-sm"
+                    className="rounded-md border border-[#151719]/22 bg-[#effef3]/34 px-2.5 py-1.5 font-mono text-[0.68rem] uppercase tracking-[0.12em] text-[#24312d] backdrop-blur-sm"
                   >
                     {item}
                   </li>
@@ -747,23 +719,7 @@ export default function PortfolioPage() {
             </h2>
           </div>
 
-          <motion.figure
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-80px" }}
-            variants={fadeUp}
-            className="relative m-0 mb-12 overflow-hidden md:mb-14"
-          >
-            <Image
-              src={`${basePath}/protein-fold.webp`}
-              alt=""
-              aria-hidden="true"
-              width={1536}
-              height={1024}
-              sizes="(min-width: 1280px) 1280px, 100vw"
-              className="h-auto w-full"
-            />
-          </motion.figure>
+          <DiffusionCubeField />
 
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {competencyMatrix.map(({ competency, description, Icon }) => (

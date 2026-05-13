@@ -15,29 +15,15 @@ type NodePoint = {
   delay: number;
 };
 
-/**
- * Palette tokens renamed-by-vibe but kept structurally identical to the
- * original component (tealDeep/tealMid/tealLine/pearl/ivory/coral/violet/shadow)
- * so every call site below works unchanged. The values are repainted onto
- * the warm-cream + oxblood register that matches the rest of the page.
- *  tealDeep → deep oxblood (used as backbone attenuation + line stroke)
- *  tealMid  → warm gold (primary residue/back tube)
- *  tealLine → warmer ink (contact-trace line)
- *  pearl    → soft cream (light residues)
- *  ivory    → warm ivory (helix highlight + pulse bullet)
- *  coral    → keep — already warm
- *  violet   → muted oxblood (was the only cool accent — re-tuned)
- *  shadow   → warm near-black (ground tone)
- */
 const palette = {
-  tealDeep: "#9a3328",
-  tealMid: "#c4956a",
-  tealLine: "#7a6e58",
-  pearl: "#f3ead7",
+  tealDeep: "#315f5d",
+  tealMid: "#74d8cf",
+  tealLine: "#2a8f98",
+  pearl: "#dffbf2",
   ivory: "#fff4de",
   coral: "#f0a89b",
-  violet: "#9a3328",
-  shadow: "#23201a",
+  violet: "#8a83d8",
+  shadow: "#203735",
 };
 
 const backboneCurves: Vec3[][] = [
@@ -277,18 +263,17 @@ function ResidueNode({
 
   useFrame(({ clock }) => {
     if (reduceMotion) return;
-    // Gentler, more meditative pulse (was 2.1 / 0.22 / 1.15 — read anxious)
-    const wave = (Math.sin(clock.elapsedTime * 1.6 + node.delay * 5.5) + 1) / 2;
+    const wave = (Math.sin(clock.elapsedTime * 2.1 + node.delay * 5.5) + 1) / 2;
     if (meshRef.current) {
-      meshRef.current.scale.setScalar(1 + wave * 0.16);
+      meshRef.current.scale.setScalar(1 + wave * 0.22);
     }
     if (haloRef.current) {
-      haloRef.current.scale.setScalar(1.25 + wave * 0.95);
+      haloRef.current.scale.setScalar(1.2 + wave * 1.15);
       const material = haloRef.current.material as THREE.MeshBasicMaterial;
-      material.opacity = 0.06 + wave * 0.20;
+      material.opacity = 0.08 + wave * 0.22;
     }
     if (materialRef.current) {
-      materialRef.current.emissiveIntensity = 0.22 + wave * 0.5;
+      materialRef.current.emissiveIntensity = 0.18 + wave * 0.55;
     }
   });
 
@@ -387,26 +372,22 @@ function ProteinScene({ reduceMotion }: { reduceMotion: boolean }) {
 
   return (
     <>
-      {/* Warm-dominant three-point rig + ONE cold-pearl back-rim for silhouette */}
-      <ambientLight intensity={1.05} color={palette.pearl} />
-      <directionalLight position={[3.2, 4.6, 5.2]} intensity={2.2} color="#fff7ea" />
-      <pointLight position={[-3.4, -2.6, 2.2]} intensity={1.8} color={palette.coral} />
-      <pointLight position={[2.8, 1.8, -1.4]} intensity={1.3} color={palette.tealMid} />
-      {/* Cold-pearl back-rim: only cool light, separates the protein silhouette from cream bg */}
-      <pointLight position={[0.6, 1.6, -3.8]} intensity={1.0} color="#b6c8d0" distance={12} decay={1.7} />
+      <ambientLight intensity={1.25} />
+      <directionalLight position={[3.2, 4.6, 5.2]} intensity={2.35} color="#fff7ea" />
+      <pointLight position={[-3.4, -2.6, 2.2]} intensity={2.1} color="#74d8cf" />
+      <pointLight position={[2.8, 1.8, -1.4]} intensity={1.6} color="#8a83d8" />
 
       <group ref={groupRef} scale={0.72} position={[0, -0.02, 0]}>
-        {/* Soft warm shroud — gives the structure an atmosphere on cream */}
         <mesh scale={[1.75, 1.4, 0.86]} rotation={[0.12, -0.2, 0.06]}>
           <sphereGeometry args={[1.08, 64, 32]} />
           <meshPhysicalMaterial
-            color={palette.pearl}
+            color="#bfeeea"
             roughness={0.72}
             transparent
-            opacity={0.08}
+            opacity={0.1}
             depthWrite={false}
-            emissive={palette.coral}
-            emissiveIntensity={0.10}
+            emissive="#74d8cf"
+            emissiveIntensity={0.12}
           />
         </mesh>
 
@@ -497,23 +478,23 @@ function FieldOverlay() {
           <path
             d="M54 0H0V54"
             fill="none"
-            stroke="rgba(35,32,26,0.07)"
+            stroke="rgba(21,23,25,0.082)"
             strokeWidth="0.85"
           />
-          <circle cx="0" cy="0" r="1.15" fill="rgba(154,51,40,0.14)" />
+          <circle cx="0" cy="0" r="1.15" fill="rgba(21,23,25,0.12)" />
         </pattern>
         <radialGradient id="proteinSceneGlow" cx="58%" cy="50%" r="62%">
-          <stop offset="0%" stopColor="#ffffff" stopOpacity="0.42" />
-          <stop offset="50%" stopColor="#f0c5b0" stopOpacity="0.14" />
-          <stop offset="100%" stopColor="#f4ede0" stopOpacity="0" />
+          <stop offset="0%" stopColor="#ffffff" stopOpacity="0.34" />
+          <stop offset="50%" stopColor="#bdeff0" stopOpacity="0.16" />
+          <stop offset="100%" stopColor="#eafeef" stopOpacity="0" />
         </radialGradient>
       </defs>
-      <rect width="1120" height="860" fill="url(#proteinSceneGrid)" opacity="0.5" />
+      <rect width="1120" height="860" fill="url(#proteinSceneGrid)" opacity="0.56" />
       <rect width="1120" height="860" fill="url(#proteinSceneGlow)" />
       <path
         d="M88 710 C236 624 361 734 520 690 C694 642 789 724 1018 592"
         fill="none"
-        stroke="rgba(154,51,40,0.16)"
+        stroke="rgba(21,23,25,0.13)"
         strokeWidth="1.1"
         strokeDasharray="4 12"
       />
@@ -529,7 +510,7 @@ export function AIProteinConstruct({ className = "" }: { className?: string }) {
       aria-hidden="true"
       className={`pointer-events-auto relative h-full min-h-[26rem] w-full overflow-hidden ${className}`}
     >
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_58%_50%,rgba(240,168,155,0.18),rgba(245,238,225,0)_60%),radial-gradient(ellipse_at_28%_25%,rgba(255,250,242,0.78),rgba(255,250,242,0)_54%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_58%_50%,rgba(116,216,207,0.3),rgba(234,254,239,0)_58%),radial-gradient(ellipse_at_28%_25%,rgba(255,255,255,0.82),rgba(255,255,255,0)_54%)]" />
       <FieldOverlay />
       <Canvas
         className="absolute inset-0"
@@ -539,11 +520,10 @@ export function AIProteinConstruct({ className = "" }: { className?: string }) {
       >
         <ProteinScene reduceMotion={shouldReduceMotion} />
         <EffectComposer multisampling={0}>
-          {/* Calmer bloom — threshold raised so cream tubes don't blow out, only emissive peaks glow */}
-          <Bloom intensity={0.42} luminanceThreshold={0.55} luminanceSmoothing={0.45} mipmapBlur />
+          <Bloom intensity={0.48} luminanceThreshold={0.36} luminanceSmoothing={0.42} mipmapBlur />
         </EffectComposer>
       </Canvas>
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_55%_52%,rgba(245,238,225,0)_44%,rgba(245,238,225,0.10)_72%,rgba(245,238,225,0.72)_100%),linear-gradient(90deg,rgba(245,238,225,0.46),rgba(245,238,225,0)_22%,rgba(245,238,225,0)_75%,rgba(245,238,225,0.32))]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_55%_52%,rgba(234,254,239,0)_43%,rgba(234,254,239,0.08)_70%,rgba(234,254,239,0.72)_100%),linear-gradient(90deg,rgba(234,254,239,0.52),rgba(234,254,239,0)_22%,rgba(234,254,239,0)_75%,rgba(234,254,239,0.36))]" />
     </div>
   );
 }

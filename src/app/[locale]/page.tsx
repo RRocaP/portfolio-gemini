@@ -193,11 +193,11 @@ function LanguageSwitcher({
   const inactive =
     tone === "light"
       ? "text-white/72 hover:text-white"
-      : "text-[#69736f] hover:text-[#151719]";
+      : "text-[#7a6e58] hover:text-[#23201a]";
   const active =
     tone === "light"
       ? "border-white/35 bg-white/12 text-white"
-      : "border-[#151719]/20 bg-[#151719] text-white";
+      : "border-[#23201a]/20 bg-[#23201a] text-white";
 
   return (
     <div className="flex items-center gap-1">
@@ -230,7 +230,7 @@ function ProfileLinks({
   const linkClass =
     tone === "light"
       ? "border-white/20 text-white/76 hover:border-white/45 hover:bg-white/10 hover:text-white focus-visible:outline-white"
-      : "border-[#151719]/15 text-[#3f4a46] hover:border-[#151719]/35 hover:bg-white hover:text-[#151719] focus-visible:outline-[#151719]";
+      : "border-[#23201a]/15 text-[#5a4c38] hover:border-[#23201a]/35 hover:bg-white hover:text-[#23201a] focus-visible:outline-[#23201a]";
 
   return (
     <div className={`flex items-center gap-2 ${className}`}>
@@ -303,8 +303,8 @@ function Header({
     <header
       className={`fixed inset-x-0 top-0 z-50 border-b transition-colors duration-300 ${
         scrolled || mobileMenuOpen
-          ? "border-[#151719]/10 bg-[#f4f5f3]/92 text-[#151719] backdrop-blur-xl"
-          : "border-transparent bg-transparent text-[#151719]"
+          ? "border-[#23201a]/10 bg-[#f4ede0]/92 text-[#23201a] backdrop-blur-xl"
+          : "border-transparent bg-transparent text-[#23201a]"
       }`}
     >
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-5 md:px-10">
@@ -320,7 +320,7 @@ function Header({
             <a
               key={item.href}
               href={item.href}
-              className="text-sm font-medium text-[#4f5a56] transition-colors hover:text-[#151719] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current"
+              className="text-sm font-medium text-[#6d5e47] transition-colors hover:text-[#23201a] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current"
             >
               {item.label}
             </a>
@@ -330,7 +330,7 @@ function Header({
         </nav>
 
         <button
-          className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-[#151719]/15 text-[#151719] transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current md:hidden"
+          className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-[#23201a]/15 text-[#23201a] transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current md:hidden"
           onClick={() => setMobileMenuOpen((open) => !open)}
           aria-label={mobileMenuOpen ? t.mobileMenu.close : t.mobileMenu.open}
           aria-expanded={mobileMenuOpen}
@@ -403,10 +403,10 @@ export default function PortfolioPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#f4f5f3] text-[#151719] selection:bg-[#a9cfc8] selection:text-[#151719]">
+    <div className="min-h-screen bg-[#f4ede0] text-[#23201a] selection:bg-[#dcc9a5] selection:text-[#23201a]">
       <a
         href="#works"
-        className="sr-only focus:not-sr-only focus:fixed focus:left-1/2 focus:top-4 focus:z-[70] focus:-translate-x-1/2 focus:rounded-md focus:bg-white focus:px-5 focus:py-3 focus:text-sm focus:font-semibold focus:text-[#151719]"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-1/2 focus:top-4 focus:z-[70] focus:-translate-x-1/2 focus:rounded-md focus:bg-white focus:px-5 focus:py-3 focus:text-sm focus:font-semibold focus:text-[#23201a]"
       >
         {t.skipLink}
       </a>
@@ -429,7 +429,7 @@ export default function PortfolioPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-40 flex flex-col justify-center bg-[#f4f5f3] px-8 text-[#151719] md:hidden"
+            className="fixed inset-0 z-40 flex flex-col justify-center bg-[#f4ede0] px-8 text-[#23201a] md:hidden"
           >
             <h2 id="mobile-menu-title" className="sr-only">
               {t.mobileMenu.title}
@@ -440,7 +440,7 @@ export default function PortfolioPage() {
                   key={item.href}
                   href={item.href}
                   onClick={() => setMobileMenuOpen(false)}
-                  className="block text-[2.45rem] font-semibold leading-none tracking-[-0.02em] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#151719]"
+                  className="block text-[2.45rem] font-semibold leading-none tracking-[-0.02em] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#23201a]"
                 >
                   {item.label}
                 </a>
@@ -455,7 +455,7 @@ export default function PortfolioPage() {
       </AnimatePresence>
 
       <main>
-        <section className="relative isolate min-h-[94svh] overflow-hidden bg-[#f5eee1] pt-16 text-[#151719] md:pt-20">
+        <section className="relative isolate min-h-[94svh] overflow-hidden bg-[#f5eee1] pt-16 text-[#23201a] md:pt-20">
           <div
             aria-hidden="true"
             className="absolute inset-0"
@@ -476,14 +476,14 @@ export default function PortfolioPage() {
               <h1 className="mt-7 text-balance text-[clamp(3rem,6vw,6.6rem)] font-normal leading-[0.95] tracking-[-0.03em]">
                 {t.hero.title}
               </h1>
-              <p className="mt-8 max-w-[34rem] text-pretty text-[1.05rem] leading-[1.65] text-[#3a4541] md:text-[1.18rem] md:leading-[1.62]">
+              <p className="mt-8 max-w-[34rem] text-pretty text-[1.05rem] leading-[1.65] text-[#5a4c38] md:text-[1.18rem] md:leading-[1.62]">
                 {t.hero.subtitle}
               </p>
               <ul className="mt-8 flex max-w-2xl flex-wrap gap-2">
                 {t.hero.proof.map((item) => (
                   <li
                     key={item}
-                    className="rounded-full border border-[#151719]/18 bg-white/40 px-3 py-1.5 font-mono text-[0.68rem] uppercase tracking-[0.12em] text-[#3a4541] backdrop-blur-sm"
+                    className="rounded-full border border-[#23201a]/18 bg-white/40 px-3 py-1.5 font-mono text-[0.68rem] uppercase tracking-[0.12em] text-[#5a4c38] backdrop-blur-sm"
                   >
                     {item}
                   </li>
@@ -492,14 +492,14 @@ export default function PortfolioPage() {
               <div className="mt-9 flex flex-col gap-3 sm:flex-row">
                 <a
                   href="#works"
-                  className="inline-flex items-center justify-center gap-2 rounded-full bg-[#151719] px-6 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-[#2a2f2c] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#151719]"
+                  className="inline-flex items-center justify-center gap-2 rounded-full bg-[#23201a] px-6 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-[#3a342a] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#23201a]"
                 >
                   {t.hero.ctaPrimary}
                   <ArrowUpRight className="h-4 w-4" />
                 </a>
                 <a
                   href="#contact"
-                  className="inline-flex items-center justify-center gap-2 rounded-full border border-[#151719]/25 bg-white/30 px-6 py-3.5 text-sm font-semibold text-[#151719] transition-colors hover:bg-white/65 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#151719]"
+                  className="inline-flex items-center justify-center gap-2 rounded-full border border-[#23201a]/25 bg-white/30 px-6 py-3.5 text-sm font-semibold text-[#23201a] transition-colors hover:bg-white/65 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#23201a]"
                 >
                   {t.hero.ctaSecondary}
                   <Mail className="h-4 w-4" />
@@ -525,20 +525,29 @@ export default function PortfolioPage() {
           </div>
         </section>
 
-        <section aria-label={copy.impact} className="border-b border-[#d6dcda] bg-[#e8eeeb]">
-          <div className="mx-auto grid max-w-7xl divide-y divide-[#cbd4d1] px-5 md:grid-cols-4 md:divide-x md:divide-y-0 md:px-10">
+        {/* Hairline rule separator — replaces the cool-grey stripe background */}
+        <div aria-hidden="true" className="mx-auto max-w-7xl px-5 md:px-10">
+          <div className="h-px w-full bg-[rgba(154,51,40,0.18)]" />
+        </div>
+
+        <section aria-label={copy.impact}>
+          <div className="mx-auto grid max-w-7xl divide-y divide-[rgba(35,32,26,0.10)] px-5 md:grid-cols-4 md:divide-x md:divide-y-0 md:px-10">
             {t.about.stats.map((stat) => (
-              <div key={stat.label} className="py-6 md:px-7 md:py-7">
-                <p className="font-mono text-xs uppercase text-[#69736f]">
+              <div key={stat.label} className="py-7 md:px-7 md:py-9">
+                <p className="font-mono text-xs uppercase tracking-[0.12em] text-[#7a6e58]">
                   {stat.label}
                 </p>
-                <p className="mt-2 text-4xl font-semibold text-[#151719]">
+                <p className="mt-2 text-4xl font-semibold text-[#23201a]">
                   {stat.value}
                 </p>
               </div>
             ))}
           </div>
         </section>
+
+        <div aria-hidden="true" className="mx-auto max-w-7xl px-5 md:px-10">
+          <div className="h-px w-full bg-[rgba(154,51,40,0.18)]" />
+        </div>
 
         <section className="mx-auto max-w-7xl px-5 py-[4.5rem] md:px-10 md:py-24">
           <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
@@ -552,10 +561,10 @@ export default function PortfolioPage() {
               <h2 className="mt-4 max-w-2xl text-balance text-[2.5rem] font-medium leading-[0.98] tracking-[-0.025em] md:text-[3.5rem]">
                 {t.timeline[0].role}
               </h2>
-              <p className="mt-3 text-lg font-medium text-[#3f4a46]">
+              <p className="mt-3 text-lg font-medium text-[#5a4c38]">
                 {t.timeline[0].company}
               </p>
-              <p className="mt-5 max-w-2xl text-pretty text-base leading-7 text-[#4f5a56]">
+              <p className="mt-5 max-w-2xl text-pretty text-base leading-7 text-[#6d5e47]">
                 {t.timeline[0].desc}
               </p>
             </motion.div>
@@ -570,7 +579,7 @@ export default function PortfolioPage() {
               {competencyMatrix.slice(0, 4).map(({ competency, Icon }) => (
                 <div
                   key={competency}
-                  className="min-h-32 rounded-lg border border-[#d5dcda] bg-[#fbfcfa] p-6 shadow-[0_18px_55px_rgba(21,23,25,0.035)] transition-colors hover:border-[#b8c4c0] hover:bg-white"
+                  className="min-h-32 rounded-lg border border-[#d8cfba] bg-[#fbf6ec] p-6 shadow-[0_18px_55px_rgba(21,23,25,0.035)] transition-colors hover:border-[#bcb09a] hover:bg-white"
                 >
                   <Icon className="h-5 w-5 text-[#356b68]" />
                   <p className="mt-6 max-w-[13rem] text-lg font-semibold leading-snug">
@@ -585,7 +594,7 @@ export default function PortfolioPage() {
         <section
           id="works"
           aria-labelledby="works-heading"
-          className="scroll-mt-24 border-y border-[#d6dcda] bg-white"
+          className="scroll-mt-24 bg-[#f6efe3]"
         >
           <div className="mx-auto max-w-7xl px-5 py-[4.5rem] md:px-10 md:py-24">
             <div className="mb-14 grid gap-6 lg:grid-cols-[0.9fr_1.1fr] lg:items-end">
@@ -598,7 +607,7 @@ export default function PortfolioPage() {
                   {t.sections.works}
                 </h2>
               </div>
-              <p className="max-w-2xl text-pretty text-base leading-7 text-[#4f5a56]">
+              <p className="max-w-2xl text-pretty text-base leading-7 text-[#6d5e47]">
                 {t.meta.description}
               </p>
             </div>
@@ -623,25 +632,25 @@ export default function PortfolioPage() {
                         ↘
                       </span>
                     </p>
-                    <p className="mt-3 font-mono text-xs text-[#69736f]">
+                    <p className="mt-3 font-mono text-xs text-[#7a6e58]">
                       {work.year}
                     </p>
                   </div>
                   <div>
-                    <p className="font-mono text-xs uppercase text-[#69736f]">
+                    <p className="font-mono text-xs uppercase text-[#7a6e58]">
                       {work.venue}
                     </p>
                     <h3 className="mt-3 max-w-3xl text-3xl font-semibold leading-tight">
                       {work.title}
                     </h3>
-                    <p className="mt-4 max-w-3xl text-pretty text-base leading-7 text-[#4f5a56]">
+                    <p className="mt-4 max-w-3xl text-pretty text-base leading-7 text-[#6d5e47]">
                       {work.blurb}
                     </p>
                     <div className="mt-5 flex flex-wrap gap-2">
                       {work.tags.map((tag) => (
                         <span
                           key={tag}
-                          className="rounded-md border border-[#d5dcda] bg-[#f4f5f3] px-2.5 py-1 text-xs text-[#3f4a46]"
+                          className="rounded-md border border-[#d8cfba] bg-[#f4ede0] px-2.5 py-1 text-xs text-[#5a4c38]"
                         >
                           {tag}
                         </span>
@@ -653,7 +662,7 @@ export default function PortfolioPage() {
                       href={work.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 rounded-md border border-[#151719]/15 px-4 py-2 text-sm font-semibold transition-colors hover:border-[#151719]/35 hover:bg-[#151719] hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#151719]"
+                      className="inline-flex items-center gap-2 rounded-md border border-[#23201a]/15 px-4 py-2 text-sm font-semibold transition-colors hover:border-[#23201a]/35 hover:bg-[#23201a] hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#23201a]"
                     >
                       {copy.read}
                       <ArrowUpRight className="h-4 w-4" />
@@ -670,15 +679,15 @@ export default function PortfolioPage() {
                   href={work.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group flex min-h-[18rem] flex-col rounded-lg border border-[#d5dcda] bg-[#f8faf7] p-5 shadow-[0_18px_55px_rgba(21,23,25,0.035)] transition-colors hover:border-[#151719]/35 hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#151719]"
+                  className="group flex min-h-[18rem] flex-col rounded-lg border border-[#d8cfba] bg-[#fcf8ef] p-5 shadow-[0_18px_55px_rgba(21,23,25,0.035)] transition-colors hover:border-[#23201a]/35 hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#23201a]"
                 >
-                  <p className="font-mono text-xs text-[#69736f]">
+                  <p className="font-mono text-xs text-[#7a6e58]">
                     {work.year} / {work.venue}
                   </p>
                   <h3 className="mt-4 text-xl font-semibold leading-snug">
                     {work.title}
                   </h3>
-                  <p className="mt-3 text-sm leading-6 text-[#4f5a56]">
+                  <p className="mt-3 text-sm leading-6 text-[#6d5e47]">
                     {work.blurb}
                   </p>
                   <span className="mt-auto inline-flex items-center gap-2 pt-6 text-sm font-semibold text-[#356b68]">
@@ -705,11 +714,11 @@ export default function PortfolioPage() {
             {competencyMatrix.map(({ competency, description, Icon }) => (
               <div
                 key={competency}
-                className="rounded-lg border border-[#d5dcda] bg-[#fbfcfa] p-6 shadow-[0_18px_55px_rgba(21,23,25,0.035)] transition-colors hover:border-[#b8c4c0] hover:bg-white"
+                className="rounded-lg border border-[#d8cfba] bg-[#fbf6ec] p-6 shadow-[0_18px_55px_rgba(21,23,25,0.035)] transition-colors hover:border-[#bcb09a] hover:bg-white"
               >
                 <Icon className="h-5 w-5 text-[#356b68]" />
                 <h3 className="mt-5 text-lg font-semibold">{competency}</h3>
-                <p className="mt-3 text-sm leading-6 text-[#4f5a56]">
+                <p className="mt-3 text-sm leading-6 text-[#6d5e47]">
                   {description}
                 </p>
               </div>
@@ -720,7 +729,7 @@ export default function PortfolioPage() {
         <section
           id="about"
           aria-labelledby="about-heading"
-          className="scroll-mt-24 border-y border-[#d6dcda] bg-[#e8eeeb]"
+          className="scroll-mt-24"
         >
           <div className="mx-auto grid max-w-7xl gap-12 px-5 py-[4.5rem] md:px-10 md:py-24 lg:grid-cols-[0.82fr_1.18fr]">
             <div>
@@ -731,19 +740,19 @@ export default function PortfolioPage() {
               >
                 {t.sections.about}
               </h2>
-              <p className="mt-5 max-w-xl text-pretty text-base leading-7 text-[#4f5a56]">
+              <p className="mt-5 max-w-xl text-pretty text-base leading-7 text-[#6d5e47]">
                 {t.sections.aboutSubhead}
               </p>
             </div>
 
             <div>
-              <div className="space-y-6 text-base leading-7 text-[#3f4a46]">
+              <div className="space-y-6 text-base leading-7 text-[#5a4c38]">
                 {t.about.bio.map((paragraph) => (
                   <p key={paragraph}>{paragraph}</p>
                 ))}
               </div>
 
-              <ol className="mt-12 divide-y divide-[#cbd4d1] border-y border-[#cbd4d1]">
+              <ol className="mt-12 divide-y divide-[#c9bfa8] border-y border-[#c9bfa8]">
                 {t.timeline.map((item) => (
                   <li key={`${item.year}-${item.role}`} className="grid gap-4 py-6 md:grid-cols-[0.22fr_1fr]">
                     <p className="font-mono text-sm text-[#356b68]">
@@ -751,10 +760,10 @@ export default function PortfolioPage() {
                     </p>
                     <div>
                       <h3 className="text-xl font-semibold">{item.role}</h3>
-                      <p className="mt-1 font-medium text-[#4f5a56]">
+                      <p className="mt-1 font-medium text-[#6d5e47]">
                         {item.company}
                       </p>
-                      <p className="mt-3 text-sm leading-6 text-[#4f5a56]">
+                      <p className="mt-3 text-sm leading-6 text-[#6d5e47]">
                         {item.desc}
                       </p>
                     </div>
@@ -788,7 +797,7 @@ export default function PortfolioPage() {
               <div className="flex flex-col items-start gap-4 lg:items-end">
                 <a
                   href={`mailto:${t.contact.emailLabel}`}
-                  className="inline-flex items-center gap-2 rounded-md bg-white px-5 py-3 text-sm font-semibold text-[#151719] transition-colors hover:bg-[#e5ece8] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                  className="inline-flex items-center gap-2 rounded-md bg-white px-5 py-3 text-sm font-semibold text-[#23201a] transition-colors hover:bg-[#e6dfd0] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                 >
                   {copy.contactButton}
                   <ArrowUpRight className="h-4 w-4" />

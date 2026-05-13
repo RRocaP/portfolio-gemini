@@ -125,7 +125,7 @@
     font-optical-sizing: auto;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
-    background-color: #f4f5f3;
+    background-color: #f4ede0;
   }
   body {
     @apply text-foreground bg-transparent;

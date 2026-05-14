@@ -24,7 +24,7 @@ import {
   type Locale,
   type Translation,
 } from "@/lib/i18n";
-import { MLProteinNetwork } from "@/components/ml-protein-network";
+import WebGLBackground from "@/components/WebGLBackground";
 import { DiffusionCubeField } from "@/components/diffusion-cube-field";
 
 function OrcidIcon(props: React.SVGProps<SVGSVGElement>) {
@@ -517,7 +517,9 @@ export default function PortfolioPage() {
                 aria-hidden="true"
                 className="absolute inset-[-12%] bg-[radial-gradient(ellipse_at_56%_52%,rgba(240,168,155,0.22),rgba(218,41,28,0.06)_36%,rgba(245,238,225,0)_72%)] blur-3xl"
               />
-              <MLProteinNetwork className="absolute inset-0 z-10" />
+              <div className="absolute inset-0 z-10 overflow-hidden rounded-2xl">
+                <WebGLBackground contained prefersReducedMotion={Boolean(shouldReduceMotion)} />
+              </div>
               <figcaption className="sr-only">
                 {t.dynamics.caption}
               </figcaption>

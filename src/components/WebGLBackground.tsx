@@ -395,9 +395,13 @@ export function WebGLBackgroundFallback() {
 export default function WebGLBackground({
   prefersReducedMotion = false,
   className,
+  contained = false,
 }: {
   prefersReducedMotion?: boolean;
   className?: string;
+  /** When true, render as `absolute inset-0` inside a positioned parent
+   *  instead of the default fullscreen `fixed inset-0 -z-10` background. */
+  contained?: boolean;
 }) {
   const { nx, ny } = useMousePosition();
 
@@ -405,9 +409,13 @@ export default function WebGLBackground({
     state.gl.setClearColor(new THREE.Color("#000000"), 1);
   }, []);
 
+  const positioning = contained
+    ? "absolute inset-0"
+    : "fixed inset-0 -z-10";
+
   return (
     <div
-      className={`fixed inset-0 -z-10 pointer-events-none ${className ?? ""}`}
+      className={`${positioning} pointer-events-none ${className ?? ""}`}
       style={{ backgroundColor: "#000000" }}
     >
       <Canvas

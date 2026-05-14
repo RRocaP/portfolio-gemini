@@ -24,8 +24,7 @@ import {
   type Locale,
   type Translation,
 } from "@/lib/i18n";
-import HeroDiffusion from "@/components/HeroDiffusion";
-import { DiffusionCubeField } from "@/components/diffusion-cube-field";
+import InteractiveProtein from "@/components/InteractiveProtein";
 
 function OrcidIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
@@ -518,7 +517,7 @@ export default function PortfolioPage() {
                 className="absolute inset-[-12%] bg-[radial-gradient(ellipse_at_56%_52%,rgba(240,168,155,0.22),rgba(218,41,28,0.06)_36%,rgba(245,238,225,0)_72%)] blur-3xl"
               />
               <div className="absolute inset-0 z-10 overflow-hidden rounded-2xl">
-                <HeroDiffusion prefersReducedMotion={Boolean(shouldReduceMotion)} />
+                <InteractiveProtein />
               </div>
               <figcaption className="sr-only">
                 {t.dynamics.caption}
@@ -705,12 +704,7 @@ export default function PortfolioPage() {
         <section className="mx-auto max-w-7xl px-5 py-[4.5rem] md:px-10 md:py-24">
           <div className="mb-12 max-w-3xl">
             <SectionKicker index="03">{copy.researchFocus}</SectionKicker>
-            <h2 className="mt-4 text-balance text-[2.5rem] font-medium leading-[0.98] tracking-[-0.025em] md:text-[3.5rem]">
-              {t.about.heading}
-            </h2>
           </div>
-
-          <DiffusionCubeField />
 
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {competencyMatrix.map(({ competency, description, Icon }) => (

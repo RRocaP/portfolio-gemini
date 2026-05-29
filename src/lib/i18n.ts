@@ -89,9 +89,9 @@ const en: Translation = {
     ctaSecondary: "Contact",
     proof: [
       "Research Officer, CMRI Sydney",
-      "20+ publications",
-      "300+ citations",
-      "2 patents",
+      "Computational design",
+      "Wet-lab validation",
+      "Gene therapy & antimicrobials",
     ],
   },
   sections: {
@@ -254,9 +254,9 @@ const es: Translation = {
     ctaSecondary: "Contacto",
     proof: [
       "Investigador, CMRI Sídney",
-      "20+ publicaciones",
-      "300+ citas",
-      "2 patentes",
+      "Diseño computacional",
+      "Validación experimental",
+      "Terapia génica y antimicrobianos",
     ],
   },
   sections: {
@@ -419,9 +419,9 @@ const ca: Translation = {
     ctaSecondary: "Contacte",
     proof: [
       "Investigador, CMRI Sydney",
-      "20+ publicacions",
-      "300+ citacions",
-      "2 patents",
+      "Disseny computacional",
+      "Validació experimental",
+      "Teràpia gènica i antimicrobians",
     ],
   },
   sections: {

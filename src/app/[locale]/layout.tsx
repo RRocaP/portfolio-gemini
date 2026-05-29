@@ -32,9 +32,8 @@ const jetbrainsMono = JetBrains_Mono({
   display: "swap",
 });
 
-const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 const siteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL ?? `https://rrocap.github.io${basePath}`;
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.rrocap.com";
 
 export async function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
@@ -61,14 +60,21 @@ export async function generateMetadata({
       languages: { ...languages, "x-default": "/en" },
     },
     openGraph: {
+      // Re-declare image/type/siteName here: Next replaces (not deep-merges) the
+      // parent layout's openGraph object when a child defines its own.
+      type: "website",
+      siteName: "Ramon Roca Pinilla",
       title: t.meta.title,
       description: t.meta.description,
       locale,
       url: `/${locale}`,
+      images: [{ url: "/poster.jpg", width: 1200, height: 630, alt: t.meta.title }],
     },
     twitter: {
+      card: "summary_large_image",
       title: t.meta.title,
       description: t.meta.description,
+      images: ["/poster.jpg"],
     },
   };
 }

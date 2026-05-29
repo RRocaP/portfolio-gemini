@@ -1,9 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
-const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 const siteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL ?? `https://rrocap.github.io${basePath}`;
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.rrocap.com";
 
 const title = "Ramon Roca Pinilla — Biomedical Engineer";
 const description =

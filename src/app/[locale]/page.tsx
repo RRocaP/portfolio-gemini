@@ -24,7 +24,27 @@ import {
   type Locale,
   type Translation,
 } from "@/lib/i18n";
-import InteractiveProtein from "@/components/InteractiveProtein";
+import dynamic from "next/dynamic";
+
+const heroPosterSrc = "/protein-fold.webp";
+
+function HeroPoster() {
+  return (
+    <img
+      src={heroPosterSrc}
+      alt=""
+      aria-hidden="true"
+      className="h-full w-full object-cover"
+    />
+  );
+}
+
+// Defer the ~600KB three.js bundle off the critical path; the poster paints
+// instantly and fills the same container (zero CLS).
+const InteractiveProtein = dynamic(
+  () => import("@/components/InteractiveProtein"),
+  { ssr: false, loading: () => <HeroPoster /> },
+);
 
 function OrcidIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
@@ -192,7 +212,7 @@ function LanguageSwitcher({
   const inactive =
     tone === "light"
       ? "text-white/72 hover:text-white"
-      : "text-[#7a6e58] hover:text-[#23201a]";
+      : "text-[#6b5d45] hover:text-[#23201a]";
   const active =
     tone === "light"
       ? "border-white/35 bg-white/12 text-white"
@@ -351,6 +371,13 @@ export default function PortfolioPage() {
 
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  // Defer the client-only hero choice until after mount so the server and the
+  // first client render agree (both show the poster), avoiding a hydration mismatch.
+  const [mounted, setMounted] = useState(false);
+
+  // Single one-time mount flag — the intentional extra render is the point here.
+  // eslint-disable-next-line react-hooks/set-state-in-effect
+  useEffect(() => setMounted(true), []);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 28);
@@ -391,7 +418,7 @@ export default function PortfolioPage() {
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.6, ease: "easeOut" as const },
+      transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] as const },
     },
   };
 
@@ -472,7 +499,7 @@ export default function PortfolioPage() {
               className="relative z-20 max-w-2xl"
             >
               <SectionKicker>{copy.profile}</SectionKicker>
-              <h1 className="mt-7 text-balance text-[clamp(3rem,6vw,6.6rem)] font-normal leading-[0.95] tracking-[-0.03em]">
+              <h1 className="mt-7 text-balance font-display text-[clamp(3rem,6vw,6.6rem)] font-normal leading-[0.95] tracking-[-0.02em]">
                 {t.hero.title}
               </h1>
               <p className="mt-8 max-w-[34rem] text-pretty text-[1.05rem] leading-[1.65] text-[#5a4c38] md:text-[1.18rem] md:leading-[1.62]">
@@ -517,7 +544,7 @@ export default function PortfolioPage() {
                 className="absolute inset-[-12%] bg-[radial-gradient(ellipse_at_56%_52%,rgba(240,168,155,0.22),rgba(218,41,28,0.06)_36%,rgba(245,238,225,0)_72%)] blur-3xl"
               />
               <div className="absolute inset-0 z-10 overflow-hidden rounded-2xl">
-                <InteractiveProtein />
+                {mounted && shouldReduceMotion === false ? <InteractiveProtein /> : <HeroPoster />}
               </div>
               <figcaption className="sr-only">
                 {t.dynamics.caption}
@@ -535,7 +562,7 @@ export default function PortfolioPage() {
           <div className="mx-auto grid max-w-7xl divide-y divide-[rgba(35,32,26,0.10)] px-5 md:grid-cols-4 md:divide-x md:divide-y-0 md:px-10">
             {t.about.stats.map((stat) => (
               <div key={stat.label} className="py-7 md:px-7 md:py-9">
-                <p className="font-mono text-xs uppercase tracking-[0.12em] text-[#7a6e58]">
+                <p className="font-mono text-xs uppercase tracking-[0.12em] text-[#6b5d45]">
                   {stat.label}
                 </p>
                 <p className="mt-2 text-4xl font-semibold text-[#23201a]">
@@ -559,7 +586,7 @@ export default function PortfolioPage() {
               variants={fadeUp}
             >
               <SectionKicker index="01">{copy.current}</SectionKicker>
-              <h2 className="mt-4 max-w-2xl text-balance text-[2.5rem] font-medium leading-[0.98] tracking-[-0.025em] md:text-[3.5rem]">
+              <h2 className="mt-4 max-w-2xl text-balance text-[2.5rem] font-display font-normal leading-[0.98] tracking-[-0.01em] md:text-[3.5rem]">
                 {t.timeline[0].role}
               </h2>
               <p className="mt-3 text-lg font-medium text-[#5a4c38]">
@@ -603,7 +630,7 @@ export default function PortfolioPage() {
                 <SectionKicker index="02">{copy.selectedResearch}</SectionKicker>
                 <h2
                   id="works-heading"
-                  className="mt-4 max-w-3xl text-balance text-[2.5rem] font-medium leading-[0.98] tracking-[-0.025em] md:text-[3.5rem]"
+                  className="mt-4 max-w-3xl text-balance text-[2.5rem] font-display font-normal leading-[0.98] tracking-[-0.01em] md:text-[3.5rem]"
                 >
                   {t.sections.works}
                 </h2>
@@ -633,12 +660,12 @@ export default function PortfolioPage() {
                         ↘
                       </span>
                     </p>
-                    <p className="mt-3 font-mono text-xs text-[#7a6e58]">
+                    <p className="mt-3 font-mono text-xs text-[#6b5d45]">
                       {work.year}
                     </p>
                   </div>
                   <div>
-                    <p className="font-mono text-xs uppercase text-[#7a6e58]">
+                    <p className="font-mono text-xs uppercase text-[#6b5d45]">
                       {work.venue}
                     </p>
                     <h3 className="mt-3 max-w-3xl text-3xl font-semibold leading-tight">
@@ -682,7 +709,7 @@ export default function PortfolioPage() {
                   rel="noopener noreferrer"
                   className="group flex min-h-[18rem] flex-col rounded-lg border border-[#d8cfba] bg-[#fcf8ef] p-5 shadow-[0_18px_55px_rgba(21,23,25,0.035)] transition-colors hover:border-[#23201a]/35 hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#23201a]"
                 >
-                  <p className="font-mono text-xs text-[#7a6e58]">
+                  <p className="font-mono text-xs text-[#6b5d45]">
                     {work.year} / {work.venue}
                   </p>
                   <h3 className="mt-4 text-xl font-semibold leading-snug">
@@ -732,7 +759,7 @@ export default function PortfolioPage() {
               <SectionKicker index="04">{copy.experience}</SectionKicker>
               <h2
                 id="about-heading"
-                className="mt-4 text-balance text-[2.5rem] font-medium leading-[0.98] tracking-[-0.025em] md:text-[3.5rem]"
+                className="mt-4 text-balance text-[2.5rem] font-display font-normal leading-[0.98] tracking-[-0.01em] md:text-[3.5rem]"
               >
                 {t.sections.about}
               </h2>
@@ -781,7 +808,7 @@ export default function PortfolioPage() {
                 <SectionKicker dark>{copy.contactCta}</SectionKicker>
                 <h2
                   id="contact-heading"
-                  className="mt-5 max-w-4xl text-balance text-[2.75rem] font-medium leading-[0.98] tracking-[-0.025em] md:text-[4rem]"
+                  className="mt-5 max-w-4xl text-balance text-[2.75rem] font-display font-normal leading-[0.98] tracking-[-0.01em] md:text-[4rem]"
                 >
                   {t.contact.heading}
                 </h2>

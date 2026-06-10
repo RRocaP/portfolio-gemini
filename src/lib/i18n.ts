@@ -82,7 +82,7 @@ const en: Translation = {
       "Biomedical Engineer | Protein Engineering | Antimicrobial Discovery | Gene Therapy",
     title: "Protein engineering from AI design to preclinical validation.",
     subtitle:
-      "Biomedical engineer combining computational protein design, wet-lab validation, and translational models across antimicrobial discovery and gene therapy.",
+      "Biomedical engineer working across computational protein design, wet-lab validation, and translational models in antimicrobial discovery and gene therapy.",
     supportingLine: "Protein language models | AAV capsids | antimicrobial peptides | mouse models",
     northStar: "Research Officer at Children's Medical Research Institute, Sydney.",
     ctaPrimary: "View research",
@@ -98,7 +98,7 @@ const en: Translation = {
     works: "Selected research",
     about: "Experience and evidence",
     aboutSubhead:
-      "Three countries, three labs, and a consistent focus on turning sequence-level ideas into experimental proof.",
+      "Three countries, three labs, one focus: turning sequence-level ideas into experimental proof.",
   },
   works: [
     {
@@ -189,7 +189,7 @@ const en: Translation = {
     heading: "Finding the therapeutic signal in a sea of biological noise.",
     bio: [
       "I trained in Biotechnology at UAB Barcelona, took a Master's in Biomedical Engineering at UC Irvine, then returned to UAB for a PhD where we designed antimicrobial proteins end-to-end — from sequence design through recombinant production and functional assays. That stage produced two patents and four first-author papers.",
-      "At CMRI Sydney we built a platform to analyse millions of sequences and surface hundreds — sometimes thousands — of new antimicrobial peptides. With protein language models and recent advances in AI, we tested those predictions in the lab and in preclinical models. In parallel we applied generative AI to protein engineering, designing AAV capsids for gene therapy.",
+      "At CMRI Sydney we built a platform to analyse millions of sequences and surface hundreds — sometimes thousands — of new antimicrobial peptides. Using protein language models, we tested those predictions in the lab and in preclinical models. In parallel we applied generative AI to protein engineering, designing AAV capsids for gene therapy.",
     ],
     stats: [
       { value: "20+", label: "Publications" },
@@ -246,7 +246,7 @@ const es: Translation = {
       "Ingeniería biomédica | Ingeniería de proteínas | Descubrimiento antimicrobiano | Terapia génica",
     title: "Ingeniería de proteínas desde IA hasta validación preclínica.",
     subtitle:
-      "Ingeniero biomédico combinando diseño computacional de proteínas, validación experimental y modelos traslacionales en descubrimiento antimicrobiano y terapia génica.",
+      "Ingeniero biomédico que trabaja en diseño computacional de proteínas, validación experimental y modelos traslacionales para el descubrimiento antimicrobiano y la terapia génica.",
     supportingLine: "Modelos de lenguaje de proteínas | cápsides AAV | péptidos antimicrobianos | modelos de ratón",
     northStar:
       "Investigador en Children's Medical Research Institute, Sydney.",
@@ -263,7 +263,7 @@ const es: Translation = {
     works: "Investigación seleccionada",
     about: "Experiencia y evidencia",
     aboutSubhead:
-      "Tres países, tres laboratorios y un foco constante: convertir ideas a nivel de secuencia en evidencia experimental.",
+      "Tres países, tres laboratorios, un solo foco: convertir ideas a nivel de secuencia en evidencia experimental.",
   },
   works: [
     {
@@ -354,7 +354,7 @@ const es: Translation = {
     heading: "Encontrando la señal terapéutica en un mar de ruido biológico.",
     bio: [
       "Me formé en Biotecnología en la UAB, hice un máster en Ingeniería Biomédica en UC Irvine y volví a la UAB para un doctorado en el que diseñamos proteínas antimicrobianas de principio a fin —del diseño de secuencia a la producción recombinante y los ensayos funcionales—. De esa etapa salieron dos patentes y cuatro artículos como primer autor.",
-      "En el CMRI de Sídney construimos una plataforma para analizar millones de secuencias y descubrir cientos —a veces miles— de nuevos péptidos antimicrobianos. Con modelos de lenguaje de proteínas y los últimos avances en IA, probamos esas predicciones tanto en el laboratorio como en modelos preclínicos. En paralelo, aplicamos IA generativa a la ingeniería de proteínas para diseñar cápsides de AAV para terapia génica.",
+      "En el CMRI de Sídney construimos una plataforma para analizar millones de secuencias y descubrir cientos —a veces miles— de nuevos péptidos antimicrobianos. Con modelos de lenguaje de proteínas, probamos esas predicciones tanto en el laboratorio como en modelos preclínicos. En paralelo, aplicamos IA generativa a la ingeniería de proteínas para diseñar cápsides de AAV para terapia génica.",
     ],
     stats: [
       { value: "20+", label: "Publicaciones" },
@@ -411,7 +411,7 @@ const ca: Translation = {
       "Enginyeria biomèdica | Enginyeria de proteïnes | Descobriment antimicrobià | Teràpia gènica",
     title: "Enginyeria de proteïnes des de la IA fins a la validació preclínica.",
     subtitle:
-      "Enginyer biomèdic combinant disseny computacional de proteïnes, validació experimental i models translacionals en descobriment antimicrobià i teràpia gènica.",
+      "Enginyer biomèdic que treballa en disseny computacional de proteïnes, validació experimental i models translacionals per al descobriment antimicrobià i la teràpia gènica.",
     supportingLine: "Models de llenguatge de proteïnes | càpsides AAV | pèptids antimicrobians | models de ratolí",
     northStar:
       "Investigador al Children's Medical Research Institute, Sydney.",
@@ -428,7 +428,7 @@ const ca: Translation = {
     works: "Recerca seleccionada",
     about: "Experiència i evidència",
     aboutSubhead:
-      "Tres països, tres laboratoris i un focus constant: convertir idees a nivell de seqüència en evidència experimental.",
+      "Tres països, tres laboratoris, un sol focus: convertir idees a nivell de seqüència en evidència experimental.",
   },
   works: [
     {
@@ -519,7 +519,7 @@ const ca: Translation = {
     heading: "Trobant el senyal terapèutic en un mar de soroll biològic.",
     bio: [
       "Em vaig formar en Biotecnologia a la UAB, vaig fer un màster d'Enginyeria Biomèdica a UC Irvine i vaig tornar a la UAB per a un doctorat en què vam dissenyar proteïnes antimicrobianes de cap a peus —del disseny de seqüència a la producció recombinant i els assajos funcionals—. D'aquella etapa van sortir dues patents i quatre articles com a primer autor.",
-      "Al CMRI de Sydney vam muntar una plataforma per analitzar milions de seqüències i descobrir centenars —a vegades milers— de nous pèptids antimicrobians. Amb models de llenguatge de proteïnes i els avenços recents en IA, vam provar aquestes prediccions tant al laboratori com en models preclínics. En paral·lel, vam aplicar IA generativa a l'enginyeria de proteïnes per dissenyar càpsides d'AAV per a teràpia gènica.",
+      "Al CMRI de Sydney vam muntar una plataforma per analitzar milions de seqüències i descobrir centenars —a vegades milers— de nous pèptids antimicrobians. Amb models de llenguatge de proteïnes, vam provar aquestes prediccions tant al laboratori com en models preclínics. En paral·lel, vam aplicar IA generativa a l'enginyeria de proteïnes per dissenyar càpsides d'AAV per a teràpia gènica.",
     ],
     stats: [
       { value: "20+", label: "Publicacions" },

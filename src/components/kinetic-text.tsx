@@ -156,7 +156,7 @@ export default function KineticText({
           <motion.span
             key={`w-${wi}`}
             variants={wordVariants}
-            transition={{ duration: 0.5, ease: "easeOut" }}
+            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
             style={{ display: "inline-block" }}
           >
             {word.split("").map((char, ci) => (

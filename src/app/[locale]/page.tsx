@@ -229,7 +229,7 @@ function LanguageSwitcher({
           className={`rounded-md border px-2.5 py-1.5 text-xs font-medium uppercase transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 ${
             l === locale
               ? active
-              : `border-transparent ${inactive} focus-visible:outline-current`
+              : `border-transparent ${inactive} ${tone === "light" ? "focus-visible:outline-white" : "focus-visible:outline-[#23201a]"}`
           }`}
         >
           {l}
@@ -249,7 +249,7 @@ function ProfileLinks({
   const linkClass =
     tone === "light"
       ? "border-white/20 text-white/76 hover:border-white/45 hover:bg-white/10 hover:text-white focus-visible:outline-white"
-      : "border-[#23201a]/15 text-[#5a4c38] hover:border-[#23201a]/35 hover:bg-white hover:text-[#23201a] focus-visible:outline-[#23201a]";
+      : "border-[#23201a]/10 text-[#5a4c38] hover:border-[#23201a]/20 hover:text-[#23201a] focus-visible:outline-[#23201a]";
 
   return (
     <div className={`flex items-center gap-2 ${className}`}>
@@ -282,7 +282,7 @@ function SectionKicker({
 }) {
   return (
     <p
-      className={`font-mono text-[0.65rem] uppercase tracking-[0.22em] ${
+      className={`font-mono text-[0.7rem] font-medium uppercase tracking-[0.14em] ${
         dark ? "text-[#9fc8c0]" : "text-[#356b68]"
       }`}
     >
@@ -329,7 +329,7 @@ function Header({
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-5 md:px-10">
         <Link
           href={`/${locale}`}
-          className="text-sm font-semibold uppercase focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current md:text-base"
+          className="text-sm font-semibold uppercase focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#23201a] md:text-base"
         >
           Ramon Roca Pinilla
         </Link>
@@ -339,7 +339,7 @@ function Header({
             <a
               key={item.href}
               href={item.href}
-              className="text-sm font-medium text-[#6d5e47] transition-colors hover:text-[#23201a] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current"
+              className="text-sm font-medium text-[#6d5e47] transition-colors hover:text-[#23201a] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#23201a]"
             >
               {item.label}
             </a>
@@ -349,7 +349,7 @@ function Header({
         </nav>
 
         <button
-          className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-[#23201a]/15 text-[#23201a] transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current md:hidden"
+          className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-[#23201a]/10 text-[#23201a] transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#23201a] md:hidden"
           onClick={() => setMobileMenuOpen((open) => !open)}
           aria-label={mobileMenuOpen ? t.mobileMenu.close : t.mobileMenu.open}
           aria-expanded={mobileMenuOpen}
@@ -418,7 +418,7 @@ export default function PortfolioPage() {
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] as const },
+      transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] as const },
     },
   };
 
@@ -429,7 +429,7 @@ export default function PortfolioPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#f4ede0] text-[#23201a] selection:bg-[#dcc9a5] selection:text-[#23201a]">
+    <div className="min-h-screen bg-[#f4ede0] text-[#23201a]">
       <a
         href="#works"
         className="sr-only focus:not-sr-only focus:fixed focus:left-1/2 focus:top-4 focus:z-[70] focus:-translate-x-1/2 focus:rounded-md focus:bg-white focus:px-5 focus:py-3 focus:text-sm focus:font-semibold focus:text-[#23201a]"
@@ -466,7 +466,7 @@ export default function PortfolioPage() {
                   key={item.href}
                   href={item.href}
                   onClick={() => setMobileMenuOpen(false)}
-                  className="block text-[2.45rem] font-semibold leading-none tracking-[-0.02em] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#23201a]"
+                  className="block font-display font-normal text-[clamp(2.25rem,9vw,2.75rem)] leading-none tracking-[-0.02em] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#23201a]"
                 >
                   {item.label}
                 </a>
@@ -495,7 +495,7 @@ export default function PortfolioPage() {
             <motion.div
               initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 24 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1.0, ease: [0.16, 1, 0.3, 1] }}
+              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
               className="relative z-20 max-w-2xl"
             >
               <SectionKicker>{copy.profile}</SectionKicker>
@@ -509,7 +509,7 @@ export default function PortfolioPage() {
                 {t.hero.proof.map((item) => (
                   <li
                     key={item}
-                    className="rounded-full border border-[#23201a]/18 bg-white/40 px-3 py-1.5 font-mono text-[0.68rem] uppercase tracking-[0.12em] text-[#5a4c38] backdrop-blur-sm"
+                    className="rounded-full border border-[#23201a]/10 bg-white/40 px-3 py-1.5 font-mono text-[0.7rem] font-medium uppercase tracking-[0.14em] text-[#5a4c38] backdrop-blur-sm"
                   >
                     {item}
                   </li>
@@ -525,7 +525,7 @@ export default function PortfolioPage() {
                 </a>
                 <a
                   href="#contact"
-                  className="inline-flex items-center justify-center gap-2 rounded-full border border-[#23201a]/25 bg-white/30 px-6 py-3.5 text-sm font-semibold text-[#23201a] transition-colors hover:bg-white/65 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#23201a]"
+                  className="inline-flex items-center justify-center gap-2 rounded-full border border-[#23201a]/20 bg-white/30 px-6 py-3.5 text-sm font-semibold text-[#23201a] transition-colors hover:bg-white/60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#23201a]"
                 >
                   {t.hero.ctaSecondary}
                   <Mail className="h-4 w-4" />
@@ -536,7 +536,7 @@ export default function PortfolioPage() {
             <motion.figure
               initial={{ opacity: 0, scale: 0.985 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.2, duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ delay: 0.2, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
               className="relative z-10 m-0 aspect-[1.05/1] w-full min-h-[28rem] lg:aspect-auto lg:h-[min(78svh,720px)]"
             >
               <div
@@ -555,14 +555,14 @@ export default function PortfolioPage() {
 
         {/* Hairline rule separator — replaces the cool-grey stripe background */}
         <div aria-hidden="true" className="mx-auto max-w-7xl px-5 md:px-10">
-          <div className="h-px w-full bg-[rgba(154,51,40,0.18)]" />
+          <div className="rule" />
         </div>
 
         <section aria-label={copy.impact}>
           <div className="mx-auto grid max-w-7xl divide-y divide-[rgba(35,32,26,0.10)] px-5 md:grid-cols-4 md:divide-x md:divide-y-0 md:px-10">
             {t.about.stats.map((stat) => (
               <div key={stat.label} className="py-7 md:px-7 md:py-9">
-                <p className="font-mono text-xs uppercase tracking-[0.12em] text-[#6b5d45]">
+                <p className="font-mono text-[0.7rem] font-medium uppercase tracking-[0.14em] text-[#6b5d45]">
                   {stat.label}
                 </p>
                 <p className="mt-2 text-4xl font-semibold text-[#23201a]">
@@ -574,10 +574,10 @@ export default function PortfolioPage() {
         </section>
 
         <div aria-hidden="true" className="mx-auto max-w-7xl px-5 md:px-10">
-          <div className="h-px w-full bg-[rgba(154,51,40,0.18)]" />
+          <div className="rule" />
         </div>
 
-        <section className="mx-auto max-w-7xl px-5 py-[4.5rem] md:px-10 md:py-24">
+        <section className="mx-auto max-w-7xl px-5 py-24 md:px-10 md:py-32">
           <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
             <motion.div
               initial="hidden"
@@ -586,7 +586,7 @@ export default function PortfolioPage() {
               variants={fadeUp}
             >
               <SectionKicker index="01">{copy.current}</SectionKicker>
-              <h2 className="mt-4 max-w-2xl text-balance text-[2.5rem] font-display font-normal leading-[0.98] tracking-[-0.01em] md:text-[3.5rem]">
+              <h2 className="mt-5 max-w-2xl text-balance font-display font-normal text-[clamp(2.25rem,4.5vw,3.5rem)] leading-[1.02] tracking-[-0.02em]">
                 {t.timeline[0].role}
               </h2>
               <p className="mt-3 text-lg font-medium text-[#5a4c38]">
@@ -602,12 +602,12 @@ export default function PortfolioPage() {
               whileInView="visible"
               viewport={{ once: true, margin: "-100px" }}
               variants={fadeUp}
-              className="grid gap-3 sm:grid-cols-2"
+              className="grid gap-6 sm:grid-cols-2"
             >
               {competencyMatrix.slice(0, 4).map(({ competency, Icon }) => (
                 <div
                   key={competency}
-                  className="min-h-32 rounded-lg border border-[#d8cfba] bg-[#fbf6ec] p-6 shadow-[0_18px_55px_rgba(21,23,25,0.035)] transition-colors hover:border-[#bcb09a] hover:bg-white"
+                  className="min-h-32 rounded-lg border border-[#23201a]/10 bg-[#fbf6ec] p-6 transition-craft hover:border-[#23201a]/20"
                 >
                   <Icon className="h-5 w-5 text-[#356b68]" />
                   <p className="mt-6 max-w-[13rem] text-lg font-semibold leading-snug">
@@ -624,13 +624,13 @@ export default function PortfolioPage() {
           aria-labelledby="works-heading"
           className="scroll-mt-24 bg-[#f6efe3]"
         >
-          <div className="mx-auto max-w-7xl px-5 py-[4.5rem] md:px-10 md:py-24">
+          <div className="mx-auto max-w-7xl px-5 py-24 md:px-10 md:py-32">
             <div className="mb-14 grid gap-6 lg:grid-cols-[0.9fr_1.1fr] lg:items-end">
               <div>
                 <SectionKicker index="02">{copy.selectedResearch}</SectionKicker>
                 <h2
                   id="works-heading"
-                  className="mt-4 max-w-3xl text-balance text-[2.5rem] font-display font-normal leading-[0.98] tracking-[-0.01em] md:text-[3.5rem]"
+                  className="mt-5 max-w-3xl text-balance font-display font-normal text-[clamp(2.25rem,4.5vw,3.5rem)] leading-[1.02] tracking-[-0.02em]"
                 >
                   {t.sections.works}
                 </h2>
@@ -640,7 +640,7 @@ export default function PortfolioPage() {
               </p>
             </div>
 
-            <div className="divide-y divide-[#d9dfdc] border-y border-[#d9dfdc]">
+            <div className="divide-y divide-[#23201a]/10 border-y border-[#23201a]/10">
               {featuredWorks.map((work, index) => (
                 <motion.article
                   key={work.id}
@@ -648,14 +648,15 @@ export default function PortfolioPage() {
                   whileInView="visible"
                   viewport={{ once: true, margin: "-80px" }}
                   variants={fadeUp}
-                  className="group grid gap-6 py-8 transition-colors hover:bg-[#f7f8f6] lg:grid-cols-[0.16fr_1fr_0.24fr] lg:px-5 lg:py-11"
+                  transition={{ delay: shouldReduceMotion ? 0 : index * 0.08 }}
+                  className="group grid gap-6 py-8 transition-craft hover:bg-[#f7f8f6] lg:grid-cols-[0.16fr_1fr_0.24fr] lg:px-5 lg:py-10"
                 >
                   <div>
                     <p className="inline-flex items-center gap-1.5 font-mono text-sm text-[#356b68]">
                       {String(index + 1).padStart(2, "0")}
                       <span
                         aria-hidden="true"
-                        className="translate-x-[-2px] opacity-0 transition-all duration-300 ease-out group-hover:translate-x-0 group-hover:opacity-100"
+                        className="opacity-0 motion-safe:translate-x-[-2px] motion-safe:transition-all motion-safe:duration-200 motion-safe:group-hover:translate-x-0 group-hover:opacity-100"
                       >
                         ↘
                       </span>
@@ -665,10 +666,10 @@ export default function PortfolioPage() {
                     </p>
                   </div>
                   <div>
-                    <p className="font-mono text-xs uppercase text-[#6b5d45]">
+                    <p className="font-mono text-[0.7rem] font-medium uppercase tracking-[0.14em] text-[#6b5d45]">
                       {work.venue}
                     </p>
-                    <h3 className="mt-3 max-w-3xl text-3xl font-semibold leading-tight">
+                    <h3 className="mt-3 max-w-3xl font-display font-normal text-[clamp(1.6rem,2.4vw,2rem)] leading-[1.1] tracking-[-0.01em]">
                       {work.title}
                     </h3>
                     <p className="mt-4 max-w-3xl text-pretty text-base leading-7 text-[#6d5e47]">
@@ -678,7 +679,7 @@ export default function PortfolioPage() {
                       {work.tags.map((tag) => (
                         <span
                           key={tag}
-                          className="rounded-md border border-[#d8cfba] bg-[#f4ede0] px-2.5 py-1 text-xs text-[#5a4c38]"
+                          className="rounded-md border border-[#23201a]/10 bg-[#f4ede0] px-2.5 py-1 font-mono text-[0.7rem] font-medium uppercase tracking-[0.14em] text-[#5a4c38]"
                         >
                           {tag}
                         </span>
@@ -690,7 +691,7 @@ export default function PortfolioPage() {
                       href={work.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 rounded-md border border-[#23201a]/15 px-4 py-2 text-sm font-semibold transition-colors hover:border-[#23201a]/35 hover:bg-[#23201a] hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#23201a]"
+                      className="inline-flex items-center gap-2 rounded-md border border-[#23201a]/10 px-4 py-2 text-sm font-semibold transition-craft hover:border-[#23201a]/20 hover:bg-[#23201a] hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#23201a]"
                     >
                       {copy.read}
                       <ArrowUpRight className="h-4 w-4" />
@@ -700,19 +701,19 @@ export default function PortfolioPage() {
               ))}
             </div>
 
-            <div className="mt-10 grid gap-4 md:grid-cols-3">
+            <div className="mt-12 grid gap-6 sm:grid-cols-2 md:grid-cols-3">
               {remainingWorks.map((work) => (
                 <a
                   key={work.id}
                   href={work.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group flex min-h-[18rem] flex-col rounded-lg border border-[#d8cfba] bg-[#fcf8ef] p-5 shadow-[0_18px_55px_rgba(21,23,25,0.035)] transition-colors hover:border-[#23201a]/35 hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#23201a]"
+                  className="group flex min-h-[18rem] flex-col rounded-lg border border-[#23201a]/10 bg-[#fcf8ef] p-5 transition-craft hover:border-[#23201a]/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#23201a]"
                 >
                   <p className="font-mono text-xs text-[#6b5d45]">
                     {work.year} / {work.venue}
                   </p>
-                  <h3 className="mt-4 text-xl font-semibold leading-snug">
+                  <h3 className="mt-4 text-lg font-semibold leading-snug">
                     {work.title}
                   </h3>
                   <p className="mt-3 text-sm leading-6 text-[#6d5e47]">
@@ -720,7 +721,7 @@ export default function PortfolioPage() {
                   </p>
                   <span className="mt-auto inline-flex items-center gap-2 pt-6 text-sm font-semibold text-[#356b68]">
                     {copy.read}
-                    <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                    <ArrowUpRight className="h-4 w-4 transition-transform motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5" />
                   </span>
                 </a>
               ))}
@@ -728,16 +729,22 @@ export default function PortfolioPage() {
           </div>
         </section>
 
-        <section className="mx-auto max-w-7xl px-5 py-[4.5rem] md:px-10 md:py-24">
+        <section className="mx-auto max-w-7xl px-5 py-24 md:px-10 md:py-32">
           <div className="mb-12 max-w-3xl">
             <SectionKicker index="03">{copy.researchFocus}</SectionKicker>
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={fadeUp}
+            className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
+          >
             {competencyMatrix.map(({ competency, description, Icon }) => (
               <div
                 key={competency}
-                className="rounded-lg border border-[#d8cfba] bg-[#fbf6ec] p-6 shadow-[0_18px_55px_rgba(21,23,25,0.035)] transition-colors hover:border-[#bcb09a] hover:bg-white"
+                className="rounded-lg border border-[#23201a]/10 bg-[#fbf6ec] p-6 transition-craft hover:border-[#23201a]/20"
               >
                 <Icon className="h-5 w-5 text-[#356b68]" />
                 <h3 className="mt-5 text-lg font-semibold">{competency}</h3>
@@ -746,7 +753,7 @@ export default function PortfolioPage() {
                 </p>
               </div>
             ))}
-          </div>
+          </motion.div>
         </section>
 
         <section
@@ -754,12 +761,12 @@ export default function PortfolioPage() {
           aria-labelledby="about-heading"
           className="scroll-mt-24"
         >
-          <div className="mx-auto grid max-w-7xl gap-12 px-5 py-[4.5rem] md:px-10 md:py-24 lg:grid-cols-[0.82fr_1.18fr]">
+          <div className="mx-auto grid max-w-7xl gap-12 px-5 py-24 md:px-10 md:py-32 lg:grid-cols-[0.82fr_1.18fr]">
             <div>
               <SectionKicker index="04">{copy.experience}</SectionKicker>
               <h2
                 id="about-heading"
-                className="mt-4 text-balance text-[2.5rem] font-display font-normal leading-[0.98] tracking-[-0.01em] md:text-[3.5rem]"
+                className="mt-5 text-balance font-display font-normal text-[clamp(2.25rem,4.5vw,3.5rem)] leading-[1.02] tracking-[-0.02em]"
               >
                 {t.sections.about}
               </h2>
@@ -775,14 +782,14 @@ export default function PortfolioPage() {
                 ))}
               </div>
 
-              <ol className="mt-12 divide-y divide-[#c9bfa8] border-y border-[#c9bfa8]">
+              <ol className="mt-12 divide-y divide-[#23201a]/10 border-y border-[#23201a]/10">
                 {t.timeline.map((item) => (
                   <li key={`${item.year}-${item.role}`} className="grid gap-4 py-6 md:grid-cols-[0.22fr_1fr]">
                     <p className="font-mono text-sm text-[#356b68]">
                       {item.year}
                     </p>
                     <div>
-                      <h3 className="text-xl font-semibold">{item.role}</h3>
+                      <h3 className="text-lg font-semibold leading-snug">{item.role}</h3>
                       <p className="mt-1 font-medium text-[#6d5e47]">
                         {item.company}
                       </p>
@@ -808,7 +815,7 @@ export default function PortfolioPage() {
                 <SectionKicker dark>{copy.contactCta}</SectionKicker>
                 <h2
                   id="contact-heading"
-                  className="mt-5 max-w-4xl text-balance text-[2.75rem] font-display font-normal leading-[0.98] tracking-[-0.01em] md:text-[4rem]"
+                  className="mt-5 max-w-4xl text-balance font-display font-normal text-[clamp(2.5rem,5vw,4rem)] leading-[1.0] tracking-[-0.02em]"
                 >
                   {t.contact.heading}
                 </h2>
@@ -820,7 +827,7 @@ export default function PortfolioPage() {
               <div className="flex flex-col items-start gap-4 lg:items-end">
                 <a
                   href={`mailto:${t.contact.emailLabel}`}
-                  className="inline-flex items-center gap-2 rounded-md bg-white px-5 py-3 text-sm font-semibold text-[#23201a] transition-colors hover:bg-[#e6dfd0] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                  className="inline-flex items-center gap-2 rounded-md bg-white px-5 py-3 text-sm font-semibold text-[#23201a] transition-craft hover:bg-[#e6dfd0] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                 >
                   {copy.contactButton}
                   <ArrowUpRight className="h-4 w-4" />

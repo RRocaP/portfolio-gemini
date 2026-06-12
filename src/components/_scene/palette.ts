@@ -5,9 +5,9 @@
  */
 export const scenePalette = {
   // Surface / background tones
-  pearl: "#dffbf2",
+  pearl: "#eef0e8",
   ivory: "#fff4de",
-  mint: "#eafeef",
+  mint: "#eef4ec",
   paper: "#f4f5f3",
 
   // Saturated accents — sparing use, mainly for emissives and rim light
@@ -15,8 +15,8 @@ export const scenePalette = {
   tealDeep: "#2a8f98",
   coral: "#f0a89b",
   coralDeep: "#c97c70",
-  violet: "#8a83d8",
-  violetDeep: "#5a52ad",
+  violet: "#9a93c2",
+  violetDeep: "#6f68a0",
 
   // Specular ink — text, deep shadows
   ink: "#151719",

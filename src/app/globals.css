@@ -134,6 +134,10 @@
     background-color: rgba(53, 107, 104, 0.15);
     color: #23201a;
   }
+  #contact ::selection {
+    background-color: rgba(159, 200, 192, 0.22);
+    color: #f4ede0;
+  }
   html {
     font-optical-sizing: auto;
     -webkit-font-smoothing: antialiased;

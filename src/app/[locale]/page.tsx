@@ -91,7 +91,7 @@ function IcosahedronIcon(props: React.SVGProps<SVGSVGElement>) {
 function ProteinLMIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
-      viewBox="0 0 64 64"
+      viewBox="8 7 51 51"
       fill="none"
       stroke="currentColor"
       strokeLinecap="round"
@@ -561,7 +561,7 @@ export default function PortfolioPage() {
         <section aria-label={copy.impact}>
           <div className="mx-auto grid max-w-7xl divide-y divide-[rgba(35,32,26,0.10)] px-5 md:grid-cols-4 md:divide-x md:divide-y-0 md:px-10">
             {t.about.stats.map((stat) => (
-              <div key={stat.label} className="py-7 md:px-7 md:py-9">
+              <div key={stat.label} className="py-7 md:px-7 md:py-9 md:first:pl-0 md:last:pr-0">
                 <p className="font-mono text-[0.7rem] font-medium uppercase tracking-[0.14em] text-[#6b5d45]">
                   {stat.label}
                 </p>
@@ -610,7 +610,7 @@ export default function PortfolioPage() {
                   className="min-h-32 rounded-lg border border-[#23201a]/10 bg-[#fbf6ec] p-6 transition-craft hover:border-[#23201a]/20"
                 >
                   <Icon className="h-5 w-5 text-[#356b68]" />
-                  <p className="mt-6 max-w-[13rem] text-lg font-semibold leading-snug">
+                  <p className="mt-6 max-w-[15rem] text-lg font-semibold leading-snug">
                     {competency}
                   </p>
                 </div>
@@ -708,7 +708,7 @@ export default function PortfolioPage() {
                   href={work.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group flex min-h-[18rem] flex-col rounded-lg border border-[#23201a]/10 bg-[#fcf8ef] p-5 transition-craft hover:border-[#23201a]/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#23201a]"
+                  className="group flex sm:min-h-[18rem] flex-col rounded-lg border border-[#23201a]/10 bg-[#fcf8ef] p-5 transition-craft hover:border-[#23201a]/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#23201a]"
                 >
                   <p className="font-mono text-xs text-[#6b5d45]">
                     {work.year} / {work.venue}
